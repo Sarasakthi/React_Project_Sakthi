@@ -1,18 +1,24 @@
 import { useRouteError } from "react-router-dom";
+import ErrorImage from "./img/foxStealing1.gif"
+import "./styles.css"
 
 export default function ErrorPage() {
+
   const error = useRouteError();
   console.error(error);
 
   return (
-    <div id="errorPage">
-      <h1>Whoops! This is not what you were looking for</h1>
-      <p>Swiper might steal the info and possibly your money!</p>
-      <p>Sorry for the inconvenience caused.</p>
-      <p>
-        <i>{error.statusText || error.message}</i>
-      </p>
-      <p>Please contact our detective <a href="mailto:csk.sakthi@gmail.com">Dora's</a> assistant!</p>
-    </div>
+    <>
+      <div id="errorText">
+        <h1 id="errorHeader">Whoops! This is not what you were looking for!</h1>
+        <img id="errorImage" src={ErrorImage} />
+        <p className="errorP-msg">Swiper might steal the info and possibly money from your accout!</p>
+        <p className="errorP-contact">Please contact our detective <a id="contactDora" href="mailto:csk.sakthi@gmail.com">Dora</a> for further investigation or go <a id="goHome" href="/">Home.</a></p>
+        <hr></hr>
+        <p className="errorP-errortext">Error message:
+          <i>{error.statusText || error.message}</i>
+        </p>
+      </div>
+    </>
   );
 }
