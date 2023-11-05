@@ -1,14 +1,9 @@
 #errorImage {
     background-color: white;
-    width: 400px;
+    max-width: 500px;
+    height: auto;
     background-position: center;
-    position: relative;
-    display: block;
-    box-sizing: inherit;
-    margin-left: auto;
-    margin-right: auto;
     border-radius: 10%;
-    border: 5px, solid, red;
 }
 
 #errorText {
@@ -82,3 +77,16 @@ p.errorP-contact {
     top: 25px;
     left: -50%;
 }
+
+@keyframes slidein {
+    from {
+      margin-left: 90%;
+      width: 100%;
+    }
+  
+    to {
+      margin-left: 0%;
+      width: 100%;
+    }
+  }
+  
