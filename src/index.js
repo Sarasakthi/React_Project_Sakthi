@@ -1,8 +1,8 @@
 //Updated: 05-nov-2023 @Sakthi
 
 //Import React Libraries
-import React from "react"
-import ReactDOM from "react-dom/client"
+import React from "react";
+import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 //Import Webpages
