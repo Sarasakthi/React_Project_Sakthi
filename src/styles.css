@@ -44,3 +44,21 @@ p.errorP-contact {
     -webkit-text-fill-color: transparent;
     -webkit-background-clip: text;
 }
+
+@keyframes slidein {
+    from {
+      margin-left: 90%;
+      width: 100%;
+    }
+  
+    75% {
+      font-size: 300%;
+      margin-left: 25%;
+      width: 150%;
+    }
+  
+    to {
+      margin-left: 0%;
+      width: 100%;
+    }
+  }
