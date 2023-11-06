@@ -1,6 +1,6 @@
 # Hakuna Matata
 
-A React Final Project for ComIT React Course. This project was developed by Sakthi.
+A React project for ComIT React Course. This project was developed by Sakthi.
 
 ## Technologies Used
 
