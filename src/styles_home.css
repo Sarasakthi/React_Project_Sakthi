@@ -112,6 +112,7 @@ div {
 }
 
 .welcome .welcomeMsg {
+    margin-top: 0;
     font-weight: bolder;
     font-size: 18px;
     padding: 10px 0;
@@ -145,6 +146,10 @@ div {
     line-height: 35px;
     min-height: 400px;
     max-height: fit-content;
+}
+
+.assetAndTrans {
+    display: grid;
 }
 
 .rowAssetTransHeader .colAssetHeader,
@@ -182,8 +187,6 @@ div {
     background-image: linear-gradient(rgb(247, 247, 247), rgb(211, 211, 211), rgb(179, 178, 178));
 }
 
-
-
 /*-------------------
 Asset and Transaction
 -------------------*/
@@ -202,7 +205,17 @@ Asset and Transaction
     width: 2%;
 }
 
+/*-------------------
+-------Footer-------
+-------------------*/
+.footerText {
+    
+}
 
+
+/*-------------------
+-------General-------
+-------------------*/
 ul,
 li {
     border: 0 none;
@@ -234,6 +247,10 @@ img {
 
 
 
+/*----------------------------------------*/
+/*----------------------------------------*/
+/*----------------------------------------*/
+
 .signinDetails {
     width: 100%;
     margin-bottom: 3px 1px;
@@ -250,8 +267,4 @@ img {
     float: left;
     height: 28px;
     padding: 9px 13px 0 8px;
-}
-
-.footerText {
-    
 }
