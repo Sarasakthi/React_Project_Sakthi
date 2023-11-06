@@ -1,0 +1,10 @@
+.paymentDiv {
+    border: 1px solid black;
+    border-radius: 15px;
+    background-image: linear-gradient(rgb(247, 247, 247), rgb(211, 211, 211), rgb(179, 178, 178));
+
+}
+
+.paymentHeader {
+    padding: 18px;
+}

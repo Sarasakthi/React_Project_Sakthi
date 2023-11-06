@@ -1,57 +1,14 @@
-import ImageLogo from "./img/logo.svg";
+import NavBar from "./navbar"
 import "./styles_home.css"
+import Footer from "./footer"
 
 export default function Home() {
     return (
         <div>
-            {/*Insert Logo*/}
-            <div class="header">
-                <div class="inline-block float-left logo">
-                    <a className="home" href="#home">
-                        <img id="imageLogo" src={ImageLogo} alt="errorImage" />
-                    </a>
-                </div>
-
-            </div>
-
-
-            {/*Nav Bar*/}
-            <div className="navBar">
-                <div className="navHomePage">
-                    <ul>
-                        <li className="listNavHome">
-                            <a href="#home">Home</a>
-                        </li>
-
-                        <li className="navPayment">
-                            <a href="#payment">Payment</a>
-                        </li>
-
-                        <li className="navContact">
-                            <a href="#contact">Contact</a>
-                        </li>
-
-                        <li className="navSignout">
-                            <a href="#signout">Signout</a>
-                        </li>
-
-                    </ul>
-                </div>
-            </div>
-
-            {/*Welcome Message*/}
-            <div className="welcome">
-                <div className="welcomeMsg">
-                    <p>Welcome to Hakuna Matata Bank</p>
-                </div>
-                <div className="lastLogin">
-                    <p id="loginDateTime"></p>
-                    <script>
-                        const currentDateTime = new Date();
-                        document.getElementById("loginDateTime").innerHTML = 'Your last login: ' + currentDateTime.toLocaleString();
-                    </script>
-                </div>
-            </div>
+            <nav>
+                {/*Insert NavBar*/}
+                <NavBar />
+            </nav>
 
             {/*Asset and Transaction Header*/}
             <div className="rowAssetTransHeader">
@@ -94,6 +51,12 @@ export default function Home() {
                     </div>
                 </div>
             </div>
+
+            <footer className="footerText">
+                {/*Insert Footer*/}
+                <Footer />
+            </footer>
+
         </div>
     )
 }

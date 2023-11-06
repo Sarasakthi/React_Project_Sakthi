@@ -1,19 +1,22 @@
 #errorImage {
     background-color: white;
-    max-width: 500px;
+    max-width: 600px;
     height: auto;
     background-position: center;
     border-radius: 10%;
+    margin: 25px;
 }
 
 #errorText {
+    margin-top: 50px;
     text-align: center;
 }
 
 p.errorP-contact {
-    color: blue;
+    color: black;
     font-size: 20px;
     font-family: 'Karla';
+    padding: 15px;
 }
 
 #contactDora {
@@ -22,6 +25,10 @@ p.errorP-contact {
     background-image: linear-gradient(to right, rgb(134, 14, 134), rgba(18, 107, 207, 0.603), rgb(255, 136, 0), green);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+#contactDora:hover, #goHome:hover, #msgSwiper:hover {
+    text-shadow: #FC0 1px 0 10px;;
 }
 
 #goHome {
@@ -36,6 +43,7 @@ p.errorP-contact {
 
 #errorHeader {
     font-family: 'Indie Flower';
+    padding-bottom: 25px;
     font-size: 40px;
     color: black;
     /*background: linear-gradient(to left, #f32170, #ff6b08,
@@ -46,7 +54,7 @@ p.errorP-contact {
 
 .errorP-msg {
     font-family: 'Karla';
-    color: purple;
+    color: black;
     /*color: rgb(0, 47, 255);*/
     font-size: 25px;
 }
@@ -90,3 +98,9 @@ p.errorP-contact {
     }
   }
   
+.errorP-errortext {
+    padding: 25px;
+    text-align: left;
+    color: lightgray;
+    font-family: 'Ubuntu';
+}

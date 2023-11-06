@@ -1,0 +1,16 @@
+.horiLine {
+    
+}
+
+.horiLine hr {
+    color: red;
+
+}
+
+.footText {
+    padding: 25px;
+    font-family: Noto Sans;
+    text-align: center;
+    color: gray;
+    font-size: 14px;
+}
