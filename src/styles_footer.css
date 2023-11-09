@@ -8,6 +8,7 @@
 }
 
 .footText {
+    float: none;
     padding: 25px;
     font-family: Noto Sans;
     text-align: center;
