@@ -1,5 +1,5 @@
 import ImageLogo from "./img/logo.svg";
-import "./styles_home.css"
+import "./styles_navBar.css"
 
 export default function NavBar() {
     return (

@@ -2,6 +2,7 @@ import NavBar from "./navbar"
 import Footer from "./footer"
 import "./styles_home.css"
 import "./styles_payment.css"
+import "./variables"
 
 export default function Payment() {
     return (
@@ -11,7 +12,10 @@ export default function Payment() {
 
             {/*Page Name*/}
             <div className="paymentDiv">
-                <p className="paymentHeader">Enter Payment Details</p>
+                <p
+                    className="paymentHeader"
+                    style={{ fontFamily: 'Ubuntu' }}
+                >Enter Payment Details</p>
             </div>
 
 
