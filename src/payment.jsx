@@ -14,7 +14,7 @@ export default function Payment() {
             <div className="paymentDiv">
                 <p
                     className="paymentHeader"
-                    style={{ fontFamily: 'Ubuntu' }}
+                    /*style={{ fontFamily: 'Ubuntu' }}*/
                 >Enter Payment Details</p>
             </div>
 
