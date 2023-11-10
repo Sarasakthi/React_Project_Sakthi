@@ -22,3 +22,12 @@ li {
     margin: 0;
     padding: 0;
 }
+
+.paymentLabel {
+    font-family: 'Playpen Sans';
+    font-size: 16px;
+}
+
+#paymentDiv {
+    padding: 15px 0 15px 35px;
+}
