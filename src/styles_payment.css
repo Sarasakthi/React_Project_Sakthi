@@ -3,6 +3,7 @@
     margin: 0;
     padding: 0;
     position: relative;
+
 }
 
 div {
@@ -14,9 +15,13 @@ div {
 }
 
 .paymentDiv {
+    display: flex;
     border: 1px solid black;
     border-radius: 15px;
+    width: 100%;
+    min-width: 434.333px;
     background-image: linear-gradient(rgb(247, 247, 247), rgb(211, 211, 211), rgb(179, 178, 178));
+    font-size: large;
 }
 
 .paymentHeader {
@@ -27,48 +32,83 @@ div {
 }
 
 .paymentDetails {
+    display: block;
     width: 100%;
 }
 
 table {
     width: 100%;
-    background-color: aqua;
-    border: 1px solid black;
+    background-color: rgba(245, 245, 245, 0.308);
 }
 
 tr {
-
+    display: flex;
+    align-items: center;
+    height: 75px;
+    padding: 0 0 0 25px;
 }
 
 td {
-    border: 1px solid black;
+    min-width: 150px;
+}
+
+.column2 {
+    padding-left: 35px;
 
 }
 
+select {
+    user-select: none;
+    min-width: 300px;
+    min-height: 30px;
+}
 
+#paymentIDAmount,
+#paymentIDRemarks {
+    min-width: 300px;
+    min-height: 30px;
+}
 
 .paymentLabel,
 select,
-option,
-input, label {
+input,
+label,
+#paymentInputList {
     font-family: 'Roboto';
     font-size: 20px;
+    cursor: pointer;
 }
 
-.paymentLabel {
-    width: 40px;
+.paymentTransferFrom {
+    width: 50px;
 }
 
-.column-1 {
-    width: 30%;
+input[type="radio"] {
+    margin-left: 0;
 }
 
-.column-2 {
-    width: 100%;
+#paymentIDFreqRecurring {
+    padding-left: 25px;
+    gap: 2px;
 }
 
-.test1 {
-    font-size: 25px;
-    display: inline;
-    text-align: center;
+.paymentFreq {
+    margin-left: 15px;
+}
+
+.paymentMakePayment {
+    display: flex;
+    justify-content: center;
+    padding: 25px;
+}
+
+#paymentIDMakePayment {
+    padding: 10px 25px;
+    font-size: 18px;
+    font-family: 'Ubuntu';
+    font-weight: bold;
+    background-color: red;
+    color: white;
+    border-radius: 25px;
+    cursor: pointer;
 }
