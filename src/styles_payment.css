@@ -107,7 +107,7 @@ input[type="radio"] {
     font-size: 18px;
     font-family: 'Ubuntu';
     font-weight: bold;
-    background-color: red;
+    background-color: #d61212;
     color: white;
     border-radius: 25px;
     cursor: pointer;

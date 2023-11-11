@@ -9,15 +9,12 @@ import "./variables"
 
 export default function Payment() {
 
+
+
     // date picker
     const [date, setDate] = useState(new Date());
-    const [startDate, setStartDate] = useState();
-    const [endDate, setEndDate] = useState();
-    const handleChange = (range) => {
-        const [startDate, endDate] = range;
-        setStartDate(startDate);
-        setEndDate(endDate);
-    };
+
+
 
     // Prevent the browser from reloading the page
     function handleSubmit(e) {
@@ -146,7 +143,14 @@ export default function Payment() {
                                         <td className="column1">Payment Date:</td>
                                         <td className="column2">
                                             <div>
-                                                <DatePicker selected={date} onChange={(date) => setDate(date)} />
+                                                <DatePicker selected={date}
+                                                    showIcon
+                                                    closeOnScroll={true}
+                                                    onChange={(date) => setDate(date)}
+                                                    dateFormat={"dd/MMM/yyyy"}
+                                                    minDate={new Date()}
+                                                    filterDate={((date => date.getDay() != 2) && (date => date.getDay() != 6))}
+                                                />
                                             </div>
                                         </td>
                                     </label>
