@@ -1,7 +1,7 @@
 export const fontNavBar = 'Kanit'
 export const fontHeader = 'Ubuntu'
 export const fontLable = 'Playpen Sans'
-export const fontText = 'Karla'
+export const fontText = 'Roboto'
 export const fontContent = 'Noto Sans'
 export const fontFooter = 'Handlee'
 export const fontMessage = 'Patrick Hand'
