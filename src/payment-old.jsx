@@ -9,10 +9,6 @@ import "./styles_home.css"
 import "./styles_payment.css"
 import "./variables"
 
-
-
-
-
 export default function Payment() {
 
     // date picker
@@ -55,79 +51,6 @@ export default function Payment() {
                     </div>
 
                     <div className="paymentDetails">
-
-                        {/*Table Right - Additional info for Recurring Payment*/}
-                        <div className="paymentTableRecurring">
-                            <table className="paymentTableRight">
-
-                                {/*Recurring - Payment Start Date*/}
-                                <tr>
-                                    <div className="paymentRecStartDate">
-                                        <label className="paymentRecStartDateLabel">
-                                            <td className="column1" id="paymentRecStartDatePick">Start Date:</td>
-                                        </label>
-                                        <td className="column2" id="datePickInline">
-                                            <DatePicker
-                                                name="paymentRecurringStartDate"
-                                                showIcon
-                                                selected={paymentRecStartDate}
-                                                closeOnScroll={true}
-                                                onChange={(paymentRecStartDate) => setPaymentRecStartDate(paymentRecStartDate)}
-                                                dateFormat={"dd/MMM/yyyy"}
-                                                minDate={new Date()}
-                                                filterDate={((paymentRecStartDate => paymentRecStartDate.getDay() !== 2)
-                                                    && (paymentRecStartDate => paymentRecStartDate.getDay() !== 6))}
-                                            />
-                                        </td>
-                                    </div>
-                                </tr>
-
-                                {/*Recurring - Payment End Date*/}
-                                <tr>
-                                    <div className="paymentRecEndDate">
-                                        <label className="paymentRecEndDateLabel">
-                                            <td className="column1" id="paymentRecEndDatePick1">End Date:</td>
-                                        </label>
-                                        <td className="column2" id="datePickInline">
-                                            <DatePicker
-                                                name="paymentRecurringEndtDate"
-                                                showIcon
-                                                selected={paymentRecEndDate}
-                                                closeOnScroll={true}
-                                                onChange={(paymentRecEndDate) => setPaymentRecEndDate(paymentRecEndDate)}
-                                                dateFormat={"dd/MMM/yyyy"}
-                                                minDate={new Date()}
-                                                filterDate={((paymentRecEndDate => paymentRecEndDate.getDay() !== 2)
-                                                    && (paymentRecEndDate => paymentRecEndDate.getDay() !== 6))}
-                                            />
-                                        </td>
-                                    </div>
-                                </tr>
-
-                                {/*Recurring - Payment Interval*/}
-                                <tr>
-                                    <div className="paymentRecInterval" id="paymentRecInterval-id">
-                                        <label className="paymentRecIntervalLabel">
-                                            <td className="column1">Interval:
-                                            </td>
-                                            <td className="column2">
-                                                <span id="paymentRecIntervalInput">
-                                                    <select>
-                                                        <option value="Account1"
-                                                            id="Account1" >Daily</option>
-                                                        <option value="Account2"
-                                                            id="Account2">Weekly</option>
-                                                        <option value="Account3"
-                                                            id="Account3">Monthly</option>
-                                                    </select>
-                                                </span>
-                                            </td>
-                                        </label>
-                                    </div>
-                                </tr>
-                            </table>
-                        </div>
-
 
                         {/*Table Left - Payment Main Information*/}
                         <div className="paymentTableMain">
@@ -235,7 +158,7 @@ export default function Payment() {
                                         <label className="paymentLabel">
                                             <td className="column1" id="paymentDatePick1">Payment Date:</td>
                                         </label>
-                                        <td className="column2" id="datePickInline">
+                                        <td className="column2" id="paymentDatePick">
                                             <DatePicker
                                                 name="paymentOnetimeDatePicked"
                                                 showIcon
@@ -251,6 +174,79 @@ export default function Payment() {
                                     </div>
                                 </tr>
 
+                            </table>
+                        </div>
+
+
+                        {/*Table Right - Additional info for Recurring Payment*/}
+                        <div className="paymentTableRecurring">
+                            <table className="paymentTableRight">
+
+                                {/*Recurring - Payment Start Date*/}
+                                <tr>
+                                    <div className="paymentDate">
+                                        <label className="paymentLabel">
+                                            <td className="column1" id="paymentDatePick1">Start Date:</td>
+                                        </label>
+                                        <td className="column2" id="paymentDatePick">
+                                            <DatePicker
+                                                name="paymentRecurringStartDate"
+                                                showIcon
+                                                selected={paymentRecStartDate}
+                                                closeOnScroll={true}
+                                                onChange={(paymentRecStartDate) => setPaymentRecStartDate(paymentRecStartDate)}
+                                                dateFormat={"dd/MMM/yyyy"}
+                                                minDate={new Date()}
+                                                filterDate={((paymentRecStartDate => paymentRecStartDate.getDay() !== 2)
+                                                    && (paymentRecStartDate => paymentRecStartDate.getDay() !== 6))}
+                                            />
+                                        </td>
+                                    </div>
+                                </tr>
+
+                                {/*Recurring - Payment End Date*/}
+                                <tr>
+                                    <div className="paymentDate">
+                                        <label className="paymentLabel">
+                                            <td className="column1" id="paymentDatePick1">End Date:</td>
+                                        </label>
+                                        <td className="column2" id="paymentDatePick">
+                                            <DatePicker
+                                                name="paymentRecurringEndtDate"
+                                                showIcon
+                                                selected={paymentRecEndDate}
+                                                closeOnScroll={true}
+                                                onChange={(paymentRecEndDate) => setPaymentRecEndDate(paymentRecEndDate)}
+                                                dateFormat={"dd/MMM/yyyy"}
+                                                minDate={new Date()}
+                                                filterDate={((paymentRecEndDate => paymentRecEndDate.getDay() !== 2)
+                                                    && (paymentRecEndDate => paymentRecEndDate.getDay() !== 6))}
+                                            />
+                                        </td>
+                                    </div>
+                                </tr>
+
+                                {/*Recurring - Payment Interval*/}
+                                <tr>
+                                    <div className="paymentTransferFrom" id="paymentTransferFrom">
+                                        <label className="paymentLabel">
+                                            <td className="column1">Interval:
+                                            </td>
+                                            <td className="column2">
+                                                <span id="paymentInput">
+                                                    <select>
+                                                        <option value="Account1"
+                                                            id="Account1" >Daily</option>
+                                                        <option value="Account2"
+                                                            id="Account2">Weekly</option>
+                                                        <option value="Account3"
+                                                            id="Account3">Monthly</option>
+                                                    </select>
+                                                </span>
+                                            </td>
+                                        </label>
+                                    </div>
+                                </tr>
                             </table>
                         </div>
 
