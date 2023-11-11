@@ -11,7 +11,7 @@ div {
 }
 
 .paymentMain {
-    margin: 0 25%;
+    margin: 0 15%;
 }
 
 .paymentDiv {
@@ -32,13 +32,28 @@ div {
 }
 
 .paymentDetails {
-    display: block;
-    width: 100%;
+    display: flex;
+    align-items: end;
+    background-color:
+        rgba(245, 245, 245, 0.308);
+        min-width: 1175px;
 }
 
+.paymentTableLeft {
+    
+}
+.paymentTableRight {
+    min-width: 520px;}
+
+.paymentTableRecurring {
+    padding-left: 100px;
+
+    flex-shrink: 1;
+}
+
+
 table {
-    width: 100%;
-    background-color: rgba(245, 245, 245, 0.308);
+    
 }
 
 tr {
@@ -96,6 +111,20 @@ input[type="radio"] {
     margin-left: 15px;
 }
 
+/*Date Picker*/
+#paymentDatePick {
+    display: inline;
+}
+
+.react-datepicker {
+    font-size: 1em;
+}
+
+.react-datepicker__view-calendar-icon input {
+    padding: 6px 25px 5px 25px;
+}
+
+/*Make Payment*/
 .paymentMakePayment {
     display: flex;
     justify-content: center;
