@@ -16,10 +16,17 @@ export default function Payment() {
     const [paymentRecStartDate, setPaymentRecStartDate] = useState(new Date());
     const [paymentRecEndDate, setPaymentRecEndDate] = useState(new Date());
 
+    // Recurring Start and End date change
+    function handleStartEndDateMatch() {
+
+    }
+
+    
+
+
     // Payment Frequency Change (Onetime - Recurring)
     //const [state, setState] = useState(initialState);
     const [paymentFreq, setpaymentFreq] = useState(false)
-
 
     function handlePaymentFreqChange(paymentFreqCurrent) {
         const getElement = document.getElementById("paymentTableRightID")
@@ -260,7 +267,7 @@ export default function Payment() {
                                 </tr>
 
                                 <tr>
-                                    { paymentFreq ? null :
+                                    {paymentFreq ? null :
                                         <div className="paymentDate">
                                             <label className="paymentLabel">
                                                 <td className="column1" id="paymentDatePick1">Payment Date:</td>
