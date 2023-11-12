@@ -41,6 +41,12 @@ div {
     padding: 150px 25px 0 0;
 }
 
+.paymentTableRight {
+    /*pointer-events: none;
+    opacity: 0.4;*/
+    
+}
+
 .paymentTableMain {
     margin-right: 50%;
 }
@@ -61,7 +67,7 @@ td {
 }
 
 .column2 {
-    padding-left: 35px;
+    padding-left: 30px;
 
 }
 
