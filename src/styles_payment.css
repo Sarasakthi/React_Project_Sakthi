@@ -1,0 +1,142 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    position: relative;
+
+}
+
+div {
+    display: block;
+}
+
+.paymentMain {}
+
+.paymentDiv {
+
+    border: 1px solid black;
+    border-radius: 15px;
+    background-image: linear-gradient(rgb(247, 247, 247), rgb(211, 211, 211), rgb(179, 178, 178));
+    font-size: large;
+    margin: 0 auto;
+    width: 1100px;
+    height: auto;
+}
+
+.paymentHeader {
+    padding: 18px;
+    font-size: 18px;
+    font-family: 'Ubuntu';
+    font-weight: bold;
+}
+
+.paymentDetails {
+    margin: 0 auto;
+    width: 1100px;
+    height: auto;
+}
+
+.paymentTableRecurring {
+    float: right;
+    padding: 150px 25px 0 0;
+}
+
+.paymentTableRight {
+    /*pointer-events: none;
+    opacity: 0.4;*/
+    
+}
+
+.paymentTableMain {
+    margin-right: 50%;
+}
+
+.paymentTableLeft {
+    
+}
+
+tr {
+    display: flex;
+    align-items: center;
+    height: 75px;
+    padding: 0 0 0 25px;
+}
+
+td {
+    min-width: 150px;
+}
+
+.column2 {
+    padding-left: 30px;
+
+}
+
+select {
+    user-select: none;
+    min-width: 300px;
+    min-height: 30px;
+}
+
+#paymentIDAmount,
+#paymentIDRemarks {
+    min-width: 300px;
+    min-height: 30px;
+}
+
+.paymentLabel,
+select,
+input,
+label,
+#paymentInputList {
+    font-family: 'Roboto';
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.paymentTransferFrom {
+    width: 50px;
+}
+
+input[type="radio"] {
+    margin-left: 0;
+}
+
+#paymentIDFreqRecurring {
+    padding-left: 25px;
+    gap: 2px;
+}
+
+.paymentFreq {
+    margin-left: 15px;
+}
+
+/*Date Picker*/
+#datePickInline {
+    display: inline;
+}
+
+.react-datepicker {
+    font-size: 1em;
+}
+
+.react-datepicker__view-calendar-icon input {
+    padding: 6px 25px 5px 25px;
+}
+
+/*Make Payment*/
+.paymentMakePayment {
+    display: flex;
+    justify-content: center;
+    padding: 25px;
+}
+
+#paymentIDMakePayment {
+    padding: 10px 25px;
+    font-size: 18px;
+    font-family: 'Ubuntu';
+    font-weight: bold;
+    background-color: #d61212;
+    color: white;
+    border-radius: 25px;
+    cursor: pointer;
+}
