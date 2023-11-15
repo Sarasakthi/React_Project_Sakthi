@@ -30,16 +30,29 @@ export default function Login() {
                 </div>
 
                 <div className="side_Right_Login">
-                    <div className="paymentAmount" id="paymentDiv">
-                        <label className="paymentLabel">
-                            <td className="column1">Amount $:</td>
-                            <td className="column2">
-                                <input type="text" name="paymentNameAmount"
-                                    id="paymentIDAmount" />
-                            </td>
-                        </label>
-                    </div>
+                    <div className="loginInput">
+                        <div className="login_input_username">
+                            <label className="label_Username">Enter your username
+                                <input type="text" name="login_Username"
+                                    id="login_Username_ID" />
+                            </label>
+                        </div>
 
+                        <div className="login_input_password">
+                            <label className="label_Password">Enter your username
+                                <input type="text" name="login_Password"
+                                    id="login_Password_ID" />
+                            </label>
+                        </div>
+
+                        <div className="login_login" id="loginDiv">
+                            <button type="submit" name="loginNameLogin"
+                                id="loginNameLogin_ID">
+                                Login
+                            </button>
+                        </div>
+
+                    </div>
                 </div>
             </div>
 
