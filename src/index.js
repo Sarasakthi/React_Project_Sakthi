@@ -10,6 +10,7 @@ import Home from "./home"
 import Payment from "./payment";
 import ErrorPage from "./errorPage";
 import Contact from "./contact";
+import Login from "./login";
 
 
 //Routing Browser - Default
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
   {
     path: "/payment",
     element: <Payment />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
   },
   {
     path: "/contact",

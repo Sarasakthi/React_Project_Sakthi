@@ -1,0 +1,32 @@
+.videoFrame {
+    background: rgb(250, 250, 250);
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+    float: left;
+    top: 0;
+    left: 0;
+}
+
+.video_box {
+    width: 50%;
+    height: 100%;
+}
+
+
+/*.videoFrame {
+    background: rgb(250, 250, 250);
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+    float: left;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.video_box {
+    position: fixed;
+    width: auto;
+    height: 100%;
+}*/
