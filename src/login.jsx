@@ -1,9 +1,8 @@
 import React from "react";
 
-import Header from "./header";
 import Footer from "./footer";
 import "./styles_login.css"
-
+import ImageLogo from "./img/logo.svg"
 
 export default function Login() {
     function oncanplay(event) {
@@ -29,15 +28,14 @@ export default function Login() {
 
     return (
         <form method="post" onSubmit={handleSubmit}>
-            {/*Insert Header
-            <Header />*/}
+            <img className="imageLogo" src={ImageLogo} alt="errorImage" />
 
             <div className="loginFrame">
 
                 {/*video player*/}
                 <div className="side_Left_BankingVideo">
                     <div className="videoFrame">
-                        <video className="video_box" width="750" height="500"
+                        <video className="video_box" width="1000" height="500"
                             loop muted autoPlay controls=''
                             poster={"./img/" + randomNumberInRange(1, 12) + ".png"}
                             oncanplay onloadedmetadata >
