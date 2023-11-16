@@ -1,17 +1,14 @@
-import ImageLogo from "./img/logo.svg";
+import React from "react"
+
+import Header from "./header"
 import "./styles_navBar.css"
 
 export default function NavBar() {
     return (
         <>
-            {/*Insert Logo*/}
-            <div class="header">
-                <div class="inline-block float-left logo">
-                    <a className="home" href="#home">
-                        <img id="imageLogo" src={ImageLogo} alt="errorImage" />
-                    </a>
-                </div>
-            </div>
+
+            {/*Insert NavBar*/}
+            <Header />
 
             {/*Nav Bar*/}
             <div className="navBar">
