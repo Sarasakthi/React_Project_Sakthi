@@ -55,20 +55,31 @@ export default function Login() {
                             <h1 className="loginBankNameText">Hakuna Matata Bank</h1>
                         </div>
 
-                        <div className="login_input_username">
-                            <label className="label_Username">Enter your username:
-                                <br></br>
-                                <input type="text" name="login_Username"
-                                    id="login_Username_ID" />
-                            </label>
-                        </div>
+                        <div className="login_input_info">
+                            <div className="login_input_username">
+                                <label className="label_Username">
+                                    <br></br>
+                                    <input type="text" name="login_Username"
+                                        id="login_Username_ID"
+                                        autoCapitalize={"none"}
+                                        autoComplete={"off"}
+                                        placeholder="Username or email"
+                                        autoFocus
+                                    />
+                                </label>
+                            </div>
 
-                        <div className="login_input_password">
-                            <label className="label_Password">Enter your password:
-                                <br></br>
-                                <input type="text" name="login_Password"
-                                    id="login_Password_ID" />
-                            </label>
+                            <div className="login_input_password">
+                                <label className="label_Password">
+                                    <br></br>
+                                    <input type="text" name="login_Password"
+                                        id="login_Password_ID"
+                                        autoCapitalize={"none"}
+                                        autoComplete={"off"}
+                                        placeholder="Password"
+                                    />
+                                </label>
+                            </div>
                         </div>
 
                         <div className="login_login" id="loginDiv">
@@ -78,8 +89,19 @@ export default function Login() {
                             </button>
                         </div>
 
+                        <div className="signupInfo">
+                            <p className="signupInfoText">Don't have an username and password?</p>
+                            <a className="signupInfoPage" href="/signup">
+                                Set them up right now.</a>
+                        </div>
+
+
                     </div>
                 </div>
+            </div>
+
+            <div>
+                <a id="goHome" href="/home">Go Home.</a>
             </div>
 
             <div className="footer">

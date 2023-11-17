@@ -17,7 +17,7 @@ import Login from "./login";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <Login />,
     errorElement: <ErrorPage />
   },
   {
@@ -25,8 +25,8 @@ const router = createBrowserRouter([
     element: <Payment />,
   },
   {
-    path: "/login",
-    element: <Login />,
+    path: "/home",
+    element: <Home />,
   },
   {
     path: "/contact",

@@ -15,7 +15,7 @@ export default function NavBar() {
                 <div className="navHomePage">
                     <ul>
                         <li className="listNavHome">
-                            <a href="/">Home</a>
+                            <a href="/home">Home</a>
                         </li>
 
                         <li className="navPayment">

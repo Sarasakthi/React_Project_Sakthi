@@ -23,6 +23,7 @@ div {
 .side_Left_BankingVideo {
     top: 0;
     left: 0;
+    pointer-events: none;
 }
 
 .side_Right_Login {
@@ -57,13 +58,38 @@ div {
     text-align: center;
 }
 
-.loginInput div{
+.loginInput div {
     padding: 7.5px 0;
+}
+
+.loginBankNameText {
+    font-size: 31px;
+    color: #ee1c25;
+    font-family: 'Playpen Sans';
+    font-weight: bolder;
+}
+
+.login_input_info input {
+    padding-top: 15px;
+    background-color: transparent;
+    border-style: none;
+    border-bottom: 1px solid black;
+    text-align: center;
+    appearance: none;
+    border-radius: 0px;
+    border-width: 0px 0px 0.1rem;
+    color: rgb(51, 51, 51);
+    display: block;
+    outline: none;
+    position: relative;
+    transition: box-shadow 0.2s ease-in-out 0s;
+    width: 100%;
+    height: 3.5rem;
 }
 
 /*Login Button*/
 #loginNameLogin_ID {
-    padding: 10px 25px;
+    margin-top: 15px;
     font-size: 18px;
     font-family: 'Ubuntu';
     font-weight: bold;
@@ -71,6 +97,10 @@ div {
     color: white;
     border-radius: 25px;
     cursor: pointer;
+    width: 200px;
+    height: 55px;
+    border-style: none;
+    font-size: 25px;
 }
 
 /*Frame Right - Input details*/
@@ -86,4 +116,3 @@ label {
     font-size: 20px;
     cursor: pointer;
 }
-

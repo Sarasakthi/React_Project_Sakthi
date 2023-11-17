@@ -5,6 +5,10 @@
     position: relative;
 }
 
+html{
+    background: rgb(250, 250, 250);
+}
+
 div {
     display: block;
 }
