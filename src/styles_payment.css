@@ -40,17 +40,12 @@ div {
 .paymentTableRight {
     /*pointer-events: none;
     opacity: 0.4;*/
-    
+
 }
 
-.paymentTableMain {
-    
-    
-}
+.paymentTableMain {}
 
-.paymentTableLeft {
-    
-}
+.paymentTableLeft {}
 
 tr {
     display: flex;

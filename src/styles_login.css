@@ -27,7 +27,8 @@ div {
 
 .side_Right_Login {
     z-index: 1000;
-    margin-left: -250pt;
+    min-width: 350px;
+    /*margin-left: -250pt;*/
 }
 
 /*Image logo*/
@@ -53,6 +54,7 @@ div {
 
 .loginInput {
     padding-top: 25%;
+    text-align: center;
 }
 
 .loginInput div{
@@ -72,7 +74,9 @@ div {
 }
 
 /*Frame Right - Input details*/
-.loginInput {}
+.loginInput {
+    display: grid;
+}
 
 /*General*/
 select,
@@ -82,3 +86,4 @@ label {
     font-size: 20px;
     cursor: pointer;
 }
+
