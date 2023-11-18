@@ -9,7 +9,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./home"
 import Payment from "./payment";
 import ErrorPage from "./errorPage";
-import Contact from "./contact";
+import AddBeneficiery from "./addBeneficiery";
 import Login from "./login";
 import Signup from "./signup"
 
@@ -34,8 +34,8 @@ const router = createBrowserRouter([
     element: <Signup />,
   },
   {
-    path: "/contact",
-    element: <Contact />,
+    path: "/addBeneficiery",
+    element: <AddBeneficiery />,
   }
 ])
 

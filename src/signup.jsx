@@ -1,40 +1,13 @@
 import React from "react";
 
-import Footer from "./footer";
+import Footer from "./footer"
 import "./styles_signup.css"
+import * as FunctionCommon from "./commonFunctions"
 import ImageLogo from "./img/logo.svg"
 
-export default function Signup() {
-    function oncanplay(event) {
-        this.play()
-    }
-
-    function onloadedmetadata(event) {
-        this.muted = true
-    }
-
-    const randomNumberInRange = (min, max) => {
-        return Math.floor(Math.random()
-            * (max - min + 1)) + min;
-    };
-
-    const randomNumberZeroToMax = (max) => {
-        return Math.floor(Math.random() * max);
-    }
-
-    function handleSubmit(e) {
-        e.preventDefault();
-
-        const form = e.target;
-        const formData = new FormData(form);
-
-        const formJson = Object.fromEntries(formData.entries());
-        console.log(formJson);
-
-    }
-
+export default function Contact() {
     return (
-        <form method="post" onSubmit={handleSubmit}>
+        <form method="post" onSubmit={FunctionCommon.handleSubmit}>
             <div className="imageLogoFrame">
                 <img className="imageLogo" src={ImageLogo} alt="errorImage" />
             </div>
@@ -46,9 +19,9 @@ export default function Signup() {
                     <div className="videoFrame">
                         <video className="video_box" width="1200"
                             loop muted autoPlay controls=''
-                            poster={"./img/" + randomNumberInRange(1, 12) + ".png"}
+                            poster={"./img/" + FunctionCommon.randomNumberInRange(1, 12) + ".png"}
                             oncanplay onloadedmetadata >
-                            <source src={"/video/" + randomNumberInRange(1, 12) + ".mp4"}
+                            <source src={"/video/" + FunctionCommon.randomNumberInRange(1, 12) + ".mp4"}
                                 type="video/mp4" />
                         </video>
                     </div>
@@ -75,7 +48,7 @@ export default function Signup() {
                                         <div className="signupClassFirstName" id="signupIDFirstName">
                                             <label className="signupClassLabel"
                                                 title="Enter your Firstname">
-                                                <td className="column1">Firstname:
+                                                <td className="column1">Firstname
                                                 </td>
                                                 <td className="column2">
                                                     <input type="text" name="signupFirstName"
@@ -91,7 +64,7 @@ export default function Signup() {
                                         <div className="signupClassLastName" id="signupIDLastName">
                                             <label className="signupClassLabel"
                                                 title="Enter your Lastname">
-                                                <td className="column1">Lastname:
+                                                <td className="column1">Lastname
                                                 </td>
                                                 <td className="column2">
                                                     <input type="text" name="signupLastName"
@@ -106,7 +79,7 @@ export default function Signup() {
                                         <div className="signupClassUserName" id="signupIDUserName">
                                             <label className="signupClassLabel"
                                                 title="Enter your Username or email">
-                                                <td className="column1">Username:
+                                                <td className="column1">Username
                                                 </td>
                                                 <td className="column2">
                                                     <input type="text" name="signupUserName"
@@ -121,7 +94,7 @@ export default function Signup() {
                                         <div className="signupClassPassword" id="signupIDPassword">
                                             <label className="signupClassLabel"
                                                 title="Enter your password">
-                                                <td className="column1">Password:
+                                                <td className="column1">Password
                                                 </td>
                                                 <td className="column2">
                                                     <input type="password" name="signupPassword"
@@ -138,7 +111,7 @@ export default function Signup() {
                                             <div className="signupClassChecking" id="signupClassCheckingID">
                                                 <label className="signupClassCheckingLabel"
                                                     title="Select cash deposit amount for your Checking Account">
-                                                    <td className="column1">Checking A/C:
+                                                    <td className="column1">Checking A/C
                                                     </td>
                                                     <td className="column2">
                                                         <span id="signupInputChecking">
@@ -160,7 +133,7 @@ export default function Signup() {
                                             <div className="signupClassSaving" id="signupClassSavingID">
                                                 <label className="signupClassSavingLabel"
                                                     title="Select cash deposit amount for your Savings Account">
-                                                    <td className="column1">Saving A/C:
+                                                    <td className="column1">Savings Account
                                                     </td>
                                                     <td className="column2">
                                                         <span id="signupInputSaving">
@@ -184,7 +157,7 @@ export default function Signup() {
                                                 <label className="signupClassTFSLabel"
                                                     title="Select cash deposit amount for your TFSA">
                                                     {/*<input type="checkbox" id="signupCheckboxTFS" defaultChecked={false} />*/}
-                                                    <td className="column1">Tax Free Saving:
+                                                    <td className="column1">Tax Free Saving
                                                     </td>
                                                     <td className="column2">
                                                         <span id="signupInputTFS">

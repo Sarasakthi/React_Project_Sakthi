@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css'
 
-
 import NavBar from "./navbar"
 import Footer from "./footer"
 import "./styles_home.css"
 import "./styles_payment.css"
 import "./variables"
+import * as FunctionCommon from "./commonFunctions"
 
 export default function Payment() {
 
@@ -15,14 +15,6 @@ export default function Payment() {
     const [paymentDate, setPaymentDate] = useState(new Date());
     const [paymentRecStartDate, setPaymentRecStartDate] = useState(new Date());
     const [paymentRecEndDate, setPaymentRecEndDate] = useState(new Date());
-
-    // Recurring Start and End date change
-    function handleStartEndDateMatch() {
-
-    }
-
-    
-
 
     // Payment Frequency Change (Onetime - Recurring)
     //const [state, setState] = useState(initialState);
@@ -39,33 +31,19 @@ export default function Payment() {
         }*/
     }
 
+    // Recurring Start and End date change
+    function handleStartEndDateMatch() {
+
+    }
+
     const onOptionChange = (e) => {
         setpaymentFreq(e.target.value)
         handlePaymentFreqChange(e.target.value)
     }
 
-    // Prevent the browser from reloading the page
-    function handleSubmit(e) {
-        e.preventDefault();
-        //console.log("You have submitted:", this.state.selectedOption);
-
-        // Read the form data
-        const form = e.target;
-        const formData = new FormData(form);
-
-        /*
-        // You can pass formData as a fetch body directly:
-        fetch('/some-api', { method: form.method, body: formData });*/
-
-        // Or you can work with it as a plain object:
-        const formJson = Object.fromEntries(formData.entries());
-        console.log(formJson);
-    }
-
-    //https://react.dev/reference/react-dom/components/input#caveats
 
     return (
-        <form method="post" onSubmit={handleSubmit}>
+        <form method="post" onSubmit={FunctionCommon.handleSubmit}>
             <div>
                 {/*Insert NavBar*/}
                 <NavBar />

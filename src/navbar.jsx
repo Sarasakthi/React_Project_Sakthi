@@ -22,8 +22,8 @@ export default function NavBar() {
                             <a href="/payment">Payment</a>
                         </li>
 
-                        <li className="navContact">
-                            <a href="/contact">Contact</a>
+                        <li className="navAddBeneficiery">
+                            <a href="/AddBeneficiery">AddBeneficiery</a>
                         </li>
 
                         <li className="navSignout">
