@@ -133,6 +133,7 @@ export default function Signup() {
                                     </tr>
 
                                     <div className="signupAccountSelection">
+                                        <div className="signupAccountSelectionTitle">Select account options</div>
                                         <tr>
                                             <div className="signupClassChecking" id="signupClassCheckingID">
                                                 <label className="signupClassCheckingLabel"
