@@ -11,6 +11,7 @@ import Payment from "./payment";
 import ErrorPage from "./errorPage";
 import Contact from "./contact";
 import Login from "./login";
+import Signup from "./signup"
 
 
 //Routing Browser - Default
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
   {
     path: "/home",
     element: <Home />,
+  },
+  {
+    path: "/signup",
+    element: <Signup />,
   },
   {
     path: "/contact",

@@ -47,23 +47,23 @@ div {
 
 .paymentTableLeft {}
 
-tr {
+.paymentDetails tr {
     display: flex;
     align-items: center;
     height: 75px;
     padding: 0 0 0 25px;
 }
 
-td {
+.paymentDetails td {
     min-width: 150px;
 }
 
-.column2 {
+.paymentDetails .column2 {
     padding-left: 30px;
 
 }
 
-select {
+.paymentDetails select {
     user-select: none;
     min-width: 300px;
     min-height: 30px;

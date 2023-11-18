@@ -24,18 +24,27 @@ export default function Login() {
 
     function handleSubmit(e) {
         e.preventDefault();
+
+        const form = e.target;
+        const formData = new FormData(form);
+
+        const formJson = Object.fromEntries(formData.entries());
+        console.log(formJson);
+
     }
 
     return (
         <form method="post" onSubmit={handleSubmit}>
-            <img className="imageLogo" src={ImageLogo} alt="errorImage" />
+            <div className="imageLogoFrame">
+                <img className="imageLogo" src={ImageLogo} alt="errorImage" />
+            </div>
 
             <div className="loginFrame">
 
                 {/*video player*/}
                 <div className="side_Left_BankingVideo">
                     <div className="videoFrame">
-                        <video className="video_box" width="1000" height="500"
+                        <video className="video_box" width="1200"
                             loop muted autoPlay controls=''
                             poster={"./img/" + randomNumberInRange(1, 12) + ".png"}
                             oncanplay onloadedmetadata >
@@ -58,7 +67,7 @@ export default function Login() {
                         <div className="login_input_info">
                             <div className="login_input_username">
                                 <label className="label_Username">
-                                    <br></br>
+
                                     <input type="text" name="login_Username"
                                         id="login_Username_ID"
                                         autoCapitalize={"none"}
@@ -71,8 +80,7 @@ export default function Login() {
 
                             <div className="login_input_password">
                                 <label className="label_Password">
-                                    <br></br>
-                                    <input type="text" name="login_Password"
+                                    <input type="password" name="login_Password"
                                         id="login_Password_ID"
                                         autoCapitalize={"none"}
                                         autoComplete={"off"}
@@ -80,13 +88,13 @@ export default function Login() {
                                     />
                                 </label>
                             </div>
-                        </div>
 
-                        <div className="login_login" id="loginDiv">
-                            <button type="submit" name="loginNameLogin"
-                                id="loginNameLogin_ID">
-                                Login
-                            </button>
+                            <div className="login_login" id="loginDiv">
+                                <button type="submit" name="loginNameLogin"
+                                    id="loginNameLogin_ID" >
+                                    Login
+                                </button>
+                            </div>
                         </div>
 
                         <div className="signupInfo">
