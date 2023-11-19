@@ -1,6 +1,6 @@
 import NavBar from "../Common/Navbar/navbar"
-import "./styles_home.css"
-import Footer from "./footer"
+import "../Home/styles_home.css"
+import Footer from "../Common/Footer/footer"
 
 export default function Home() {
     return (

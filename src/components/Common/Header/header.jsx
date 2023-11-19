@@ -1,6 +1,6 @@
 import React from "react";
 
-import ImageLogo from "./img/logo.svg"
+import ImageLogo from "../../../img/logo.svg"
 
 export default function Header() {
     return (

@@ -1,8 +1,33 @@
-export const fontNavBar = 'Kanit'
-export const fontHeader = 'Ubuntu'
-export const fontLable = 'Playpen Sans'
-export const fontText = 'Roboto'
-export const fontContent = 'Noto Sans'
-export const fontFooter = 'Handlee'
-export const fontMessage = 'Patrick Hand'
-export const fontBankName = 'Klee One'
+
+
+export const fontNavBar = () => {
+    return 'Kanit'
+}
+
+export const fontHeader = () => {
+    return 'Ubuntu'
+}
+
+export const fontLable = () => {
+    return 'Playpen Sans'
+}
+
+export const fontText = () => {
+    return 'Roboto'
+}
+
+export const fontContent = () => {
+    return 'Noto Sans'
+}
+
+export const fontFooter = () => {
+    return 'Handlee'
+}
+
+export const fontMessage = () => {
+    return 'Patrick Hand'
+}
+
+export const fontBankName = () => {
+    return 'Klee One'
+}

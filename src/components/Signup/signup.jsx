@@ -1,9 +1,9 @@
 import React from "react";
 
-import Footer from "./footer"
+import Footer from "../Common/Footer/footer"
 import "./styles_signup.css"
-import * as FunctionCommon from "./commonFunctions"
-import ImageLogo from "./img/logo.svg"
+import * as FunctionCommon from "../Common/General/commonFunctions"
+import ImageLogo from "../../img/logo.svg"
 
 export default function Contact() {
     return (

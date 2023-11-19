@@ -1,8 +1,8 @@
 import React from "react";
 
-import Footer from "./footer";
+import Footer from "../Common/Footer/footer";
 import "./styles_login.css"
-import ImageLogo from "./img/logo.svg"
+import ImageLogo from "../../img/logo.svg"
 
 export default function Login() {
     function oncanplay(event) {

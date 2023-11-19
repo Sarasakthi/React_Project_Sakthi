@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css'
 
-import NavBar from "../../../navbar"
-import Footer from "./footer"
-import "./styles_home.css"
+import NavBar from "../../Common/Navbar/navbar"
+import Footer from "../../Common/Footer/footer"
+import "../../Home/styles_home.css"
 import "./styles_addBeneficiary.css"
-import "../../../variables"
+import "../../Common/General/variables"
 
 import * as FunctionCommon from "../../Common/General/commonFunctions"
 

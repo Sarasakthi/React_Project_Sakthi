@@ -1,4 +1,4 @@
-//Updated: 10-nov-2023 @Sakthi
+//Updated: 19-nov-2023 @Sakthi
 
 //Import React Libraries
 import React from "react";
@@ -6,12 +6,12 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 //Import Webpages
-import Home from "./home"
-import Payment from "../Payment/MakePayment/payment";
-import ErrorPage from "./errorPage";
-import AddBeneficiary from "./addBeneficiary";
-import Login from "../Login/login";
-import Signup from "../Signup/signup"
+import Home from "./components/Home/home"
+import Payment from "./components/Payment/MakePayment/payment";
+import ErrorPage from "./components/Error/errorPage"
+import AddBeneficiary from "./components/Payment/AddBeneficiary/addBeneficiary";
+import Login from "./components/Login/login";
+import Signup from "./components/Signup/signup"
 
 
 //Routing Browser - Default

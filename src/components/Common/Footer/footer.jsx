@@ -1,5 +1,5 @@
-import "./styles_footer.css"
-
+import "../Footer/styles_footer.css"
+/*../styles_footer.css*/
 export default function Footer() {
     return (
         <>

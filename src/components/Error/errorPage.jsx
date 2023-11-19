@@ -1,5 +1,5 @@
 import { useRouteError } from "react-router-dom";
-import ErrorImage from "./img/foxStealing.gif"
+import ErrorImage from "../../img/foxStealing.gif"
 import "./styles_errorPage.css"
 
 export default function ErrorPage() {
