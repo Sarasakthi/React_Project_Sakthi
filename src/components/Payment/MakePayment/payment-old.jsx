@@ -7,7 +7,7 @@ import NavBar from "./navbar"
 import Footer from "./footer"
 import "./styles_home.css"
 import "./styles_payment.css"
-import "./variables"
+import "../../Common/General/variables"
 
 export default function Payment() {
 

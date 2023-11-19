@@ -1,4 +1,4 @@
-import NavBar from "./navbar"
+import NavBar from "../Common/Navbar/navbar"
 import "./styles_home.css"
 import Footer from "./footer"
 

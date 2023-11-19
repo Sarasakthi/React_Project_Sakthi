@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css'
 
-import NavBar from "./navbar"
+import NavBar from "../../../navbar"
 import Footer from "./footer"
 import "./styles_home.css"
 import "./styles_addBeneficiary.css"
-import "./variables"
+import "../../../variables"
 
-import * as FunctionCommon from "./commonFunctions"
+import * as FunctionCommon from "../../Common/General/commonFunctions"
 
 export default function AddBeneficiary() {
     return (

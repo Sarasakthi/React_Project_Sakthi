@@ -7,11 +7,11 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 //Import Webpages
 import Home from "./home"
-import Payment from "./payment";
+import Payment from "../Payment/MakePayment/payment";
 import ErrorPage from "./errorPage";
 import AddBeneficiary from "./addBeneficiary";
-import Login from "./login";
-import Signup from "./signup"
+import Login from "../Login/login";
+import Signup from "../Signup/signup"
 
 
 //Routing Browser - Default
