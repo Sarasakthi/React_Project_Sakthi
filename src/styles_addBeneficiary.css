@@ -9,83 +9,86 @@ div {
     display: block;
 }
 
-.beneficieryDiv {
+.beneficiaryDiv {
     border: 1px solid black;
     border-radius: 15px;
     background-image: linear-gradient(rgb(247, 247, 247), rgb(211, 211, 211), rgb(179, 178, 178));
     font-size: large;
     margin: 0 auto;
-    width: 1100px;
+    width: 600px;
     height: auto;
 }
 
-.beneficieryHeader {
+.beneficiaryHeader {
     padding: 18px;
     font-size: 18px;
     font-family: 'Ubuntu';
     font-weight: bold;
 }
 
-.beneficieryDetails {
+.beneficiaryDetails {
     margin: 0 auto;
-    width: 1100px;
+    width: 600px;
     height: auto;
 }
 
-.beneficieryTableRecurring {
+.beneficiaryTableRecurring {
     float: right;
     padding: 150px 25px 0 0;
 }
 
-.beneficieryTableRight {
+.beneficiaryTableRight {
     /*pointer-events: none;
     opacity: 0.4;*/
 
 }
 
-.beneficieryTableMain {}
+.beneficiaryTableMain {}
 
-.beneficieryTableLeft {}
+.beneficiaryTableLeft {
+    
+}
 
-.beneficieryDetails tr {
+.beneficiaryDetails tr {
     display: flex;
     align-items: center;
     height: 75px;
-    padding: 0 0 0 25px;
+    padding: 0 25px;
 }
 
-.beneficieryDetails td {
-    min-width: 150px;
+.beneficiaryDetails td {
+    min-width: 175px;
 }
 
-.beneficieryDetails .column2 {
-    padding-left: 30px;
+.beneficiaryDetails .column2 {
+    padding-left: 50px;
 
 }
 
-.beneficieryDetails select {
+.beneficiaryDetails select {
     user-select: none;
     min-width: 300px;
     min-height: 30px;
 }
 
-#beneficieryIDAmount,
-#beneficieryIDRemarks {
+#beneficiaryIDAmount,
+#beneficiaryIDAccountNo,
+#beneficiaryIDRemarks {
     min-width: 300px;
     min-height: 30px;
 }
 
-.beneficieryLabel,
+.beneficiaryLabel,
 select,
 input,
 label,
-#beneficieryInputList {
+#beneficiaryInputList {
     font-family: 'Roboto';
     font-size: 20px;
     cursor: pointer;
 }
 
-.beneficieryTransferFrom {
+.beneficiaryTransferFrom {
     width: 50px;
 }
 
@@ -93,12 +96,12 @@ input[type="radio"] {
     margin-left: 0;
 }
 
-#beneficieryIDFreqRecurring {
+#beneficiaryIDFreqRecurring {
     padding-left: 25px;
     gap: 2px;
 }
 
-.beneficieryFreq {
+.beneficiaryFreq {
     margin-left: 15px;
 }
 
@@ -115,14 +118,14 @@ input[type="radio"] {
     padding: 6px 25px 5px 25px;
 }
 
-/*Make beneficiery*/
-.beneficieryMakebeneficiery {
+/*Make beneficiary*/
+.beneficiaryMakebeneficiary {
     display: flex;
     justify-content: center;
     padding: 25px;
 }
 
-#beneficieryIDMakebeneficiery {
+#beneficiaryIDMakebeneficiary {
     padding: 10px 25px;
     font-size: 18px;
     font-family: 'Ubuntu';
@@ -131,4 +134,9 @@ input[type="radio"] {
     color: white;
     border-radius: 25px;
     cursor: pointer;
+}
+
+.optional {
+    font-style: italic;
+    font-size: 14px;
 }
