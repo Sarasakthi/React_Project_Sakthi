@@ -35,7 +35,8 @@ export default function AddBeneficiary() {
                                             <td className="column1">Beneficiary Name</td>
                                             <td className="column2">
                                                 <input type="text" name="beneficiaryNameAmount"
-                                                    id="beneficiaryIDAmount" />
+                                                    id="beneficiaryIDAmount"
+                                                    autoFocus />
                                             </td>
                                         </label>
                                     </div>

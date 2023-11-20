@@ -149,7 +149,8 @@ export default function Payment() {
                                             </td>
                                             <td className="column2">
                                                 <span id="paymentInput">
-                                                    <select>
+                                                    <select
+                                                        autoFocus>
                                                         <option value="Account1"
                                                             id="Account1" >Checking Account</option>
                                                         <option value="Account2"
