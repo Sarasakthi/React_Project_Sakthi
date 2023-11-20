@@ -9,7 +9,7 @@ export default function Home() {
                 {/*Insert NavBar*/}
                 <NavBar />
             </nav>
-
+            
             <div className="assetAndTrans">
                 {/*Asset and Transaction Header*/}
                 <div className="rowAssetTransHeader">

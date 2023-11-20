@@ -23,7 +23,7 @@ export default function NavBar() {
                         </li>
 
                         <li className="navAddBeneficiary">
-                            <a href="/AddBeneficiary">Add Beneficiary</a>
+                            <a href="/addbeneficiary">Add Beneficiary</a>
                         </li>
 
                         <li className="navSignout">

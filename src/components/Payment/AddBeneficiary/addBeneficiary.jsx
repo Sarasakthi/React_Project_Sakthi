@@ -44,7 +44,7 @@ export default function AddBeneficiary() {
                                 <tr>
                                     <div className="beneficiaryAccountNo" id="beneficiaryDiv">
                                         <label className="beneficiaryLabel">
-                                            <td className="column1">Beneficiary A/C No</td>
+                                            <td className="column1">Beneficiary Email</td>
                                             <td className="column2">
                                                 <input type="text" name="beneficiaryNameAccountNo"
                                                     id="beneficiaryIDAccountNo" />

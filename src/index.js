@@ -34,7 +34,7 @@ const router = createBrowserRouter([
     element: <Signup />,
   },
   {
-    path: "/addBeneficiary",
+    path: "/addbeneficiary",
     element: <AddBeneficiary />,
   }
 ])

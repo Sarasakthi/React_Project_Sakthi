@@ -136,7 +136,7 @@ input[type="radio"] {
     cursor: pointer;
 }
 
-.optional {
+.beneficiaryRemarks .optional {
     font-style: italic;
     font-size: 14px;
 }

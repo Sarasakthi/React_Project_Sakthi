@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Component, useState } from "react";
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css'
 
@@ -7,6 +7,7 @@ import Footer from "../../Common/Footer/footer"
 import "../../Home/styles_home.css"
 import "./styles_payment.css"
 import "../../Common/General/variables"
+import "../../Common/General/styles_common.css"
 import * as FunctionCommon from "../../Common/General/commonFunctions"
 
 export default function Payment() {
@@ -41,7 +42,6 @@ export default function Payment() {
         handlePaymentFreqChange(e.target.value)
     }
 
-
     return (
         <form method="post" onSubmit={FunctionCommon.handleSubmit}>
             <div>
@@ -70,7 +70,7 @@ export default function Payment() {
                                                 <label className="paymentRecStartDateLabel">
                                                     <td className="column1"
                                                         id="paymentRecStartDatePick">
-                                                        Start Date:</td>
+                                                        Start Date</td>
                                                 </label>
                                                 <td className="column2" id="datePickInline">
                                                     <DatePicker
@@ -81,8 +81,9 @@ export default function Payment() {
                                                         onChange={(paymentRecStartDate) => setPaymentRecStartDate(paymentRecStartDate)}
                                                         dateFormat={"dd/MMM/yyyy"}
                                                         minDate={new Date()}
-                                                        filterDate={((paymentRecStartDate => paymentRecStartDate.getDay() !== 2)
-                                                            && (paymentRecStartDate => paymentRecStartDate.getDay() !== 6))}
+                                                        filterDate={(paymentRecStartDate =>
+                                                        (paymentRecStartDate.getDay() !== 0 &&
+                                                            paymentRecStartDate.getDay() !== 6))}
                                                     />
                                                 </td>
                                             </div>
@@ -92,19 +93,20 @@ export default function Payment() {
                                         <tr>
                                             <div className="paymentRecEndDate">
                                                 <label className="paymentRecEndDateLabel">
-                                                    <td className="column1" id="paymentRecEndDatePick1">End Date:</td>
+                                                    <td className="column1" id="paymentRecEndDatePick1">End Date</td>
                                                 </label>
                                                 <td className="column2" id="datePickInline">
                                                     <DatePicker
                                                         name="paymentRecurringEndtDate"
                                                         showIcon
                                                         selected={paymentRecEndDate}
+                                                        placeholderText='Select Payment End Date'
                                                         closeOnScroll={true}
                                                         onChange={(paymentRecEndDate) => setPaymentRecEndDate(paymentRecEndDate)}
                                                         dateFormat={"dd/MMM/yyyy"}
-                                                        minDate={new Date()}
-                                                        filterDate={((paymentRecEndDate => paymentRecEndDate.getDay() !== 2)
-                                                            && (paymentRecEndDate => paymentRecEndDate.getDay() !== 6))}
+                                                        minDate={new Date(paymentRecStartDate)}
+                                                        filterDate={(paymentRecEndDate => (paymentRecEndDate.getDay() !== 0
+                                                            && paymentRecEndDate.getDay() !== 6))}
                                                     />
                                                 </td>
                                             </div>
@@ -114,7 +116,7 @@ export default function Payment() {
                                         <tr>
                                             <div className="paymentRecInterval" id="paymentRecInterval-id">
                                                 <label className="paymentRecIntervalLabel">
-                                                    <td className="column1">Interval:
+                                                    <td className="column1">Interval
                                                     </td>
                                                     <td className="column2">
                                                         <span id="paymentRecIntervalInput">
@@ -143,7 +145,7 @@ export default function Payment() {
                                 <tr>
                                     <div className="paymentTransferFrom" id="paymentTransferFrom">
                                         <label className="paymentLabel">
-                                            <td className="column1">Transfer From:
+                                            <td className="column1">Transfer From
                                             </td>
                                             <td className="column2">
                                                 <span id="paymentInput">
@@ -164,7 +166,7 @@ export default function Payment() {
                                 <tr>
                                     <div className="paymentTransferTo" id="paymentDiv">
                                         <label className="paymentLabel">
-                                            <td className="column1">Transfer To:
+                                            <td className="column1">Transfer To
                                             </td>
                                             <td className="column2">
                                                 <span id="paymentInput">
@@ -189,7 +191,7 @@ export default function Payment() {
                                 <tr>
                                     <div className="paymentAmount" id="paymentDiv">
                                         <label className="paymentLabel">
-                                            <td className="column1">Amount $:</td>
+                                            <td className="column1">Amount $</td>
                                             <td className="column2">
                                                 <input type="text" name="paymentNameAmount"
                                                     id="paymentIDAmount" />
@@ -202,7 +204,7 @@ export default function Payment() {
                                     <div className="paymentRemarks" id="paymentDiv">
                                         <label className="paymentLabel">
                                             <td className="column1">
-                                                Remarks:
+                                                Remarks
                                             </td>
                                             <td className="column2">
                                                 <input type="text" name="paymentNameRemarks"
@@ -217,7 +219,7 @@ export default function Payment() {
                                         <div>
                                             <td className="column1">
                                                 <label className="paymentLabel">
-                                                    Frequency:
+                                                    Frequency
                                                 </label>
                                             </td>
                                             <td className="column2">
@@ -248,7 +250,7 @@ export default function Payment() {
                                     {paymentFreq ? null :
                                         <div className="paymentDate">
                                             <label className="paymentLabel">
-                                                <td className="column1" id="paymentDatePick1">Payment Date:</td>
+                                                <td className="column1" id="paymentDatePick1">Payment Date</td>
                                             </label>
                                             <td className="column2" id="datePickInline">
                                                 <DatePicker
@@ -259,8 +261,10 @@ export default function Payment() {
                                                     onChange={(paymentDate) => setPaymentDate(paymentDate)}
                                                     dateFormat={"dd/MMM/yyyy"}
                                                     minDate={new Date()}
-                                                    filterDate={((paymentDate => paymentDate.getDay() !== 2)
-                                                        && (paymentDate => paymentDate.getDay() !== 6))}
+                                                    filterDate={
+                                                        paymentDate => (paymentDate.getDay() !== 0 &&
+                                                            paymentDate.getDay() !== 6)
+                                                    }
                                                 />
                                             </td>
                                         </div>
