@@ -2,14 +2,47 @@ import NavBar from "../Common/Navbar/navbar"
 import "../Home/styles_home.css"
 import Footer from "../Common/Footer/footer"
 
+/*Adding authentication check*/
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { signOut, onAuthStateChanged } from "firebase/auth";
+import { auth } from "../Firebase";
+
 export default function Home() {
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in, see docs for a list of available properties
+                // https://firebase.google.com/docs/reference/js/firebase.User
+                console.log("uid", user.uid);
+            } else {
+                // User is signed out
+                console.log("user is logged out");
+                navigate("/login");
+            }
+        });
+    });
+
+    const handleLogout = () => {
+        signOut(auth)
+            .then(() => {
+                // Sign-out successful.
+                console.log("Signed out successfully");
+                navigate("/");
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
     return (
         <div>
             <nav>
                 {/*Insert NavBar*/}
                 <NavBar />
             </nav>
-            
+
             <div className="assetAndTrans">
                 {/*Asset and Transaction Header*/}
                 <div className="rowAssetTransHeader">
