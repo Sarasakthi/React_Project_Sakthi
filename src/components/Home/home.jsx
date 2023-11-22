@@ -29,6 +29,7 @@ export default function Home() {
         signOut(auth)
             .then(() => {
                 // Sign-out successful.
+                alert("Thank you for using Hakuna Matata Banking Application!")
                 console.log("Signed out successfully");
                 navigate("/");
             })

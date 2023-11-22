@@ -56,7 +56,7 @@ export default function Login() {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 console.log(errorCode, errorMessage);
-                const loginErrorMsg = "Login unsuccessful! \nYour login details do not match."
+                const loginErrorMsg = "Login unsuccessful! \n\nYour login details do not match."
                 alert(loginErrorMsg)
                 //commonFunctionJS.alert()
             })

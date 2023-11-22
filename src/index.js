@@ -12,6 +12,7 @@ import ErrorPage from "./components/Error/errorPage"
 import AddBeneficiary from "./components/Payment/AddBeneficiary/addBeneficiary";
 import Login from "./components/Login/login";
 import Signup from "./components/Signup/signup"
+import Signout from "./components/Signout/signout";
 
 
 //Routing Browser - Default
@@ -19,7 +20,7 @@ const router = createBrowserRouter([
   {
     path: "/home",
     element: <Home />,
-    errorElement: <ErrorPage />
+    errorElement: <ErrorPage />,
   },
   {
     path: "/payment",
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
   {
     path: "/addbeneficiary",
     element: <AddBeneficiary />,
+  },
+  {
+    path: "/signout",
+    element: <Signout />,
   }
 ])
 

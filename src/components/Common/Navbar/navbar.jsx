@@ -3,7 +3,28 @@ import React from "react"
 import Header from "../Header/header"
 import "./styles_navBar.css"
 
+import { useNavigate } from "react-router-dom";
+import { signOut, onAuthStateChanged } from "firebase/auth";
+import { auth } from "../../Firebase/firebase";
+
 export default function NavBar() {
+
+    const navigate = useNavigate();
+    
+    const handleLogout = (e) => {
+        e.preventDefault()
+        signOut(auth)
+            .then(() => {
+                // Sign-out successful.
+                alert("Thank you for using Hakuna Matata Banking Application!")
+                console.log("Signed out successfully");
+                navigate("/");
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
     return (
         <>
 
@@ -27,7 +48,7 @@ export default function NavBar() {
                         </li>
 
                         <li className="navSignout">
-                            <a href="/signout">Signout</a>
+                            <a href="/" onClick={handleLogout}>Signout</a>
                         </li>
 
                     </ul>
