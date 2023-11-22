@@ -42,8 +42,19 @@ export default function Payment() {
         handlePaymentFreqChange(e.target.value)
     }
 
+    /*Make Payment Handler*/
+    function submitMakePayment(e) {
+        e.preventDefault();
+
+        const form = e.target;
+        const formData = new FormData(form);
+
+        const formJson = Object.fromEntries(formData.entries());
+        console.log(formJson);
+    }
+
     return (
-        <form method="post" onSubmit={FunctionCommon.handleSubmit}>
+        <form method="post" onSubmit={submitMakePayment}>
             <div>
                 {/*Insert NavBar*/}
                 <NavBar />

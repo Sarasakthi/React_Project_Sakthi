@@ -11,8 +11,21 @@ import "../../Common/General/variables"
 import * as FunctionCommon from "../../Common/General/commonFunctions"
 
 export default function AddBeneficiary() {
+
+    /*Add Beneficiary*/
+    function submitAddBeneficiary(e) {
+        e.preventDefault();
+
+        const form = e.target;
+        const formData = new FormData(form);
+
+        const formJson = Object.fromEntries(formData.entries());
+        console.log(formJson);
+    }
+
+
     return (
-        <form method="post" onSubmit={FunctionCommon.handleSubmit}>
+        <form method="post" onSubmit={submitAddBeneficiary}>
             <div>
                 {/*Insert NavBar*/}
                 <NavBar />

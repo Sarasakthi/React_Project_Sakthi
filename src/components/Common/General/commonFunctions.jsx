@@ -1,4 +1,4 @@
-import React,  { Component, useState } from "react";
+import React, { Component, useState } from "react";
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css'
 
@@ -30,12 +30,3 @@ export const randomNumberZeroToMax = (max) => {
     return Math.floor(Math.random() * max);
 }
 
-export function handleSubmit(e) {
-    e.preventDefault();
-
-    const form = e.target;
-    const formData = new FormData(form);
-
-    const formJson = Object.fromEntries(formData.entries());
-    console.log(formJson);
-}

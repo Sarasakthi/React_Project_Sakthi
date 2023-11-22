@@ -17,8 +17,8 @@ import Signup from "./components/Signup/signup"
 //Routing Browser - Default
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Login />,
+    path: "/home",
+    element: <Home />,
     errorElement: <ErrorPage />
   },
   {
@@ -26,8 +26,8 @@ const router = createBrowserRouter([
     element: <Payment />,
   },
   {
-    path: "/home",
-    element: <Home />,
+    path: "/",
+    element: <Login />,
   },
   {
     path: "/signup",

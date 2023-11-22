@@ -1,4 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../Firebase/firebase";
+
 
 import Footer from "../Common/Footer/footer"
 import "./styles_signup.css"
@@ -6,8 +10,57 @@ import * as FunctionCommon from "../Common/General/commonFunctions"
 import ImageLogo from "../../img/logo.svg"
 
 export default function Contact() {
+
+    /*------------
+    Signup Handler
+    ------------*/
+    const navigate = useNavigate();
+
+    const [firstname, setFirstname] = useState("");
+    const [lastname, setLastname] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [acountChecking, setAccountChecking] = useState(0);
+    const [accountSavings, setAccountSavings] = useState(0);
+    const [accountTFSA, setAccountTFSA] = useState(0);
+
+    const submitSignup = async (e) => {
+        e.preventDefault();
+
+        const form = e.target;
+        const formData = new FormData(form);
+
+        const formJson = Object.fromEntries(formData.entries());
+        console.log(formJson);
+
+        console.log("Auth:", auth);
+        console.log("Firstname:", firstname);
+        console.log("Lastname:", lastname);
+        console.log("Username:", username);
+        console.log("Password:", password);
+        console.log("Acount Checking:", acountChecking);
+        console.log("Account Savings:", accountSavings);
+        console.log("Account TFSA:", accountTFSA);
+
+        await createUserWithEmailAndPassword(auth, username, password)
+            .then((userCredential) => {
+                // Signed in
+                const user = userCredential.user;
+                console.log(user);
+                navigate("/");
+                // ...
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(errorCode, errorMessage);
+                const loginErrorMsg = "Signup unsuccessful! \nPlease try again later."
+                alert(loginErrorMsg)
+            });
+    }
+
     return (
-        <form method="post" onSubmit={FunctionCommon.handleSubmit}>
+        <form method="post" onSubmit={submitSignup}>
             <div className="imageLogoFrame">
                 <img className="imageLogo" src={ImageLogo} alt="errorImage" />
             </div>
@@ -54,6 +107,8 @@ export default function Contact() {
                                                     <input type="text" name="signupFirstName"
                                                         id="signupFirstNameID"
                                                         placeholder="Firstname"
+                                                        value={firstname}
+                                                        onChange={(e) => setFirstname(e.target.value)}
                                                         autoFocus />
                                                 </td>
                                             </label>
@@ -69,6 +124,8 @@ export default function Contact() {
                                                 <td className="column2">
                                                     <input type="text" name="signupLastName"
                                                         id="signupLastNameID"
+                                                        value={lastname}
+                                                        onChange={(e) => setLastname(e.target.value)}
                                                         placeholder="Lastname" />
                                                 </td>
                                             </label>
@@ -82,8 +139,10 @@ export default function Contact() {
                                                 <td className="column1">Username
                                                 </td>
                                                 <td className="column2">
-                                                    <input type="text" name="signupUserName"
+                                                    <input type="email" name="signupUserName"
                                                         id="signupUserNameID"
+                                                        value={username}
+                                                        onChange={(e) => setUsername(e.target.value)}
                                                         placeholder="Username" />
                                                 </td>
                                             </label>
@@ -99,6 +158,8 @@ export default function Contact() {
                                                 <td className="column2">
                                                     <input type="password" name="signupPassword"
                                                         id="signupPasswordID"
+                                                        value={password}
+                                                        onChange={(e) => setPassword(e.target.value)}
                                                         placeholder="Password" />
                                                 </td>
                                             </label>
@@ -115,14 +176,16 @@ export default function Contact() {
                                                     </td>
                                                     <td className="column2">
                                                         <span id="signupInputChecking">
-                                                            <select name="signupInputCheckingList">
-                                                                <option value='500'>$ 500</option>
-                                                                <option value='1000'>$ 1000</option>
-                                                                <option value='1500'>$ 1500</option>
-                                                                <option value='2000'>$ 2000</option>
-                                                                <option value='2500'>$ 2500</option>
-                                                                <option value='3000'>$ 3000</option>
+                                                            <select name="signupInputCheckingList"
+                                                                onChange={(e) => setAccountChecking(e.target.value)}>
+                                                                <option value={500}>$ 500</option>
+                                                                <option value={1000}>$ 1000</option>
+                                                                <option value={1500}>$ 1500</option>
+                                                                <option value={2000}>$ 2000</option>
+                                                                <option value={2500}>$ 2500</option>
+                                                                <option value={3000}>$ 3000</option>
                                                             </select>
+
                                                         </span>
                                                     </td>
                                                 </label>
@@ -137,14 +200,15 @@ export default function Contact() {
                                                     </td>
                                                     <td className="column2">
                                                         <span id="signupInputSaving">
-                                                            <select name="signupInputSavingList">
-                                                                <option value='0' selected>No Savings Account</option>
-                                                                <option value='500'>$ 500</option>
-                                                                <option value='1000'>$ 1000</option>
-                                                                <option value='1500'>$ 1500</option>
-                                                                <option value='2000'>$ 2000</option>
-                                                                <option value='2500'>$ 2500</option>
-                                                                <option value='3000'>$ 3000</option>
+                                                            <select name="signupInputSavingList"
+                                                                onChange={(e) => setAccountSavings(e.target.value)}>
+                                                                <option value={0} selected>No Savings Account</option>
+                                                                <option value={500}>$ 500</option>
+                                                                <option value={1000}>$ 1000</option>
+                                                                <option value={1500}>$ 1500</option>
+                                                                <option value={2000}>$ 2000</option>
+                                                                <option value={2500}>$ 2500</option>
+                                                                <option value={3000}>$ 3000</option>
                                                             </select>
                                                         </span>
                                                     </td>
@@ -161,14 +225,15 @@ export default function Contact() {
                                                     </td>
                                                     <td className="column2">
                                                         <span id="signupInputTFS">
-                                                            <select name="signupInputTFSList">
-                                                                <option value='0' selected>No TFS Account</option>
-                                                                <option value='500'>$ 500</option>
-                                                                <option value='1000'>$ 1000</option>
-                                                                <option value='1500'>$ 1500</option>
-                                                                <option value='2000'>$ 2000</option>
-                                                                <option value='2500'>$ 2500</option>
-                                                                <option value='3000'>$ 3000</option>
+                                                            <select name="signupInputTFSList"
+                                                                onChange={(e) => setAccountTFSA(e.target.value)}>
+                                                                <option value={0} selected>No TFS Account</option>
+                                                                <option value={500}>$ 500</option>
+                                                                <option value={1000}>$ 1000</option>
+                                                                <option value={1500}>$ 1500</option>
+                                                                <option value={2000}>$ 2000</option>
+                                                                <option value={2500}>$ 2500</option>
+                                                                <option value={3000}>$ 3000</option>
                                                             </select>
                                                         </span>
                                                     </td>

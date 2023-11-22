@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../Firebase/firebase";
+import { NavLink, useNavigate } from "react-router-dom";
 
 import Footer from "../Common/Footer/footer";
 import "./styles_login.css"
 import ImageLogo from "../../img/logo.svg"
 import "../Common/General/styles_common.css"
+import * as FunctionCommon from "../Common/General/commonFunctions"
+//import * as commonFunctionJS from "../Common/General/commonFun_JS"
 
 export default function Login() {
     function oncanplay(event) {
@@ -23,7 +28,14 @@ export default function Login() {
         return Math.floor(Math.random() * max);
     }
 
-    function handleSubmit(e) {
+    /*----------------------
+    Login Click Event Handle
+    ----------------------*/
+    const navigate = useNavigate();
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+
+    const submitLogin = (e) => {
         e.preventDefault();
 
         const form = e.target;
@@ -32,11 +44,30 @@ export default function Login() {
         const formJson = Object.fromEntries(formData.entries());
         console.log(formJson);
 
-    }
+        //Signin with email and password
+        signInWithEmailAndPassword(auth, username, password)
+            .then((userCredential) => {
+                // Signed in
+                const user = userCredential.user;
+                navigate("/home");
+                console.log(user.id);
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(errorCode, errorMessage);
+                const loginErrorMsg = "Login unsuccessful! \nYour login details do not match."
+                alert(loginErrorMsg)
+                //commonFunctionJS.alert()
+            })
+
+        //Clear email and password
+        form.reset();
+    };
 
     return (
         <div id="pagewrap">
-            <form method="post" onSubmit={handleSubmit}>
+            <form method="post" onSubmit={submitLogin}>
                 <div className="imageLogoFrame">
                     <img className="imageLogo" src={ImageLogo} alt="errorImage" />
                 </div>
@@ -70,11 +101,13 @@ export default function Login() {
                                 <div className="login_input_username">
                                     <label className="label_Username">
 
-                                        <input type="text" name="login_Username"
+                                        <input type="email" name="login_Username"
                                             id="login_Username_ID"
                                             autoCapitalize={"none"}
                                             autoComplete={"off"}
                                             placeholder="Username or email"
+                                            value={username}
+                                            onChange={(e) => setUsername(e.target.value)}
                                             autoFocus
                                         />
                                     </label>
@@ -87,6 +120,8 @@ export default function Login() {
                                             autoCapitalize={"none"}
                                             autoComplete={"off"}
                                             placeholder="Password"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
                                         />
                                     </label>
                                 </div>
