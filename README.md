@@ -1,4 +1,4 @@
-# Hakuna Matata
+# Hakuna Matata Bank
 
 A React project for ComIT React Course. This project was developed by Sakthi.
 
