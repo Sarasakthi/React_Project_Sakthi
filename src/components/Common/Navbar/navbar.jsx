@@ -10,7 +10,7 @@ import { auth } from "../../Firebase/firebase";
 export default function NavBar() {
 
     const navigate = useNavigate();
-    
+
     const handleLogout = (e) => {
         e.preventDefault()
         signOut(auth)
@@ -22,6 +22,7 @@ export default function NavBar() {
             })
             .catch((error) => {
                 console.log(error);
+                console.error(error);
             });
     };
 

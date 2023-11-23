@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../Firebase/firebase";
+import { collection, addDoc } from 'firebase/firestore';
+import { db } from "../Firebase/firebase";
 
 
 import Footer from "../Common/Footer/footer"
@@ -9,7 +11,7 @@ import "./styles_signup.css"
 import * as FunctionCommon from "../Common/General/commonFunctions"
 import ImageLogo from "../../img/logo.svg"
 
-export default function Contact() {
+export default function Signup() {
 
     /*------------
     Signup Handler
@@ -20,10 +22,14 @@ export default function Contact() {
     const [lastname, setLastname] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [acountChecking, setAccountChecking] = useState(0);
-    const [accountSavings, setAccountSavings] = useState(0);
-    const [accountTFSA, setAccountTFSA] = useState(0);
+    const [amountChecking, setAmountChecking] = useState(0);
+    const [amountSavings, setAmountSavings] = useState(0);
+    const [amountTFS, setAmountTFS] = useState(0);
+    const statusSavings = false;
+    const statusTFS = false;
 
+
+    const userAccountRef = collection(db, "userAccount");
     const submitSignup = async (e) => {
         e.preventDefault();
 
@@ -38,13 +44,21 @@ export default function Contact() {
         console.log("Lastname:", lastname);
         console.log("Username:", username);
         console.log("Password:", password);
-        console.log("Acount Checking:", acountChecking);
-        console.log("Account Savings:", accountSavings);
-        console.log("Account TFSA:", accountTFSA);
+        console.log("Account Checking:", amountChecking);
+        console.log("Account Savings:", amountSavings);
+        console.log("Account TFSA:", amountTFS);
 
+        // Signing up
+        let loginMsg = "";
         await createUserWithEmailAndPassword(auth, username, password)
             .then((userCredential) => {
-                // Signed in
+
+                //Adding Signup Data to DB
+                addSignupToDB();
+
+                // Signed in confirmation
+                loginMsg = "Successfully signed up! Please login to continue."
+
                 const user = userCredential.user;
                 console.log(user);
                 navigate("/");
@@ -54,9 +68,36 @@ export default function Contact() {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 console.log(errorCode, errorMessage);
-                const loginErrorMsg = "Signup unsuccessful! \nPlease try again later."
-                alert(loginErrorMsg)
+                loginMsg = "Signup unsuccessful! \nPlease try again later."
+
             });
+        alert(loginMsg)
+    }
+
+    //Adding signin values to database
+
+    const addSignupToDB = async () => {
+        console.log("I am entered addSignupToDB")
+        try {
+            await addDoc(userAccountRef,
+                {
+                    username: username,
+                    firstname: firstname,
+                    lastname: lastname,
+                    amountChecking: amountChecking === "0" ? 500 : amountChecking,
+                    amountSavings: amountSavings,
+                    amountTFS: amountTFS,
+                    statusSavings: amountSavings === "0" ? true : false,
+                    statusTFS: amountTFS === "0" ? true : false //amountTFS === "0" ? false : true
+                });
+            console.log("I am exited Try addSignupToDB");
+            console.log(userAccountRef);
+        }
+        catch (error) {
+            console.error(error);
+            console.log("I am inside Catch addSignupToDB");
+        };
+        console.log("I am exited Try and Catch addSignupToDB")
     }
 
     return (
@@ -177,7 +218,8 @@ export default function Contact() {
                                                     <td className="column2">
                                                         <span id="signupInputChecking">
                                                             <select name="signupInputCheckingList"
-                                                                onChange={(e) => setAccountChecking(e.target.value)}>
+                                                                onChange={(e) => setAmountChecking(e.target.value)}>
+                                                                <option value={0} selected>Checking Amount</option>
                                                                 <option value={500}>$ 500</option>
                                                                 <option value={1000}>$ 1000</option>
                                                                 <option value={1500}>$ 1500</option>
@@ -201,7 +243,7 @@ export default function Contact() {
                                                     <td className="column2">
                                                         <span id="signupInputSaving">
                                                             <select name="signupInputSavingList"
-                                                                onChange={(e) => setAccountSavings(e.target.value)}>
+                                                                onChange={(e) => setAmountSavings(e.target.value)}>
                                                                 <option value={0} selected>No Savings Account</option>
                                                                 <option value={500}>$ 500</option>
                                                                 <option value={1000}>$ 1000</option>
@@ -226,7 +268,7 @@ export default function Contact() {
                                                     <td className="column2">
                                                         <span id="signupInputTFS">
                                                             <select name="signupInputTFSList"
-                                                                onChange={(e) => setAccountTFSA(e.target.value)}>
+                                                                onChange={(e) => setAmountTFS(e.target.value)}>
                                                                 <option value={0} selected>No TFS Account</option>
                                                                 <option value={500}>$ 500</option>
                                                                 <option value={1000}>$ 1000</option>
