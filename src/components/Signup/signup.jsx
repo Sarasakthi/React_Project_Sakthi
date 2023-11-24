@@ -60,7 +60,7 @@ export default function Signup() {
                 loginMsg = "Successfully signed up! Please login to continue."
 
                 const user = userCredential.user;
-                console.log(user);
+                console.log(user.uid);
                 navigate("/");
                 // ...
             })
@@ -75,7 +75,6 @@ export default function Signup() {
     }
 
     //Adding signin values to database
-
     const addSignupToDB = async () => {
         console.log("I am entered addSignupToDB")
         try {

@@ -8,7 +8,6 @@ import "../../Home/styles_home.css"
 import "./styles_payment.css"
 import "../../Common/General/variables"
 import "../../Common/General/styles_common.css"
-import * as FunctionCommon from "../../Common/General/commonFunctions"
 
 export default function Payment() {
 
@@ -51,6 +50,7 @@ export default function Payment() {
 
         const formJson = Object.fromEntries(formData.entries());
         console.log(formJson);
+
     }
 
     return (
