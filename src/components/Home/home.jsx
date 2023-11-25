@@ -1,18 +1,23 @@
 import NavBar from "../Common/Navbar/navbar"
 import "../Home/styles_home.css"
 import Footer from "../Common/Footer/footer"
+import LogoutApplication from "../Logout/autoLogout";
+import { FunctionDBQueryList } from "../Firebase/dbQuery";
 
 /*Adding authentication check*/
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../Firebase/firebase";
+import { collection, addDoc, getDocs } from 'firebase/firestore';
+import { db } from "../Firebase/firebase";
 
 export default function Home() {
+
     const navigate = useNavigate();
 
     let currentUserID = null
-    
+
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -20,6 +25,9 @@ export default function Home() {
                 // https://firebase.google.com/docs/reference/js/firebase.User
                 console.log("UID", user.uid);
                 currentUserID = user.uid
+                console.log("Going to FunctionDBQueryList")
+
+                console.log("Home Printed")
             } else {
                 // User is signed out
                 console.log("User is logged out. Please login!");
@@ -27,6 +35,25 @@ export default function Home() {
             }
         });
     });
+
+    const dbRefAccount = collection(db, "userAccount");
+    const [accountList, setAccountList] = useState("");
+    const fetchAccountBalanceFromDB = async () => {
+        try {
+            let username = currentUserID
+            const data = await getDocs(dbRefAccount);
+            const filterData = data.docs.map((doc) => ({
+                ...doc.data(),
+                id: doc.id
+            }));
+            console.log("Printing")
+            console.log(setAccountList(filterData))
+            console.log("Printed")
+        }
+        catch (err) {
+            console.error(err);
+        }
+    }
 
     const handleLogout = () => {
         signOut(auth)
@@ -42,6 +69,7 @@ export default function Home() {
     };
 
     return (
+        //<LogoutApplication>
         <div>
             <nav>
                 {/*Insert NavBar*/}
@@ -96,7 +124,7 @@ export default function Home() {
                 {/*Insert Footer*/}
                 <Footer />
             </footer>
-
         </div>
+        //</LogoutApplication>
     )
 }

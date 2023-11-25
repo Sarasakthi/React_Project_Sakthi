@@ -4,6 +4,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 
 import NavBar from "../../Common/Navbar/navbar"
 import Footer from "../../Common/Footer/footer"
+import LogoutApplication from "../../Logout/autoLogout";
 
 import "../../Home/styles_home.css"
 import "./styles_addBeneficiary.css"
@@ -52,104 +53,108 @@ export default function AddBeneficiary() {
 
 
     return (
-        <form method="post" onSubmit={submitAddBeneficiary}>
-            <div>
-                {/*Insert NavBar*/}
-                <NavBar />
+        <LogoutApplication>
+            <form method="post" onSubmit={submitAddBeneficiary}>
+                <div>
+                    {/*Insert NavBar*/}
+                    <NavBar />
 
-                <div className="beneficiaryMain">
+                    <div className="beneficiaryMain">
 
-                    {/*Page Name*/}
-                    <div className="beneficiaryDiv">
-                        <p className="beneficiaryHeader">Add Beneficiary</p>
-                    </div>
-
-                    <div className="beneficiaryDetails">
-
-                        {/*Table Left - beneficiary Main Information*/}
-                        <div className="beneficiaryTableMain">
-                            <table className="beneficiaryTableLeft">
-                                <tr>
-                                    <div className="beneficiaryName" id="beneficiaryNameID">
-                                        <label className="beneficiaryNameLabel"
-                                            title="Enter beneficiary name">
-                                            <td className="column1">Beneficiary Name</td>
-                                            <td className="column2">
-                                                <input type="text" name="beneficiaryNameAmount"
-                                                    id="beneficiaryIDAmount"
-                                                    value={beneficiaryName}
-                                                    onChange={(e) => setBeneficiaryName(e.target.value)}
-                                                    autoFocus
-                                                    required
-                                                    placeholder="Beneficiary name"
-                                                    onInput={F => F.target.setCustomValidity('')} 
-                                                    onInvalid={F => F.target.setCustomValidity('Please enter beneficiary name here')}
-                                                />
-                                            </td>
-                                        </label>
-                                    </div>
-                                </tr>
-
-                                <tr>
-                                    <div className="beneficiaryAccountNo" id="beneficiaryDiv">
-                                        <label className="beneficiaryLabel"
-                                            title="Enter beneficiary email">
-                                            <td className="column1">Beneficiary Email</td>
-                                            <td className="column2">
-                                                <input type="email" name="beneficiaryNameAccountNo"
-                                                    id="beneficiaryIDAccountNo"
-                                                    value={beneficiaryEmail}
-                                                    onChange={(e) => setBeneficiaryEmail(e.target.value)}
-                                                    placeholder="Beneficiary email"
-                                                    required
-                                                    onInput={F => F.target.setCustomValidity('')} 
-                                                    onInvalid={F => F.target.setCustomValidity('Please enter beneficiary email here')}
-
-                                                />
-                                            </td>
-                                        </label>
-                                    </div>
-                                </tr>
-
-                                <tr>
-                                    <div className="beneficiaryRemarks" id="beneficiaryDiv">
-                                        <label className="beneficiaryLabel"
-                                            title="Enter remarks (optional)">
-                                            <td className="column1">
-                                                Remarks <span className="optional">(Optional)</span>
-                                            </td>
-                                            <td className="column2">
-                                                <input type="text" name="beneficiaryNameRemarks"
-                                                    id="beneficiaryIDRemarks"
-                                                    value={beneficiaryRemarks}
-                                                    onChange={(e) => setBeneficiaryRemarks(e.target.value)}
-                                                    placeholder="Remarks (optional)" />
-                                            </td>
-                                        </label>
-                                    </div>
-                                </tr>
-
-                            </table>
+                        {/*Page Name*/}
+                        <div className="beneficiaryDiv">
+                            <p className="beneficiaryHeader">Add Beneficiary</p>
                         </div>
 
-                    </div>
+                        <div className="beneficiaryDetails">
 
-                    <div className="beneficiaryMakebeneficiary" id="beneficiaryDiv">
-                        <button type="submit" name="beneficiaryNameMakebeneficiary"
-                            id="beneficiaryIDMakebeneficiary">
-                            Add beneficiary
-                        </button>
-                    </div>
+                            {/*Table Left - beneficiary Main Information*/}
+                            <div className="beneficiaryTableMain">
+                                <table className="beneficiaryTableLeft">
+                                    <tbody>
+                                        <tr>
+                                            <div className="beneficiaryName" id="beneficiaryNameID">
+                                                <label className="beneficiaryNameLabel"
+                                                    title="Enter beneficiary name">
+                                                    <td className="column1">Beneficiary Name</td>
+                                                    <td className="column2">
+                                                        <input type="text" name="beneficiaryNameAmount"
+                                                            id="beneficiaryIDAmount"
+                                                            value={beneficiaryName}
+                                                            onChange={(e) => setBeneficiaryName(e.target.value)}
+                                                            autoFocus
+                                                            required
+                                                            placeholder="Beneficiary name"
+                                                            onInput={F => F.target.setCustomValidity('')}
+                                                            onInvalid={F => F.target.setCustomValidity('Please enter beneficiary name here')}
+                                                        />
+                                                    </td>
+                                                </label>
+                                            </div>
+                                        </tr>
 
+
+                                        <tr>
+                                            <div className="beneficiaryAccountNo" id="beneficiaryDiv">
+                                                <label className="beneficiaryLabel"
+                                                    title="Enter beneficiary email">
+                                                    <td className="column1">Beneficiary Email</td>
+                                                    <td className="column2">
+                                                        <input type="email" name="beneficiaryNameAccountNo"
+                                                            id="beneficiaryIDAccountNo"
+                                                            value={beneficiaryEmail}
+                                                            onChange={(e) => setBeneficiaryEmail(e.target.value)}
+                                                            placeholder="Beneficiary email"
+                                                            required
+                                                            onInput={F => F.target.setCustomValidity('')}
+                                                            onInvalid={F => F.target.setCustomValidity('Please enter beneficiary email here')}
+
+                                                        />
+                                                    </td>
+                                                </label>
+                                            </div>
+                                        </tr>
+
+                                        <tr>
+                                            <div className="beneficiaryRemarks" id="beneficiaryDiv">
+                                                <label className="beneficiaryLabel"
+                                                    title="Enter remarks (optional)">
+                                                    <td className="column1">
+                                                        Remarks <span className="optional">(Optional)</span>
+                                                    </td>
+                                                    <td className="column2">
+                                                        <input type="text" name="beneficiaryNameRemarks"
+                                                            id="beneficiaryIDRemarks"
+                                                            value={beneficiaryRemarks}
+                                                            onChange={(e) => setBeneficiaryRemarks(e.target.value)}
+                                                            placeholder="Remarks (optional)" />
+                                                    </td>
+                                                </label>
+                                            </div>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
+
+                        <div className="beneficiaryMakebeneficiary" id="beneficiaryDiv">
+                            <button type="submit" name="beneficiaryNameMakebeneficiary"
+                                id="beneficiaryIDMakebeneficiary">
+                                Add beneficiary
+                            </button>
+                        </div>
+
+                    </div >
                 </div >
-            </div >
 
-            <div className="footer">
-                <footer className="footerText">
-                    {/*Insert Footer*/}
-                    <Footer />
-                </footer>
-            </div>
-        </form>
+                <div className="footer">
+                    <footer className="footerText">
+                        {/*Insert Footer*/}
+                        <Footer />
+                    </footer>
+                </div>
+            </form>
+        </LogoutApplication>
     )
 }
