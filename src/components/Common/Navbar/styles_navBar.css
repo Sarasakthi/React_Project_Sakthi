@@ -112,10 +112,12 @@ div {
 }
 
 .welcome .welcomeMsg {
-    margin-top: 0;
+    margin-top: 10px;
     font-weight: bolder;
-    font-size: 18px;
-    padding: 10px 0;
+    padding: 10px;
+    font-family: 'Playpen Sans';
+    font-size: 20px;
+    text-align: right;
 }
 
 .welcome .lastLogin {

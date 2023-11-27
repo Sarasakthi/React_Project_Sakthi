@@ -51,4 +51,14 @@ export const randomNumberZeroToMax = (max) => {
     })
 }*/
 
+export function confirmAction(confirmMessage) {
+    let confirmAction;
+    if (window.confirm(confirmMessage) == true) {
+        confirmAction = true
+    } else {
+        confirmAction = false
+    }
+    return confirmAction
+}
+
 export const isValidEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;

@@ -107,21 +107,16 @@ export default function Home() {
     return (
         //<LogoutApplication>
         <div>
-
             <nav>
                 {/*Insert NavBar*/}
                 <NavBar />
-
-
             </nav>
 
-            <div>
+            <div className="helloUser">
                 {accountList.map((myAccountDetails) => (
-                    <h1>Hello {myAccountDetails.firstname}!</h1>
+                    <h3>Hello
+                        <span> {myAccountDetails.firstname}</span>!</h3>
                 ))}
-
-                {/*accountList.map((accountData) =>
-                <p key={accountData.key}>{accountData.firstname}</p>)*/}
             </div>
 
             <div className="assetAndTrans">
