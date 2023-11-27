@@ -30,49 +30,57 @@ export default function Signup() {
 
 
     const userAccountRef = collection(db, "userAccount");
+
     const submitSignup = async (e) => {
         e.preventDefault();
 
-        const form = e.target;
-        const formData = new FormData(form);
+        if (amountChecking > 0) {
+            const form = e.target;
+            const formData = new FormData(form);
 
-        const formJson = Object.fromEntries(formData.entries());
-        console.log(formJson);
+            const formJson = Object.fromEntries(formData.entries());
+            console.log(formJson);
 
-        console.log("Auth:", auth);
-        console.log("Firstname:", firstname);
-        console.log("Lastname:", lastname);
-        console.log("Username:", username);
-        console.log("Password:", password);
-        console.log("Account Checking:", amountChecking);
-        console.log("Account Savings:", amountSavings);
-        console.log("Account TFSA:", amountTFS);
+            console.log("Auth:", auth);
+            console.log("Firstname:", firstname);
+            console.log("Lastname:", lastname);
+            console.log("Username:", username);
+            console.log("Password:", password);
+            console.log("Account Checking:", amountChecking);
+            console.log("Account Savings:", amountSavings);
+            console.log("Account TFSA:", amountTFS);
 
-        // Signing up
-        let loginMsg = "";
-        await createUserWithEmailAndPassword(auth, username, password)
-            .then((userCredential) => {
 
-                //Adding Signup Data to DB
-                addSignupToDB();
 
-                // Signed in confirmation
-                loginMsg = "Successfully signed up! Please login to continue."
+            // Signing up
+            let loginMsg;
+            await createUserWithEmailAndPassword(auth, username, password)
+                .then((userCredential) => {
 
-                const user = userCredential.user;
-                console.log(user.uid);
-                navigate("/");
-                // ...
-            })
-            .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                console.log(errorCode, errorMessage);
-                loginMsg = "Signup unsuccessful! \nPlease try again later."
+                    //Adding Signup Data to DB
+                    addSignupToDB();
 
-            });
-        alert(loginMsg)
+                    // Signed in confirmation
+                    loginMsg = "Successfully signed up! Please login to continue."
+
+                    const user = userCredential.user;
+                    console.log(user.uid);
+                    navigate("/");
+                    // ...
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    console.log(errorCode, errorMessage);
+                    loginMsg = "Signup unsuccessful! \nPlease try again later."
+                });
+            alert(loginMsg)
+        }
+        else {
+            alert("Please select Checking amount")
+        }
     }
+
 
     //Adding signin values to database
     const addSignupToDB = async () => {
@@ -147,6 +155,9 @@ export default function Signup() {
                                                     <input type="text" name="signupFirstName"
                                                         id="signupFirstNameID"
                                                         placeholder="Firstname"
+                                                        required
+                                                        onInput={F => F.target.setCustomValidity('')}
+                                                        onInvalid={F => F.target.setCustomValidity('Mandatory: Please enter your Firstname')}
                                                         value={firstname}
                                                         onChange={(e) => setFirstname(e.target.value)}
                                                         autoFocus />
@@ -165,6 +176,9 @@ export default function Signup() {
                                                     <input type="text" name="signupLastName"
                                                         id="signupLastNameID"
                                                         value={lastname}
+                                                        required
+                                                        onInput={F => F.target.setCustomValidity('')}
+                                                        onInvalid={F => F.target.setCustomValidity('Mandatory: Please enter your Lastname')}
                                                         onChange={(e) => setLastname(e.target.value)}
                                                         placeholder="Lastname" />
                                                 </td>
@@ -182,8 +196,11 @@ export default function Signup() {
                                                     <input type="email" name="signupUserName"
                                                         id="signupUserNameID"
                                                         value={username}
+                                                        required
+                                                        onInput={F => F.target.setCustomValidity('')}
+                                                        onInvalid={F => F.target.setCustomValidity('Mandatory: Please enter your email')}
                                                         onChange={(e) => setUsername(e.target.value)}
-                                                        placeholder="Username" />
+                                                        placeholder="User email" />
                                                 </td>
                                             </label>
                                         </div>
@@ -200,6 +217,9 @@ export default function Signup() {
                                                         id="signupPasswordID"
                                                         value={password}
                                                         onChange={(e) => setPassword(e.target.value)}
+                                                        required
+                                                        onInput={F => F.target.setCustomValidity('')}
+                                                        onInvalid={F => F.target.setCustomValidity('Mandatory: Please enter your password')}
                                                         placeholder="Password" />
                                                 </td>
                                             </label>
@@ -211,7 +231,8 @@ export default function Signup() {
                                         <tr>
                                             <div className="signupClassChecking" id="signupClassCheckingID">
                                                 <label className="signupClassCheckingLabel"
-                                                    title="Select cash deposit amount for your Checking Account">
+                                                    title="Select cash deposit amount for your Checking Account"
+                                                >
                                                     <td className="column1">Checking A/C
                                                     </td>
                                                     <td className="column2">
@@ -226,7 +247,6 @@ export default function Signup() {
                                                                 <option value={2500}>$ 2500</option>
                                                                 <option value={3000}>$ 3000</option>
                                                             </select>
-
                                                         </span>
                                                     </td>
                                                 </label>

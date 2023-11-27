@@ -2,58 +2,54 @@ import NavBar from "../Common/Navbar/navbar"
 import "../Home/styles_home.css"
 import Footer from "../Common/Footer/footer"
 import LogoutApplication from "../Logout/autoLogout";
-import { FunctionDBQueryList } from "../Firebase/dbQuery";
+import * as databaseQuery from "../Firebase/dbQuery"
+
 
 /*Adding authentication check*/
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { signOut, onAuthStateChanged } from "firebase/auth";
-import { auth } from "../Firebase/firebase";
-import { collection, addDoc, getDocs } from 'firebase/firestore';
-import { db } from "../Firebase/firebase";
+import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
+import { db, auth } from "../Firebase/firebase";
+import { collection, addDoc, query, where, getDocs, DocumentSnapshot, onSnapshot, QuerySnapshot } from 'firebase/firestore';
 
 export default function Home() {
 
     const navigate = useNavigate();
 
+    const dbRefAccount = collection(db, "userAccount");
+    const [accountList, setAccountList] = useState([]);
+    const [loading, setLoading] = useState(true);
+
     let currentUserID = null
+    let currentUseremail = null
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // User is signed in, see docs for a list of available properties
-                // https://firebase.google.com/docs/reference/js/firebase.User
-                console.log("UID", user.uid);
+                // User is verified
+                console.log("UID", user.uid + " - " + user.email);
                 currentUserID = user.uid
-                console.log("Going to FunctionDBQueryList")
+                currentUseremail = user.email
 
-                console.log("Home Printed")
+                //Fetching Account Balances from Database
+                const queryData = query(dbRefAccount,
+                    where("username", "==", (currentUseremail)));
+                const returnData = onSnapshot(queryData, (querySnapshot) => {
+                    let letMyAccountList = []
+                    querySnapshot.forEach((doc) => {
+                        letMyAccountList.push({ ...doc.data(), id: doc.id });
+                        console.log(doc.id, " => ", doc.data());
+                    });
+                    setAccountList(letMyAccountList);
+                });
+                return () => returnData();
             } else {
                 // User is signed out
                 console.log("User is logged out. Please login!");
                 navigate("/");
             }
         });
-    });
-
-    const dbRefAccount = collection(db, "userAccount");
-    const [accountList, setAccountList] = useState("");
-    const fetchAccountBalanceFromDB = async () => {
-        try {
-            let username = currentUserID
-            const data = await getDocs(dbRefAccount);
-            const filterData = data.docs.map((doc) => ({
-                ...doc.data(),
-                id: doc.id
-            }));
-            console.log("Printing")
-            console.log(setAccountList(filterData))
-            console.log("Printed")
-        }
-        catch (err) {
-            console.error(err);
-        }
-    }
+    }, []);
 
     const handleLogout = () => {
         signOut(auth)
@@ -68,13 +64,65 @@ export default function Home() {
             });
     };
 
+    //Fetching Account Balances from Database
+    /*const getAccountList = async () => {
+        try {
+            const resultData = query(dbRefAccount, where("username", "==", currentUseremail));
+            const querySnapshot = await getDocs(resultData);
+            const returnData = querySnapshot.docs.map((doc) => ({
+                ...doc.data(),
+                id: doc.id,
+            }));
+            setAccountList(returnData);
+            // console.log(returnData);
+        }
+        catch (err) {
+            console.error(err);
+        }
+    };
+
+
+    useEffect(() => {
+        getAccountList();
+    }, []);*/
+
+
+    /*    useEffect(() => {
+            currentUseremail = getAuth().currentUser.email
+            const queryData = query(dbRefAccount,
+                where("username", "==", (currentUseremail)));
+            const returnData = onSnapshot(queryData, (querySnapshot) => {
+                let letMyAccountList = []
+                querySnapshot.forEach((doc) => {
+                    letMyAccountList.push({ ...doc.data(), id: doc.id });
+                    console.log(doc.id, " => ", doc.data());
+                });
+    
+                setAccountList(letMyAccountList);
+    
+            });
+            return () => returnData();
+        }, []);*/
+
     return (
         //<LogoutApplication>
         <div>
+
             <nav>
                 {/*Insert NavBar*/}
                 <NavBar />
+
+
             </nav>
+
+            <div>
+                {accountList.map((myAccountDetails) => (
+                    <h1>Hello {myAccountDetails.firstname}!</h1>
+                ))}
+
+                {/*accountList.map((accountData) =>
+                <p key={accountData.key}>{accountData.firstname}</p>)*/}
+            </div>
 
             <div className="assetAndTrans">
                 {/*Asset and Transaction Header*/}
