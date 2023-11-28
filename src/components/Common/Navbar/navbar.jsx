@@ -1,6 +1,7 @@
 import React from "react"
 
 import Header from "../Header/header"
+import * as FunctionCommon from "../General/commonFunctions"
 import "./styles_navBar.css"
 
 import { useNavigate } from "react-router-dom";
@@ -13,17 +14,19 @@ export default function NavBar() {
 
     const handleLogout = (e) => {
         e.preventDefault()
-        signOut(auth)
-            .then(() => {
-                // Sign-out successful.
-                alert("Thank you for using Hakuna Matata Banking Application!")
-                console.log("Signed out successfully");
-                navigate("/");
-            })
-            .catch((error) => {
-                console.log(error);
-                console.error(error);
-            });
+        if (FunctionCommon.confirmAction("Press OK to Signout the application.") == true) {
+            signOut(auth)
+                .then(() => {
+                    // Sign-out successful.
+                    alert("Thank you for using Hakuna Matata Banking Application!")
+                    console.log("Signed out successfully");
+                    navigate("/");
+                })
+                .catch((error) => {
+                    console.log(error);
+                    console.error(error);
+                });
+        }
     };
 
     return (
@@ -58,16 +61,7 @@ export default function NavBar() {
 
             {/*Welcome Message*/}
             <div className="welcome">
-                <div className="welcomeMsg">
-                    <p>Welcome to Hakuna Matata Bank</p>
-                </div>
-                <div className="lastLogin">
-                    <p id="loginDateTime"></p>
-                    <script>
-                        const currentDateTime = new Date();
-                        document.getElementById("loginDateTime").innerHTML = 'Your last login: ' + currentDateTime.toLocaleString();
-                    </script>
-                </div>
+                <p className="welcomeMsg">Welcome to Hakuna Matata Bank</p>
             </div>
         </>
     )
