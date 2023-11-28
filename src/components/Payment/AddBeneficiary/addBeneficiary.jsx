@@ -10,20 +10,60 @@ import "../../Home/styles_home.css"
 import "./styles_addBeneficiary.css"
 import "../../Common/General/variables"
 
-/*Adding authentication check*/
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../../Firebase/firebase";
-
 import * as FunctionCommon from "../../Common/General/commonFunctions"
 import * as databaseQuery from "../../Firebase/dbQuery"
 
 import { Navigate } from "react-router-dom";
+/*Adding authentication check*/
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
+import { db, auth } from "../../Firebase/firebase";
+import { collection, addDoc, query, where, getDocs, DocumentSnapshot, onSnapshot, QuerySnapshot } from 'firebase/firestore';
+
 
 export default function AddBeneficiary() {
 
     const navigate = useNavigate();
+
+    const dbRefAccount = collection(db, "userAccount");
+    const dbRefAddBeneficiary = collection(db, "userBeneficiary");
+    const dbRefTransaction = collection(db, "userTransaction");
+    const [accountList, setAccountList] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    let currentUserID = null
+    let currentUseremail = null
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is verified
+                console.log("UID", user.uid + " - " + user.email);
+                currentUserID = user.uid
+                currentUseremail = user.email
+
+                //Fetching Account Balances from Database
+                const queryData = query(dbRefAccount,
+                    where("username", "==", (currentUseremail)));
+                const returnData = onSnapshot(queryData, (querySnapshot) => {
+                    let letMyAccountList = []
+                    querySnapshot.forEach((doc) => {
+                        letMyAccountList.push({ ...doc.data(), id: doc.id });
+                        console.log(doc.id, " ==> ", doc.data());
+                    });
+                    setAccountList(letMyAccountList);
+                    console.log(accountList)
+                });
+                return () => returnData();
+
+            } else {
+                // User is signed out
+                console.log("User is logged out. Please login!");
+                navigate("/");
+            }
+        });
+    }, []);
 
     const [beneficiaryName, setBeneficiaryName] = useState("");
     const [beneficiaryEmail, setBeneficiaryEmail] = useState("");
@@ -58,6 +98,13 @@ export default function AddBeneficiary() {
                 <div>
                     {/*Insert NavBar*/}
                     <NavBar />
+
+                    <div className="helloUser">
+                        {accountList.map((myAccountDetails) => (
+                            <h3>Hello
+                                <span> {myAccountDetails.firstname}</span>!</h3>
+                        ))}
+                    </div>
 
                     <div className="beneficiaryMain">
 

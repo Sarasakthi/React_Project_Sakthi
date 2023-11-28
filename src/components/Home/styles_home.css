@@ -39,6 +39,25 @@ div {
     max-height: fit-content;
 }
 
+.helloUser {
+    position: fixed;
+    padding: 10px 0 10px 25px;
+    text-align: left;
+    margin-top: -60px;
+    font-family: 'Playpen Sans';
+    font-size: 20px;
+}
+
+.helloUser span {
+    font-family: 'Noto Sans';
+    text-decoration: none;
+    font-size: 25px;
+    background-image: linear-gradient(to right, rgb(134, 14, 134), rgba(18, 107, 207, 0.603), rgb(255, 136, 0), green);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: rgba(0, 255, 21, 0.226)1px 0 10px;
+}
+
 .assetAndTrans {
     display: grid;
     background: rgb(250, 250, 250);
@@ -91,8 +110,8 @@ Asset and Transaction
     padding-left: 5em;
     text-indent: 2em;
     text-align: left;
-    background-color: gray;
-   /* float: right;*/
+    float: right;
+    padding-right: 50px;
 }
 
 .rowAssetTrans .colAsset p {

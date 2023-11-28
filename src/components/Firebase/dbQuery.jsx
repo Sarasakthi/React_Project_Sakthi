@@ -1,5 +1,5 @@
 import { getAuth } from "firebase/auth";
-import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, onSnapshot } from 'firebase/firestore';
 import { db } from "./firebase";
 import { useState } from "react";
 
@@ -31,8 +31,6 @@ export const addBeneficiaryToDB =
         beneficiaryEmail,
         beneficiaryRemarks) => {
 
-        console.log("I am entered addSignupToDB")
-
         try {
             await addDoc(dbRefAddBeneficiary,
                 {
@@ -41,98 +39,40 @@ export const addBeneficiaryToDB =
                     beneficiaryEmail: beneficiaryEmail,
                     beneficiaryRemarks: beneficiaryRemarks
                 });
-            console.log("I am exited Try addSignupToDB");
             console.log(dbRefAddBeneficiary);
+            alert(beneficiaryName + " added to your database.")
         }
 
         catch (error) {
             console.error(error);
-            console.log("I am inside Catch addSignupToDB");
         };
-
-        console.log("I am exited Try and Catch addSignupToDB")
     };
 
 //Fetching Account Balances from Database
-export function FunctionDBQueryList() {
+/*export function FetchAccountBalanceFromDB() {
     const [accountList, setAccountList] = useState("");
-
-    console.log("Reached FunctionDBQueryList")
-
-    const fetchAccountBalanceFromDB = async () => {
+    async () => {
         try {
+            console.log("Reached FunctionDBQueryList")
+
             let username = currentUID().email
-            const data = await getDocs(dbRefAccount);
-            const filterData = data.docs.map((doc) => ({
-                ...doc.data(),
-                id: doc.id
-            }));
-            console.log("Printing")
-            console.log(setAccountList(filterData))
-            console.log("Printed")
-            return setAccountList(filterData)
+
+            //Fetching Account Balances from Database
+            const queryData = query(dbRefAccount,
+                where("username", "==", (username)));
+            const returnData = onSnapshot(queryData, (querySnapshot) => {
+                let letMyAccountList = []
+                querySnapshot.forEach((doc) => {
+                    letMyAccountList.push({ ...doc.data(), id: doc.id });
+                    console.log(doc.id, " ==> ", doc.data());
+                });
+                setAccountList(letMyAccountList);
+                console.log(accountList)
+            });
+            return () => returnData();
         }
         catch (err) {
             console.error(err);
         }
     }
-};
-
-//Fetching Account Balances from Database
-export async function AccountListDB_Old() {
-    const [accountList, setAccountList] = useState("");
-
-    console.log("Reached FunctionDBQueryList")
-
-    let username = currentUID().email
-
-    const resultData = query(collection(db, dbRefAccount), where("username", "==", username));
-
-    const querySnapshot = await getDocs(resultData);
-    querySnapshot.forEach((doc) => {
-        console.log(doc.id, " => ", doc.data());
-    })
-    return querySnapshot
-}
-
-
-//Fetching Account Balances from Database
-export const accountListDBCopy =
-    async (username) => {
-        try {
-            const resultData = query(dbRefAccount, where("username", "==", username));
-            const querySnapshot = await getDocs(resultData);
-            const returnData = querySnapshot.docs.map((doc) => ({
-                ...doc.data(),
-                id: doc.id
-            }));
-            console.log(returnData)
-            /*querySnapshot.forEach((doc) => {
-                console.log(doc.id, " => ", doc.data());
-                return doc.data()
-            });*/
-        }
-
-        catch (error) {
-            console.error(error);
-        };
-    }
-
-//Fetching Account Balances from Database
-export function accountListDBFunction(username) {
-    const accountListDB =
-        async (username) => {
-            try {
-                const resultData = query(dbRefAccount, where("username", "==", username));
-                const querySnapshot = await getDocs(resultData);
-                querySnapshot.forEach((doc) => {
-                    console.log(doc.id, " => ", doc.data());
-                    return doc.data()
-                });
-            }
-
-            catch (error) {
-                console.error(error);
-            };
-        }
-}
+};*/

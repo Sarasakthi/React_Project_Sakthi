@@ -1,20 +1,27 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { Component } from "react";
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css'
 
 import NavBar from "../../Common/Navbar/navbar"
 import Footer from "../../Common/Footer/footer"
 import LogoutApplication from "../../Logout/autoLogout";
+//import { FetchAccountBalanceFromDB } from "../../Firebase/dbQuery"
+import * as CommonFunction from "../../Common/General/commonFunctions"
 
 import "../../Home/styles_home.css"
 import "./styles_payment.css"
 import "../../Common/General/variables"
 import "../../Common/General/styles_common.css"
 
-import Home from "../../Home/home";
+/*Adding authentication check*/
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
+import { db, auth } from "../../Firebase/firebase";
+import { collection, addDoc, query, where, getDocs, DocumentSnapshot, onSnapshot, QuerySnapshot } from 'firebase/firestore';
 
 export default function Payment() {
-    
+
     // date picker
     const [paymentDate, setPaymentDate] = useState(new Date());
     const [paymentRecStartDate, setPaymentRecStartDate] = useState(new Date());
@@ -24,7 +31,70 @@ export default function Payment() {
     //const [state, setState] = useState(initialState);
     const [paymentFreq, setpaymentFreq] = useState(false)
 
-   
+    const navigate = useNavigate();
+
+    const dbRefAccount = collection(db, "userAccount");
+    const dbRefAddBeneficiary = collection(db, "userBeneficiary");
+    const dbRefTransaction = collection(db, "userTransaction");
+    const [accountList, setAccountList] = useState([]);
+    const [beneficiaryList, setBeneficiaryList] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    let currentUserID = null
+    let currentUseremail = null
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is verified
+                console.log("UID", user.uid + " - " + user.email);
+                currentUserID = user.uid
+                currentUseremail = user.email
+
+                console.log(CommonFunction.randomNumberInRange(5, 15))
+
+                getAccountDetails(currentUseremail)
+                getBeneficiaryDetails(currentUseremail)
+
+            } else {
+                // User is signed out
+                console.log("User is logged out. Please login!");
+                navigate("/");
+            }
+        });
+    }, []);
+
+    //Fetching Account Details from Database
+    function getAccountDetails(currentUseremail) {
+        const queryData = query(dbRefAccount,
+            where("username", "==", (currentUseremail)));
+        const returnData = onSnapshot(queryData, (querySnapshot) => {
+            let letMyAccountList = []
+            querySnapshot.forEach((doc) => {
+                letMyAccountList.push({ ...doc.data(), id: doc.id });
+                console.log(doc.id, " => ", doc.data());
+            });
+            setAccountList(letMyAccountList);
+        });
+        return () => returnData();
+    }
+    
+    //Fetching Beneficiary Details from Database
+    function getBeneficiaryDetails(currentUseremail) {
+        const queryData = query(dbRefAddBeneficiary,
+            where("username", "==", (currentUseremail)));
+        const returnData = onSnapshot(queryData, (querySnapshot) => {
+            let letMyBeneficiaryList = []
+            querySnapshot.forEach((doc) => {
+                letMyBeneficiaryList.push({ ...doc.data(), id: doc.id });
+                console.log(doc.id, " ==> ", doc.data());
+            });
+            setBeneficiaryList(letMyBeneficiaryList);
+            console.log(beneficiaryList)
+        });
+        return () => returnData();
+    }
+
     function handlePaymentFreqChange(paymentFreqCurrent) {
         const getElement = document.getElementById("paymentTableRightID")
         /*if (paymentFreqCurrent === 'recurring') {
@@ -57,7 +127,7 @@ export default function Payment() {
         console.log(formJson);
 
         console.log('Exiting add bene')
-        
+
     }
 
     return (
@@ -67,6 +137,13 @@ export default function Payment() {
             <div>
                 {/*Insert NavBar*/}
                 <NavBar />
+
+                <div className="helloUser">
+                    {accountList.map((myAccountDetails) => (
+                        <h3>Hello
+                            <span> {myAccountDetails.firstname}</span>!</h3>
+                    ))}
+                </div>
 
                 <div className="paymentMain">
 
@@ -188,16 +265,10 @@ export default function Payment() {
                                             <td className="column2">
                                                 <span id="paymentInput">
                                                     <select id="paymentInputList" name="Select Beneficiary">
+
+                                                        {beneficiaryList.map((myBeneficiaryDetails) => (
                                                         <option value="beneficiary1"
-                                                            id="beneficiary1">Beneficiary 1</option>
-                                                        <option value="beneficiary2"
-                                                            id="beneficiary2">Beneficiary 2</option>
-                                                        <option value="beneficiary3"
-                                                            id="beneficiary3">Beneficiary 3</option>
-                                                        <option value="beneficiary4"
-                                                            id="beneficiary4">Beneficiary 4</option>
-                                                        <option value="beneficiary5"
-                                                            id="beneficiary5">Beneficiary 5</option>
+                                                            id="beneficiary1">{myBeneficiaryDetails.beneficiaryName}</option>))}                                                        
                                                     </select>
                                                 </span>
                                             </td>

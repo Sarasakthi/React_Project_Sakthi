@@ -31,18 +31,8 @@ export default function Home() {
                 currentUserID = user.uid
                 currentUseremail = user.email
 
-                //Fetching Account Balances from Database
-                const queryData = query(dbRefAccount,
-                    where("username", "==", (currentUseremail)));
-                const returnData = onSnapshot(queryData, (querySnapshot) => {
-                    let letMyAccountList = []
-                    querySnapshot.forEach((doc) => {
-                        letMyAccountList.push({ ...doc.data(), id: doc.id });
-                        console.log(doc.id, " => ", doc.data());
-                    });
-                    setAccountList(letMyAccountList);
-                });
-                return () => returnData();
+                getAccountDetails(currentUseremail)
+
             } else {
                 // User is signed out
                 console.log("User is logged out. Please login!");
@@ -64,45 +54,20 @@ export default function Home() {
             });
     };
 
-    //Fetching Account Balances from Database
-    /*const getAccountList = async () => {
-        try {
-            const resultData = query(dbRefAccount, where("username", "==", currentUseremail));
-            const querySnapshot = await getDocs(resultData);
-            const returnData = querySnapshot.docs.map((doc) => ({
-                ...doc.data(),
-                id: doc.id,
-            }));
-            setAccountList(returnData);
-            // console.log(returnData);
-        }
-        catch (err) {
-            console.error(err);
-        }
-    };
-
-
-    useEffect(() => {
-        getAccountList();
-    }, []);*/
-
-
-    /*    useEffect(() => {
-            currentUseremail = getAuth().currentUser.email
-            const queryData = query(dbRefAccount,
-                where("username", "==", (currentUseremail)));
-            const returnData = onSnapshot(queryData, (querySnapshot) => {
-                let letMyAccountList = []
-                querySnapshot.forEach((doc) => {
-                    letMyAccountList.push({ ...doc.data(), id: doc.id });
-                    console.log(doc.id, " => ", doc.data());
-                });
-    
-                setAccountList(letMyAccountList);
-    
+    //Fetching Account Details from Database
+    function getAccountDetails(currentUseremail) {
+        const queryData = query(dbRefAccount,
+            where("username", "==", (currentUseremail)));
+        const returnData = onSnapshot(queryData, (querySnapshot) => {
+            let letMyAccountList = []
+            querySnapshot.forEach((doc) => {
+                letMyAccountList.push({ ...doc.data(), id: doc.id });
+                console.log(doc.id, " => ", doc.data());
             });
-            return () => returnData();
-        }, []);*/
+            setAccountList(letMyAccountList);
+        });
+        return () => returnData();
+    }
 
     return (
         //<LogoutApplication>
@@ -138,7 +103,6 @@ export default function Home() {
 
                 {/*Asset and Transaction*/}
 
-
                 <div className="rowAssetTrans">
                     <div className="colMain">
                         {/*Asset*/}
@@ -146,12 +110,11 @@ export default function Home() {
 
                             {accountList.map((myAccountDetails) => (
                                 <>
-                                    <p>Checking <span id="tab2">{myAccountDetails.amountChecking}</span></p>
+                                    <p>Checking <span id="tab2">{(myAccountDetails.amountChecking)}</span></p>
                                     <p>Savings <span id="tab2">{myAccountDetails.amountSavings}</span></p>
                                     <p>Tax-Free Savings <span id="tab2">{myAccountDetails.amountTFS}</span></p>
                                 </>
                             ))}
-
                         </div>
 
                         <div className="colEmpty">
