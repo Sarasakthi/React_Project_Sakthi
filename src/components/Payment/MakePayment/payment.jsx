@@ -78,7 +78,7 @@ export default function Payment() {
         });
         return () => returnData();
     }
-    
+
     //Fetching Beneficiary Details from Database
     function getBeneficiaryDetails(currentUseremail) {
         const queryData = query(dbRefAddBeneficiary,
@@ -116,6 +116,18 @@ export default function Payment() {
         handlePaymentFreqChange(e.target.value)
     }
 
+    //Input from the Payment page
+    const [valuePaymentTransferFrom, setValuePaymentTransferFrom] = useState("")
+    const [valuePaymentTransferTo, setValuePaymentTransferTo] = useState("")
+    const [valuePaymentTransferAmount, setValuePaymentTransferAmount] = useState(0)
+    const [valuePaymentTransferRemarks, setValuePaymentTransferRemarks] = useState("")
+    const [valuePaymentTransferFreqOneTime, setValuePaymentTransferFreqOneTime] = useState("")
+    const [valuePaymentTransferFreqRec, setValuePaymentTransferFreqRec] = useState("")
+    const [valuePaymentTransferDate, setValuePaymentTransferDate] = useState("")
+    const [valuePaymentRecStartDate, setValuePaymentRecStartDate] = useState("")
+    const [valuePaymentRecEndDate, setValuePaymentRecEndDate] = useState("")
+    const [valuePaymentRecInterval, setValuePaymentRecInterval] = useState("")
+
     /*Make Payment Handler*/
     function submitMakePayment(e) {
         e.preventDefault();
@@ -126,7 +138,7 @@ export default function Payment() {
         const formJson = Object.fromEntries(formData.entries());
         console.log(formJson);
 
-        console.log('Exiting add bene')
+
 
     }
 
@@ -175,7 +187,12 @@ export default function Payment() {
                                                     selected={paymentRecStartDate}
                                                     placeholderText='Select Payment Start Date'
                                                     closeOnScroll={true}
-                                                    onChange={(paymentRecStartDate) => setPaymentRecStartDate(paymentRecStartDate)}
+                                                    value={valuePaymentRecStartDate}
+                                                    onChange={() => {
+                                                        ((paymentRecStartDate) => setPaymentRecStartDate(paymentRecStartDate));
+                                                        ((e) => setValuePaymentRecStartDate(e.target.value));
+                                                    }}
+                                                    placeholder="Remarks (optional)"
                                                     dateFormat={"dd/MMM/yyyy"}
                                                     minDate={new Date()}
                                                     filterDate={(paymentRecStartDate => (paymentRecStartDate.getDay() !== 0 &&
@@ -197,6 +214,7 @@ export default function Payment() {
                                                     selected={paymentRecEndDate}
                                                     placeholderText='Select Payment End Date'
                                                     closeOnScroll={true}
+                                                    value={valuePaymentRecEndDate}
                                                     onChange={(paymentRecEndDate) => setPaymentRecEndDate(paymentRecEndDate)}
                                                     dateFormat={"dd/MMM/yyyy"}
                                                     minDate={new Date(paymentRecStartDate)}
@@ -214,7 +232,9 @@ export default function Payment() {
                                                 </td>
                                                 <td className="column2">
                                                     <span id="paymentRecIntervalInput">
-                                                        <select>
+                                                        <select
+                                                            value={valuePaymentRecInterval}
+                                                        >
                                                             <option value="Account1"
                                                                 id="Account1">Daily</option>
                                                             <option value="Account2"
@@ -243,7 +263,8 @@ export default function Payment() {
                                             <td className="column2">
                                                 <span id="paymentInput">
                                                     <select
-                                                        autoFocus>
+                                                        autoFocus
+                                                        value={valuePaymentTransferFrom}>
                                                         <option value="Account1"
                                                             id="Account1">Checking Account</option>
                                                         <option value="Account2"
@@ -264,11 +285,12 @@ export default function Payment() {
                                             </td>
                                             <td className="column2">
                                                 <span id="paymentInput">
-                                                    <select id="paymentInputList" name="Select Beneficiary">
-
+                                                    <select id="paymentInputList"
+                                                        name="Select Beneficiary"
+                                                        value={valuePaymentTransferTo}>
                                                         {beneficiaryList.map((myBeneficiaryDetails) => (
-                                                        <option value="beneficiary1"
-                                                            id="beneficiary1">{myBeneficiaryDetails.beneficiaryName}</option>))}                                                        
+                                                            <option value="beneficiary1"
+                                                                id="beneficiary1">{myBeneficiaryDetails.beneficiaryName}</option>))}
                                                     </select>
                                                 </span>
                                             </td>
@@ -281,8 +303,10 @@ export default function Payment() {
                                         <label className="paymentLabel">
                                             <td className="column1">Amount $</td>
                                             <td className="column2">
-                                                <input type="text" name="paymentNameAmount"
-                                                    id="paymentIDAmount" />
+                                                <input type="text"
+                                                    name="paymentNameAmount"
+                                                    id="paymentIDAmount"
+                                                    value={setValuePaymentTransferAmount} />
                                             </td>
                                         </label>
                                     </div>
@@ -295,8 +319,10 @@ export default function Payment() {
                                                 Remarks
                                             </td>
                                             <td className="column2">
-                                                <input type="text" name="paymentNameRemarks"
-                                                    id="paymentIDRemarks" />
+                                                <input type="text"
+                                                    name="paymentNameRemarks"
+                                                    id="paymentIDRemarks"
+                                                    value={valuePaymentTransferRemarks} />
                                             </td>
                                         </label>
                                     </div>
@@ -315,7 +341,7 @@ export default function Payment() {
                                                     id="paymentIDFreqOneTime">
                                                     <input type="radio"
                                                         name="paymentNameFrequency"
-                                                        value="onetime"
+                                                        value={setValuePaymentTransferFreqOneTime}
                                                         onClick={() => setpaymentFreq(false)} />
                                                     <span className="paymentFreq">One Time</span>
                                                 </label>
@@ -323,7 +349,7 @@ export default function Payment() {
                                                     id="paymentIDFreqRecurring">
                                                     <input type="radio"
                                                         name="paymentNameFrequency"
-                                                        value="recurring"
+                                                        value={setValuePaymentTransferFreqRec}
                                                         onClick={() => setpaymentFreq(true)} />
                                                     <span className="paymentFreq">Recurring</span>
                                                 </label>
@@ -341,6 +367,7 @@ export default function Payment() {
                                             <td className="column2" id="datePickInline">
                                                 <DatePicker
                                                     name="paymentOnetimeDatePicked"
+                                                    value={valuePaymentTransferDate}
                                                     showIcon
                                                     selected={paymentDate}
                                                     closeOnScroll={true}
