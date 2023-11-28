@@ -92,6 +92,7 @@ Asset and Transaction
     text-indent: 2em;
     text-align: left;
     background-color: gray;
+   /* float: right;*/
 }
 
 .rowAssetTrans .colAsset p {

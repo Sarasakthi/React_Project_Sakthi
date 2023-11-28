@@ -142,13 +142,21 @@ export default function Home() {
                 </div>
 
                 {/*Asset and Transaction*/}
+
+
                 <div className="rowAssetTrans">
                     <div className="colMain">
                         {/*Asset*/}
                         <div className="colAsset">
-                            <p>Checking <span id="tab2">(Account # 1)</span></p>
-                            <p>Savings <span id="tab2">(Account # 2)</span></p>
-                            <p>Tax-Free Savings <span id="tab2">(Account # 3)</span></p>
+
+                            {accountList.map((myAccountDetails) => (
+                                <>
+                                    <p>Checking <span id="tab2">{myAccountDetails.amountChecking}</span></p>
+                                    <p>Savings <span id="tab2">{myAccountDetails.amountSavings}</span></p>
+                                    <p>Tax-Free Savings <span id="tab2">{myAccountDetails.amountTFS}</span></p>
+                                </>
+                            ))}
+
                         </div>
 
                         <div className="colEmpty">
@@ -166,6 +174,9 @@ export default function Home() {
                         </div>
                     </div>
                 </div>
+
+
+
             </div>
 
             <footer className="footerText">
