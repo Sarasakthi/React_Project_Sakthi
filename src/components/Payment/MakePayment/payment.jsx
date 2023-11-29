@@ -128,6 +128,7 @@ export default function Payment() {
     const [valuePaymentRecEndDate, setValuePaymentRecEndDate] = useState("")
     const [valuePaymentRecInterval, setValuePaymentRecInterval] = useState("")
 
+    //Initializing the Account Balances
     let currentBalanceChecking = 0
     let currentBalanceSavings = 0
     let currentBalanceTFS = 0
@@ -164,6 +165,19 @@ export default function Payment() {
     }
 
 
+    //Alert Option
+    /*
+    <Alert severity="error" action={<IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => this.setState({ error: false })}
+              style={{ width: '25%', marginTop: '-20px' }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>}
+            >
+    */
 
 
     return (
