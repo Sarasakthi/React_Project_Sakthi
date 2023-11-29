@@ -70,78 +70,79 @@ export default function Home() {
     }
 
     return (
-        //<LogoutApplication>
-        <div>
-            <nav>
-                {/*Insert NavBar*/}
-                <NavBar />
-            </nav>
+        <LogoutApplication>
 
-            <div className="helloUser">
-                {accountList.map((myAccountDetails) => (
-                    <h3>Hello
-                        <span> {myAccountDetails.firstname}</span>!</h3>
-                ))}
-            </div>
+            <div>
+                <nav>
+                    {/*Insert NavBar*/}
+                    <NavBar />
+                </nav>
 
-            <div className="assetAndTrans">
-                {/*Asset and Transaction Header*/}
-                <div className="rowAssetTransHeader">
-                    {/*Asset*/}
-                    <div className="colAssetHeader">
-                        <p>Assets (CAD)</p>
-                    </div>
-
-                    <div className="colEmptyHeader">
-                        <p></p>
-                    </div>
-
-                    <div className="colTransHeader">
-                        <p>Last 5 Transactions (CAD)</p>
-                    </div>
+                <div className="helloUser">
+                    {accountList.map((myAccountDetails) => (
+                        <h3>Hello
+                            <span> {myAccountDetails.firstname}</span>!</h3>
+                    ))}
                 </div>
 
-                {/*Asset and Transaction*/}
-
-                <div className="rowAssetTrans">
-                    <div className="colMain">
+                <div className="assetAndTrans">
+                    {/*Asset and Transaction Header*/}
+                    <div className="rowAssetTransHeader">
                         {/*Asset*/}
-                        <div className="colAsset">
-
-                            {accountList.map((myAccountDetails) => (
-                                <>
-                                    <p>Checking <span id="tab2">{(myAccountDetails.amountChecking)}</span></p>
-                                    <p>Savings <span id="tab2">{myAccountDetails.amountSavings}</span></p>
-                                    <p>Tax-Free Savings <span id="tab2">{myAccountDetails.amountTFS}</span></p>
-                                </>
-                            ))}
+                        <div className="colAssetHeader">
+                            <p>Assets (CAD)</p>
                         </div>
 
-                        <div className="colEmpty">
+                        <div className="colEmptyHeader">
                             <p></p>
                         </div>
 
-                        <div className="colTrans">
-                            <p>October 28, 2023 ABM Withdrawal $100.00 $3,286.63</p>
-                            <p>October 24, 2023 Funds Transfer $1,353.65 $3,386.63</p>
-                            <p>October 24, 2023 Transfer Dr. $1,000.00</p>
-                            <p>October 23, 2023 Bill Payment Telus $107.01 $5,740.28</p>
-                            <p>October 20, 2023 GST CANADA $827.03 $5,847.29</p>
-                            <br></br>
-                            <p><a href="#statement">view more transactions</a></p>
+                        <div className="colTransHeader">
+                            <p>Last 5 Transactions (CAD)</p>
                         </div>
                     </div>
+
+                    {/*Asset and Transaction*/}
+
+                    <div className="rowAssetTrans">
+                        <div className="colMain">
+                            {/*Asset*/}
+                            <div className="colAsset">
+
+                                {accountList.map((myAccountDetails) => (
+                                    <>
+                                        <p>Checking <span id="tab2">{(myAccountDetails.amountChecking)}</span></p>
+                                        <p>Savings <span id="tab2">{myAccountDetails.amountSavings}</span></p>
+                                        <p>Tax-Free Savings <span id="tab2">{myAccountDetails.amountTFS}</span></p>
+                                    </>
+                                ))}
+                            </div>
+
+                            <div className="colEmpty">
+                                <p></p>
+                            </div>
+
+                            <div className="colTrans">
+                                <p>October 28, 2023 ABM Withdrawal $100.00 $3,286.63</p>
+                                <p>October 24, 2023 Funds Transfer $1,353.65 $3,386.63</p>
+                                <p>October 24, 2023 Transfer Dr. $1,000.00</p>
+                                <p>October 23, 2023 Bill Payment Telus $107.01 $5,740.28</p>
+                                <p>October 20, 2023 GST CANADA $827.03 $5,847.29</p>
+                                <br></br>
+                                <p><a href="#statement">view more transactions</a></p>
+                            </div>
+                        </div>
+                    </div>
+
+
+
                 </div>
 
-
-
+                <footer className="footerText">
+                    {/*Insert Footer*/}
+                    <Footer />
+                </footer>
             </div>
-
-            <footer className="footerText">
-                {/*Insert Footer*/}
-                <Footer />
-            </footer>
-        </div>
-        //</LogoutApplication>
+        </LogoutApplication>
     )
 }

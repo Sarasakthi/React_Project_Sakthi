@@ -117,9 +117,9 @@ export default function Payment() {
     }
 
     //Input from the Payment page
-    const [valuePaymentTransferFrom, setValuePaymentTransferFrom] = useState("")
+    const [valuePaymentTransferFrom, setValuePaymentTransferFrom] = useState("Account1")
     const [valuePaymentTransferTo, setValuePaymentTransferTo] = useState("")
-    const [valuePaymentTransferAmount, setValuePaymentTransferAmount] = useState(0)
+    const [valuePaymentTransferAmount, setValuePaymentTransferAmount] = useState("")
     const [valuePaymentTransferRemarks, setValuePaymentTransferRemarks] = useState("")
     const [valuePaymentTransferFreqOneTime, setValuePaymentTransferFreqOneTime] = useState("")
     const [valuePaymentTransferFreqRec, setValuePaymentTransferFreqRec] = useState("")
@@ -127,6 +127,22 @@ export default function Payment() {
     const [valuePaymentRecStartDate, setValuePaymentRecStartDate] = useState("")
     const [valuePaymentRecEndDate, setValuePaymentRecEndDate] = useState("")
     const [valuePaymentRecInterval, setValuePaymentRecInterval] = useState("")
+
+    let currentBalanceChecking = 0
+    let currentBalanceSavings = 0
+    let currentBalanceTFS = 0
+
+    function initiateBalances() {
+        accountList.map((myAccountDetails) => (
+            currentBalanceChecking = myAccountDetails.amountChecking
+        ))
+        accountList.map((myAccountDetails) => (
+            currentBalanceSavings = myAccountDetails.amountSavings
+        ))
+        accountList.map((myAccountDetails) => (
+            currentBalanceTFS = myAccountDetails.amountTFS
+        ))
+    }
 
     /*Make Payment Handler*/
     function submitMakePayment(e) {
@@ -138,9 +154,17 @@ export default function Payment() {
         const formJson = Object.fromEntries(formData.entries());
         console.log(formJson);
 
-
-
     }
+
+    function handleTransferFrom(inputElement) {
+
+        console.log("reached handleTransferFrom")
+        console.log(inputElement)
+        //(e) => setValuePaymentTransferFrom(e.target.value)
+    }
+
+
+
 
     return (
 
@@ -149,6 +173,8 @@ export default function Payment() {
             <div>
                 {/*Insert NavBar*/}
                 <NavBar />
+
+                {initiateBalances()}
 
                 <div className="helloUser">
                     {accountList.map((myAccountDetails) => (
@@ -187,11 +213,7 @@ export default function Payment() {
                                                     selected={paymentRecStartDate}
                                                     placeholderText='Select Payment Start Date'
                                                     closeOnScroll={true}
-                                                    value={valuePaymentRecStartDate}
-                                                    onChange={() => {
-                                                        ((paymentRecStartDate) => setPaymentRecStartDate(paymentRecStartDate));
-                                                        ((e) => setValuePaymentRecStartDate(e.target.value));
-                                                    }}
+                                                    onChange={(paymentRecStartDate) => setPaymentRecStartDate(paymentRecStartDate)}
                                                     placeholder="Remarks (optional)"
                                                     dateFormat={"dd/MMM/yyyy"}
                                                     minDate={new Date()}
@@ -234,6 +256,7 @@ export default function Payment() {
                                                     <span id="paymentRecIntervalInput">
                                                         <select
                                                             value={valuePaymentRecInterval}
+                                                            onChange={(e) => setValuePaymentRecInterval(e.target.value)}
                                                         >
                                                             <option value="Account1"
                                                                 id="Account1">Daily</option>
@@ -264,13 +287,24 @@ export default function Payment() {
                                                 <span id="paymentInput">
                                                     <select
                                                         autoFocus
-                                                        value={valuePaymentTransferFrom}>
-                                                        <option value="Account1"
-                                                            id="Account1">Checking Account</option>
-                                                        <option value="Account2"
-                                                            id="Account2">Savings Account</option>
-                                                        <option value="Account3"
-                                                            id="Account3">TFS Account</option>
+                                                        value={valuePaymentTransferFrom}
+                                                        onChange={
+                                                            (e) => {
+                                                                { setValuePaymentTransferFrom(e.target.value) }
+                                                                console.log(e.target.value)
+                                                            }
+                                                        }
+                                                    >
+                                                        {accountList.map((myAccountDetails) => (
+                                                            <>
+                                                                <option value="Account1"
+                                                                    id="Account1">Checking Account - ${(myAccountDetails.amountChecking)}</option>
+                                                                <option value="Account2"
+                                                                    id="Account2">Savings Account - ${(myAccountDetails.amountSavings)}</option>
+                                                                <option value="Account3"
+                                                                    id="Account3">TFS Account - ${(myAccountDetails.amountTFS)}</option>
+                                                            </>
+                                                        ))}
                                                     </select>
                                                 </span>
                                             </td>
@@ -287,10 +321,19 @@ export default function Payment() {
                                                 <span id="paymentInput">
                                                     <select id="paymentInputList"
                                                         name="Select Beneficiary"
-                                                        value={valuePaymentTransferTo}>
-                                                        {beneficiaryList.map((myBeneficiaryDetails) => (
-                                                            <option value="beneficiary1"
-                                                                id="beneficiary1">{myBeneficiaryDetails.beneficiaryName}</option>))}
+                                                        value={valuePaymentTransferTo}
+                                                        onChange={(e) => setValuePaymentTransferTo(e.target.value)}
+                                                    >
+                                                        {
+                                                            (valuePaymentTransferFrom == 'Account1')
+                                                                ?
+                                                                beneficiaryList.map((myBeneficiaryDetails) => (
+                                                                    <option value="beneficiary1"
+                                                                        id="beneficiary1">{myBeneficiaryDetails.beneficiaryName}</option>))
+                                                                :
+                                                                <option value="beneficiary1"
+                                                                    id="beneficiary1">Checking Account</option>
+                                                        }
                                                     </select>
                                                 </span>
                                             </td>
@@ -306,7 +349,9 @@ export default function Payment() {
                                                 <input type="text"
                                                     name="paymentNameAmount"
                                                     id="paymentIDAmount"
-                                                    value={setValuePaymentTransferAmount} />
+                                                    value={valuePaymentTransferAmount}
+                                                    onChange={(e) => setValuePaymentTransferAmount(e.target.value)}
+                                                />
                                             </td>
                                         </label>
                                     </div>
@@ -322,7 +367,9 @@ export default function Payment() {
                                                 <input type="text"
                                                     name="paymentNameRemarks"
                                                     id="paymentIDRemarks"
-                                                    value={valuePaymentTransferRemarks} />
+                                                    value={valuePaymentTransferRemarks}
+                                                    onChange={(e) => setValuePaymentTransferRemarks(e.target.value)}
+                                                />
                                             </td>
                                         </label>
                                     </div>
@@ -342,7 +389,8 @@ export default function Payment() {
                                                     <input type="radio"
                                                         name="paymentNameFrequency"
                                                         value={setValuePaymentTransferFreqOneTime}
-                                                        onClick={() => setpaymentFreq(false)} />
+                                                        onClick={(e) => setpaymentFreq(false)}
+                                                    />
                                                     <span className="paymentFreq">One Time</span>
                                                 </label>
                                                 <label className="paymentFrequencyLabel"
