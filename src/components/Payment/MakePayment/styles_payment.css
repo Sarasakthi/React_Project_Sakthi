@@ -41,10 +41,6 @@ div {
     z-index: 1;
 }
 
-.paymentTableMain {}
-
-.paymentTableLeft {}
-
 .paymentDetails tr {
     display: flex;
     align-items: center;
@@ -83,6 +79,28 @@ div {
 
 .paymentTransferFrom {
     width: 50px;
+}
+
+.paymentTransferFrom button {
+    display: inline;
+    position: absolute;
+    margin-left: 20px;
+    padding: 3px 30px;
+    font-size: 20px;
+    font-family: 'Ubuntu';
+    font-weight: bold;
+    background-color: #d61212;
+    color: white;
+    border-radius: 25px;
+    cursor: pointer;
+    min-width: max-content;
+    text-align: center;
+}
+
+.paymentTransferFrom button span {
+    color: aquamarine;
+    font-size: 25px;
+
 }
 
 input[type="radio"] {

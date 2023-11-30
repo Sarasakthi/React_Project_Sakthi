@@ -24,12 +24,28 @@ export default function Payment() {
 
     const navigate = useNavigate();
 
+    //Const for DB
     const dbRefAccount = collection(db, "userAccount");
     const dbRefAddBeneficiary = collection(db, "userBeneficiary");
     const dbRefTransaction = collection(db, "userTransaction");
     const [accountList, setAccountList] = useState([]);
     const [beneficiaryList, setBeneficiaryList] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    //Input from the Payment page
+    const [valuePaymentTransferFrom, setValuePaymentTransferFrom] = useState("Checking")
+    const [valuePaymentTransferTo, setValuePaymentTransferTo] = useState("")
+    const [valuePaymentTransferAmount, setValuePaymentTransferAmount] = useState("")
+    const [valuePaymentTransferRemarks, setValuePaymentTransferRemarks] = useState("")
+    const [valuePaymentTransferFreqOneTime, setValuePaymentTransferFreqOneTime] = useState(false)
+    const [valuePaymentTransferFreqRec, setValuePaymentTransferFreqRec] = useState(false)
+    const [valuePaymentTransferDate, setValuePaymentTransferDate] = useState(new Date())
+    const [valuePaymentRecStartDate, setValuePaymentRecStartDate] = useState(new Date())
+    const [valuePaymentRecEndDate, setValuePaymentRecEndDate] = useState(new Date())
+    const [valuePaymentRecInterval, setValuePaymentRecInterval] = useState("")
+    const [balanceChecking, setBalanceChecking] = useState(0)
+    const [balanceSavings, setBalanceSavings] = useState(0)
+    const [balanceTFS, setBalanceTFS] = useState(0)
 
     let currentUserID = null
     let currentUseremail = null
@@ -63,6 +79,11 @@ export default function Payment() {
             let letMyAccountList = []
             querySnapshot.forEach((doc) => {
                 letMyAccountList.push({ ...doc.data(), id: doc.id });
+
+                //Initiate Account Balance
+                setBalanceChecking(doc.data().amountChecking)
+                setBalanceSavings(doc.data().amountSavings)
+                setBalanceTFS(doc.data().amountTFS)
                 console.log(doc.id, " => ", doc.data());
             });
             setAccountList(letMyAccountList);
@@ -81,39 +102,12 @@ export default function Payment() {
                 console.log(doc.id, " ==> ", doc.data());
             });
             setBeneficiaryList(letMyBeneficiaryList);
-            console.log(beneficiaryList)
+            console.log("Printing beneficiaryList => " + beneficiaryList)
         });
         return () => returnData();
     }
 
-    //Input from the Payment page
-    const [valuePaymentTransferFrom, setValuePaymentTransferFrom] = useState("Account1")
-    const [valuePaymentTransferTo, setValuePaymentTransferTo] = useState("")
-    const [valuePaymentTransferAmount, setValuePaymentTransferAmount] = useState("")
-    const [valuePaymentTransferRemarks, setValuePaymentTransferRemarks] = useState("")
-    const [valuePaymentTransferFreqOneTime, setValuePaymentTransferFreqOneTime] = useState(false)
-    const [valuePaymentTransferFreqRec, setValuePaymentTransferFreqRec] = useState(false)
-    const [valuePaymentTransferDate, setValuePaymentTransferDate] = useState(new Date())
-    const [valuePaymentRecStartDate, setValuePaymentRecStartDate] = useState(new Date())
-    const [valuePaymentRecEndDate, setValuePaymentRecEndDate] = useState(new Date())
-    const [valuePaymentRecInterval, setValuePaymentRecInterval] = useState("")
 
-    //Initializing the Account Balances
-    let currentBalanceChecking = 0
-    let currentBalanceSavings = 0
-    let currentBalanceTFS = 0
-
-    function initiateBalances() {
-        accountList.map((myAccountDetails) => (
-            currentBalanceChecking = myAccountDetails.amountChecking
-        ))
-        accountList.map((myAccountDetails) => (
-            currentBalanceSavings = myAccountDetails.amountSavings
-        ))
-        accountList.map((myAccountDetails) => (
-            currentBalanceTFS = myAccountDetails.amountTFS
-        ))
-    }
 
     /*Make Payment Handler*/
     function submitMakePayment(e) {
@@ -125,27 +119,22 @@ export default function Payment() {
         const formJson = Object.fromEntries(formData.entries());
         console.log(formJson);
 
-        let fromAccountAmount = 0
-        if (valuePaymentTransferFrom == "Account1") {
-            fromAccountAmount = currentBalanceChecking
-        }
-        else if (valuePaymentTransferFrom == "Account2") {
-            fromAccountAmount = currentBalanceSavings
-        }
-        else if (valuePaymentTransferFrom == "Account3") {
-            fromAccountAmount = currentBalanceTFS
-        }
+        //Check the Payment from amount with the balance
+        let fromAccountAmount = (valuePaymentTransferFrom == "Checking") ? balanceChecking :
+            (valuePaymentTransferFrom == "Savings") ? balanceSavings :
+                balanceTFS
 
-
+        //Alert message for balance checking
         if (valuePaymentTransferAmount > fromAccountAmount) {
-            alert("You dont have sufficient balance in your account to make this payment. \n" +
-                (fromAccountAmount == 0 ? "" : "Please enter amount less than $" + fromAccountAmount))
+            alert("You dont have sufficient balance in your " + valuePaymentTransferFrom
+                + " account to make this payment. \n\n" +
+                (fromAccountAmount == 0 ? "" : "Please enter amount less than $"
+                    + fromAccountAmount + "."))
         }
         else {
             alert("Good to go")
         }
     }
-
 
     return (
 
@@ -154,8 +143,6 @@ export default function Payment() {
             <div>
                 {/*Insert NavBar*/}
                 <NavBar />
-
-                {initiateBalances()}
 
                 <div className="helloUser">
                     {accountList.map((myAccountDetails) => (
@@ -243,12 +230,12 @@ export default function Payment() {
                                                             required
                                                             onChange={(e) => setValuePaymentRecInterval(e.target.value)}
                                                         >
-                                                            <option value="Account1"
-                                                                id="Account1">Daily</option>
-                                                            <option value="Account2"
-                                                                id="Account2">Weekly</option>
-                                                            <option value="Account3"
-                                                                id="Account3">Monthly</option>
+                                                            <option value="Daily"
+                                                                id="Daily">Daily</option>
+                                                            <option value="Weekly"
+                                                                id="Weekly">Weekly</option>
+                                                            <option value="Monthly"
+                                                                id="Monthly">Monthly</option>
                                                         </select>
                                                     </span>
                                                 </td>
@@ -284,15 +271,19 @@ export default function Payment() {
                                                     >
                                                         {accountList.map((myAccountDetails) => (
                                                             <>
-                                                                <option value="Account1"
-                                                                    id="Account1">Checking Account - ${(myAccountDetails.amountChecking)}</option>
-                                                                <option value="Account2"
-                                                                    id="Account2">Savings Account - ${(myAccountDetails.amountSavings)}</option>
-                                                                <option value="Account3"
-                                                                    id="Account3">TFS Account - ${(myAccountDetails.amountTFS)}</option>
+                                                                <option value="Checking"
+                                                                    id="Checking">Checking Account - ${(myAccountDetails.amountChecking)}</option>
+                                                                <option value="Savings"
+                                                                    id="Savings">Savings Account - ${(myAccountDetails.amountSavings)}</option>
+                                                                <option value="TFS"
+                                                                    id="TFS">TFS Account - ${(myAccountDetails.amountTFS)}</option>
                                                             </>
                                                         ))}
                                                     </select>
+                                                    <button type="input" name="paymentAddBalance"
+                                                        id="paymentAddBalance">
+                                                        <span>+</span> Add Cash Deposit
+                                                    </button>
                                                 </span>
                                             </td>
                                         </label>
@@ -313,7 +304,7 @@ export default function Payment() {
                                                         onChange={(e) => setValuePaymentTransferTo(e.target.value)}
                                                     >
                                                         {
-                                                            (valuePaymentTransferFrom === 'Account1')
+                                                            (valuePaymentTransferFrom === 'Checking')
                                                                 ?
                                                                 beneficiaryList.map((myBeneficiaryDetails) => (
                                                                     <option>{myBeneficiaryDetails.beneficiaryName}</option>))
