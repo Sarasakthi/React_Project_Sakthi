@@ -144,8 +144,6 @@ export default function Payment() {
         else {
             alert("Good to go")
         }
-
-
     }
 
 
