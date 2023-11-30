@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css'
+import Alert from 'react-bootstrap/Alert';
+import Button from 'react-bootstrap/Button';
 
 import NavBar from "../../Common/Navbar/navbar"
 import Footer from "../../Common/Footer/footer"
@@ -106,8 +108,24 @@ export default function Payment() {
         });
         return () => returnData();
     }
-
-
+    
+    const [show, setShow] = useState(true);
+    function AlertDismissibleExample() {
+        if (show) {
+            return (
+                <Alert variant="danger" onClose={() => setShow(false)} dismissible>
+                    <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
+                    <p>
+                        Change this and that and try again.
+                    </p>
+                </Alert>
+            );
+        }
+        else {
+            alert("Failed")
+        }
+        return <Button onClick={() => setShow(true)}>Show Alert</Button>;
+    }
 
     /*Make Payment Handler*/
     function submitMakePayment(e) {
@@ -126,6 +144,7 @@ export default function Payment() {
 
         //Alert message for balance checking
         if (valuePaymentTransferAmount > fromAccountAmount) {
+            AlertDismissibleExample()
             alert("You dont have sufficient balance in your " + valuePaymentTransferFrom
                 + " account to make this payment. \n\n" +
                 (fromAccountAmount == 0 ? "" : "Please enter amount less than $"
