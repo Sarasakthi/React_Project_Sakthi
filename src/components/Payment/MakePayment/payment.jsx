@@ -22,15 +22,6 @@ import { collection, addDoc, query, where, getDocs, DocumentSnapshot, onSnapshot
 
 export default function Payment() {
 
-    // date picker
-    const [paymentDate, setPaymentDate] = useState(new Date());
-    const [paymentRecStartDate, setPaymentRecStartDate] = useState(new Date());
-    const [paymentRecEndDate, setPaymentRecEndDate] = useState(new Date());
-
-    // Payment Frequency Change (Onetime - Recurring)
-    //const [state, setState] = useState(initialState);
-    const [paymentFreq, setpaymentFreq] = useState(false)
-
     const navigate = useNavigate();
 
     const dbRefAccount = collection(db, "userAccount");
@@ -95,37 +86,16 @@ export default function Payment() {
         return () => returnData();
     }
 
-    function handlePaymentFreqChange(paymentFreqCurrent) {
-        const getElement = document.getElementById("paymentTableRightID")
-        /*if (paymentFreqCurrent === 'recurring') {
-            getElement.setAttribute("visibility","visible")
-            console.log(getElement)
-        }
-        else {
-            getElement.setAttribute("visibility","hidden")
-        }*/
-    }
-
-    // Recurring Start and End date change
-    function handleStartEndDateMatch() {
-
-    }
-
-    const onOptionChange = (e) => {
-        setpaymentFreq(e.target.value)
-        handlePaymentFreqChange(e.target.value)
-    }
-
     //Input from the Payment page
     const [valuePaymentTransferFrom, setValuePaymentTransferFrom] = useState("Account1")
     const [valuePaymentTransferTo, setValuePaymentTransferTo] = useState("")
     const [valuePaymentTransferAmount, setValuePaymentTransferAmount] = useState("")
     const [valuePaymentTransferRemarks, setValuePaymentTransferRemarks] = useState("")
-    const [valuePaymentTransferFreqOneTime, setValuePaymentTransferFreqOneTime] = useState("")
-    const [valuePaymentTransferFreqRec, setValuePaymentTransferFreqRec] = useState("")
-    const [valuePaymentTransferDate, setValuePaymentTransferDate] = useState("")
-    const [valuePaymentRecStartDate, setValuePaymentRecStartDate] = useState("")
-    const [valuePaymentRecEndDate, setValuePaymentRecEndDate] = useState("")
+    const [valuePaymentTransferFreqOneTime, setValuePaymentTransferFreqOneTime] = useState(false)
+    const [valuePaymentTransferFreqRec, setValuePaymentTransferFreqRec] = useState(false)
+    const [valuePaymentTransferDate, setValuePaymentTransferDate] = useState(new Date())
+    const [valuePaymentRecStartDate, setValuePaymentRecStartDate] = useState(new Date())
+    const [valuePaymentRecEndDate, setValuePaymentRecEndDate] = useState(new Date())
     const [valuePaymentRecInterval, setValuePaymentRecInterval] = useState("")
 
     //Initializing the Account Balances
@@ -155,29 +125,28 @@ export default function Payment() {
         const formJson = Object.fromEntries(formData.entries());
         console.log(formJson);
 
+        let fromAccountAmount = 0
+        if (valuePaymentTransferFrom == "Account1") {
+            fromAccountAmount = currentBalanceChecking
+        }
+        else if (valuePaymentTransferFrom == "Account2") {
+            fromAccountAmount = currentBalanceSavings
+        }
+        else if (valuePaymentTransferFrom == "Account3") {
+            fromAccountAmount = currentBalanceTFS
+        }
+
+
+        if (valuePaymentTransferAmount > fromAccountAmount) {
+            alert("You dont have sufficient balance in your account to make this payment. \n" +
+                (fromAccountAmount == 0 ? "" : "Please enter amount less than $" + fromAccountAmount))
+        }
+        else {
+            alert("Good to go")
+        }
+
+
     }
-
-    function handleTransferFrom(inputElement) {
-
-        console.log("reached handleTransferFrom")
-        console.log(inputElement)
-        //(e) => setValuePaymentTransferFrom(e.target.value)
-    }
-
-
-    //Alert Option
-    /*
-    <Alert severity="error" action={<IconButton
-              aria-label="close"
-              color="inherit"
-              size="small"
-              onClick={() => this.setState({ error: false })}
-              style={{ width: '25%', marginTop: '-20px' }}
-            >
-              <CloseIcon fontSize="inherit" />
-            </IconButton>}
-            >
-    */
 
 
     return (
@@ -208,7 +177,7 @@ export default function Payment() {
 
                         {/*Table Right - Additional info for Recurring Payment*/}
                         <div className="paymentTableRecurring">
-                            {paymentFreq ?
+                            {valuePaymentTransferFreqRec ?
                                 <table className="paymentTableRight"
                                     id="paymentTableRightID">
 
@@ -224,15 +193,17 @@ export default function Payment() {
                                                 <DatePicker
                                                     name="paymentRecurringStartDate"
                                                     showIcon
-                                                    selected={paymentRecStartDate}
+                                                    selected={valuePaymentRecStartDate}
                                                     placeholderText='Select Payment Start Date'
                                                     closeOnScroll={true}
-                                                    onChange={(paymentRecStartDate) => setPaymentRecStartDate(paymentRecStartDate)}
+                                                    required
+                                                    value={valuePaymentRecStartDate}
+                                                    onChange={(valuePaymentRecStartDate) => setValuePaymentRecStartDate(valuePaymentRecStartDate)}
                                                     placeholder="Remarks (optional)"
                                                     dateFormat={"dd/MMM/yyyy"}
                                                     minDate={new Date()}
-                                                    filterDate={(paymentRecStartDate => (paymentRecStartDate.getDay() !== 0 &&
-                                                        paymentRecStartDate.getDay() !== 6))} />
+                                                    filterDate={(valuePaymentRecStartDate => (valuePaymentRecStartDate.getDay() !== 0 &&
+                                                        valuePaymentRecStartDate.getDay() !== 6))} />
                                             </td>
                                         </div>
                                     </tr>
@@ -247,15 +218,16 @@ export default function Payment() {
                                                 <DatePicker
                                                     name="paymentRecurringEndtDate"
                                                     showIcon
-                                                    selected={paymentRecEndDate}
+                                                    selected={valuePaymentRecEndDate}
                                                     placeholderText='Select Payment End Date'
                                                     closeOnScroll={true}
+                                                    required
                                                     value={valuePaymentRecEndDate}
-                                                    onChange={(paymentRecEndDate) => setPaymentRecEndDate(paymentRecEndDate)}
+                                                    onChange={(valuePaymentRecEndDate) => setValuePaymentRecEndDate(valuePaymentRecEndDate)}
                                                     dateFormat={"dd/MMM/yyyy"}
-                                                    minDate={new Date(paymentRecStartDate)}
-                                                    filterDate={(paymentRecEndDate => (paymentRecEndDate.getDay() !== 0
-                                                        && paymentRecEndDate.getDay() !== 6))} />
+                                                    minDate={new Date(valuePaymentRecStartDate)}
+                                                    filterDate={(valuePaymentRecEndDate => (valuePaymentRecEndDate.getDay() !== 0
+                                                        && valuePaymentRecEndDate.getDay() !== 6))} />
                                             </td>
                                         </div>
                                     </tr>
@@ -270,6 +242,7 @@ export default function Payment() {
                                                     <span id="paymentRecIntervalInput">
                                                         <select
                                                             value={valuePaymentRecInterval}
+                                                            required
                                                             onChange={(e) => setValuePaymentRecInterval(e.target.value)}
                                                         >
                                                             <option value="Account1"
@@ -300,8 +273,10 @@ export default function Payment() {
                                             <td className="column2">
                                                 <span id="paymentInput">
                                                     <select
+                                                        name="paymentTransferFrom"
                                                         autoFocus
                                                         value={valuePaymentTransferFrom}
+                                                        required
                                                         onChange={
                                                             (e) => {
                                                                 { setValuePaymentTransferFrom(e.target.value) }
@@ -334,16 +309,16 @@ export default function Payment() {
                                             <td className="column2">
                                                 <span id="paymentInput">
                                                     <select id="paymentInputList"
-                                                        name="Select Beneficiary"
+                                                        name="paymentTransferTo"
+                                                        required
                                                         value={valuePaymentTransferTo}
                                                         onChange={(e) => setValuePaymentTransferTo(e.target.value)}
                                                     >
                                                         {
-                                                            (valuePaymentTransferFrom == 'Account1')
+                                                            (valuePaymentTransferFrom === 'Account1')
                                                                 ?
                                                                 beneficiaryList.map((myBeneficiaryDetails) => (
-                                                                    <option value="beneficiary1"
-                                                                        id="beneficiary1">{myBeneficiaryDetails.beneficiaryName}</option>))
+                                                                    <option>{myBeneficiaryDetails.beneficiaryName}</option>))
                                                                 :
                                                                 <option value="beneficiary1"
                                                                     id="beneficiary1">Checking Account</option>
@@ -361,8 +336,11 @@ export default function Payment() {
                                             <td className="column1">Amount $</td>
                                             <td className="column2">
                                                 <input type="text"
-                                                    name="paymentNameAmount"
+                                                    name="paymentTransferAmount"
                                                     id="paymentIDAmount"
+                                                    required
+                                                    onInput={F => F.target.setCustomValidity('')}
+                                                    onInvalid={F => F.target.setCustomValidity('Please enter amount here')}
                                                     value={valuePaymentTransferAmount}
                                                     onChange={(e) => setValuePaymentTransferAmount(e.target.value)}
                                                 />
@@ -379,8 +357,11 @@ export default function Payment() {
                                             </td>
                                             <td className="column2">
                                                 <input type="text"
-                                                    name="paymentNameRemarks"
+                                                    name="paymentTransferRemarks"
                                                     id="paymentIDRemarks"
+                                                    required
+                                                    onInput={F => F.target.setCustomValidity('')}
+                                                    onInvalid={F => F.target.setCustomValidity('Please enter remarks here')}
                                                     value={valuePaymentTransferRemarks}
                                                     onChange={(e) => setValuePaymentTransferRemarks(e.target.value)}
                                                 />
@@ -401,18 +382,21 @@ export default function Payment() {
                                                 <label className="paymentFrequencyLabel"
                                                     id="paymentIDFreqOneTime">
                                                     <input type="radio"
-                                                        name="paymentNameFrequency"
-                                                        value={setValuePaymentTransferFreqOneTime}
-                                                        onClick={(e) => setpaymentFreq(false)}
+                                                        name="PaymentTransferFreqRec"
+                                                        required
+                                                        onInput={F => F.target.setCustomValidity('')}
+                                                        onInvalid={F => F.target.setCustomValidity('Please select one of the Frequency')}
+                                                        value={valuePaymentTransferFreqRec}
+                                                        onClick={(e) => setValuePaymentTransferFreqRec(false)}
                                                     />
                                                     <span className="paymentFreq">One Time</span>
                                                 </label>
                                                 <label className="paymentFrequencyLabel"
                                                     id="paymentIDFreqRecurring">
                                                     <input type="radio"
-                                                        name="paymentNameFrequency"
-                                                        value={setValuePaymentTransferFreqRec}
-                                                        onClick={() => setpaymentFreq(true)} />
+                                                        name="PaymentTransferFreqRec"
+                                                        value={valuePaymentTransferFreqRec}
+                                                        onClick={(e) => setValuePaymentTransferFreqRec(true)} />
                                                     <span className="paymentFreq">Recurring</span>
                                                 </label>
                                             </td>
@@ -421,7 +405,7 @@ export default function Payment() {
                                 </tr>
 
                                 <tr>
-                                    {paymentFreq ? null :
+                                    {valuePaymentTransferFreqRec ? null :
                                         <div className="paymentDate">
                                             <label className="paymentLabel">
                                                 <td className="column1" id="paymentDatePick1">Payment Date</td>
@@ -429,16 +413,16 @@ export default function Payment() {
                                             <td className="column2" id="datePickInline">
                                                 <DatePicker
                                                     name="paymentOnetimeDatePicked"
-                                                    value={valuePaymentTransferDate}
                                                     showIcon
-                                                    selected={paymentDate}
+                                                    selected={valuePaymentTransferDate}
                                                     closeOnScroll={true}
-                                                    onChange={(paymentDate) => setPaymentDate(paymentDate)}
+                                                    value={valuePaymentTransferDate}
+                                                    onChange={(valuePaymentTransferDate) => setValuePaymentTransferDate(valuePaymentTransferDate)}
                                                     dateFormat={"dd/MMM/yyyy"}
                                                     minDate={new Date()}
                                                     filterDate={
-                                                        paymentDate => (paymentDate.getDay() !== 0 &&
-                                                            paymentDate.getDay() !== 6)} />
+                                                        valuePaymentTransferDate => (valuePaymentTransferDate.getDay() !== 0 &&
+                                                            valuePaymentTransferDate.getDay() !== 6)} />
                                             </td>
                                         </div>}
                                 </tr>
