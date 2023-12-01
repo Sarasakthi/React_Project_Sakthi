@@ -81,7 +81,7 @@ div {
     width: 50px;
 }
 
-.paymentTransferFrom button {
+.paymentTransferFrom .paymentAddBalance {
     display: inline;
     position: absolute;
     margin-left: 20px;
@@ -97,10 +97,14 @@ div {
     text-align: center;
 }
 
-.paymentTransferFrom button span {
+.paymentTransferFrom .paymentAddBalance span {
     color: aquamarine;
     font-size: 25px;
+}
 
+.paymentTransferFrom .addCashDepositPopup {
+    border: 2px solid red;
+    background-color: antiquewhite;
 }
 
 input[type="radio"] {

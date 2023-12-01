@@ -1,19 +1,22 @@
-import React, { Component } from "react";
+//
+import * as React from 'react';
+import * as ReactDOM from 'react-dom/client';
+//
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css'
-import Alert from 'react-bootstrap/Alert';
-import Button from 'react-bootstrap/Button';
 
 import NavBar from "../../Common/Navbar/navbar"
 import Footer from "../../Common/Footer/footer"
 import LogoutApplication from "../../Logout/autoLogout";
 //import { FetchAccountBalanceFromDB } from "../../Firebase/dbQuery"
 import * as CommonFunction from "../../Common/General/commonFunctions"
+import Popup from "../../Common/Popup/popupFunction"
 
 import "../../Home/styles_home.css"
 import "./styles_payment.css"
 import "../../Common/General/variables"
 import "../../Common/General/styles_common.css"
+
 
 /*Adding authentication check*/
 import { useEffect, useState } from "react";
@@ -25,6 +28,8 @@ import { collection, addDoc, query, where, getDocs, DocumentSnapshot, onSnapshot
 export default function Payment() {
 
     const navigate = useNavigate();
+
+    const [buttonPopup, setButtonPopup] = useState(true);
 
     //Const for DB
     const dbRefAccount = collection(db, "userAccount");
@@ -39,7 +44,6 @@ export default function Payment() {
     const [valuePaymentTransferTo, setValuePaymentTransferTo] = useState("")
     const [valuePaymentTransferAmount, setValuePaymentTransferAmount] = useState("")
     const [valuePaymentTransferRemarks, setValuePaymentTransferRemarks] = useState("")
-    const [valuePaymentTransferFreqOneTime, setValuePaymentTransferFreqOneTime] = useState(false)
     const [valuePaymentTransferFreqRec, setValuePaymentTransferFreqRec] = useState(false)
     const [valuePaymentTransferDate, setValuePaymentTransferDate] = useState(new Date())
     const [valuePaymentRecStartDate, setValuePaymentRecStartDate] = useState(new Date())
@@ -108,24 +112,24 @@ export default function Payment() {
         });
         return () => returnData();
     }
-    
-    const [show, setShow] = useState(true);
-    function AlertDismissibleExample() {
-        if (show) {
-            return (
-                <Alert variant="danger" onClose={() => setShow(false)} dismissible>
-                    <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
-                    <p>
-                        Change this and that and try again.
-                    </p>
-                </Alert>
-            );
-        }
-        else {
-            alert("Failed")
-        }
-        return <Button onClick={() => setShow(true)}>Show Alert</Button>;
+
+    function submitAddCashBalance_old(e) {
+        e.preventDefault();
+        alert("adding cash to Checking")
+        setButtonPopup(false)
+        return (
+            <Popup trigger={true} setTrigger={setButtonPopup}>
+                <h3>My Popup</h3>
+            </Popup>
+        )
     }
+
+    const [isOpen, setIsOpen] = useState(false);
+
+    function submitAddCashBalance(e) {
+        setIsOpen(!isOpen);
+    }
+
 
     /*Make Payment Handler*/
     function submitMakePayment(e) {
@@ -144,7 +148,7 @@ export default function Payment() {
 
         //Alert message for balance checking
         if (valuePaymentTransferAmount > fromAccountAmount) {
-            AlertDismissibleExample()
+
             alert("You dont have sufficient balance in your " + valuePaymentTransferFrom
                 + " account to make this payment. \n\n" +
                 (fromAccountAmount == 0 ? "" : "Please enter amount less than $"
@@ -153,6 +157,7 @@ export default function Payment() {
         else {
             alert("Good to go")
         }
+
     }
 
     return (
@@ -299,13 +304,39 @@ export default function Payment() {
                                                             </>
                                                         ))}
                                                     </select>
-                                                    <button type="input" name="paymentAddBalance"
-                                                        id="paymentAddBalance">
-                                                        <span>+</span> Add Cash Deposit
-                                                    </button>
                                                 </span>
                                             </td>
                                         </label>
+                                        {/*
+                                            (valuePaymentTransferFrom === 'Checking')
+                                                ?
+                                                
+                                                <button
+                                                    className="paymentAddBalance"
+                                                    type="button"
+                                                    onClick={submitAddCashBalance}
+                                                    name="paymentAddBalance">
+                                                    <span>+</span> Add Cash Deposit
+                                                </button>
+                                                : null*/
+                                        }
+                                        <button
+                                            className="paymentAddBalance"
+                                            type="button"
+                                            onClick={submitAddCashBalance}
+                                            name="paymentAddBalance"
+                                        ><span>+</span> Add Cash Deposit
+                                        </button>
+                                        {isOpen && <Popup
+                                            content={<>
+                                                <b>Design your Popup</b>
+                                                <button
+                                                onClick={submitAddCashBalance}
+                                                >Test button</button>
+                                            </>}
+                                        />}
+
+
                                     </div>
                                 </tr>
 
@@ -327,6 +358,7 @@ export default function Payment() {
                                                                 ?
                                                                 beneficiaryList.map((myBeneficiaryDetails) => (
                                                                     <option>{myBeneficiaryDetails.beneficiaryName}</option>))
+
                                                                 :
                                                                 <option value="beneficiary1"
                                                                     id="beneficiary1">Checking Account</option>
@@ -343,14 +375,20 @@ export default function Payment() {
                                         <label className="paymentLabel">
                                             <td className="column1">Amount $</td>
                                             <td className="column2">
-                                                <input type="text"
+                                                <input
+                                                    type="text"
+                                                    pattern="[0-9]*"
                                                     name="paymentTransferAmount"
                                                     id="paymentIDAmount"
                                                     required
                                                     onInput={F => F.target.setCustomValidity('')}
                                                     onInvalid={F => F.target.setCustomValidity('Please enter amount here')}
                                                     value={valuePaymentTransferAmount}
-                                                    onChange={(e) => setValuePaymentTransferAmount(e.target.value)}
+                                                    onChange={
+                                                        (e) =>
+                                                            setValuePaymentTransferAmount((v) =>
+                                                                (e.target.validity.valid ? e.target.value : v))
+                                                    }
                                                 />
                                             </td>
                                         </label>
@@ -441,8 +479,11 @@ export default function Payment() {
                     </div>
 
                     <div className="paymentMakePayment" id="paymentDiv">
-                        <button type="submit" name="paymentNameMakePayment"
-                            id="paymentIDMakePayment">
+                        <button
+                            type="submit"
+                            name="paymentNameMakePayment"
+                            id="paymentIDMakePayment"
+                        >
                             Make Payment
                         </button>
                     </div>
