@@ -86,23 +86,23 @@ export const addTransactionToDB =
     };
 
 //Adding Transaction Details for Current User To DB
-export const updateTransactionCurrentUser =
+export const updateTransactionCurrentUserAccount =
     async (
         whatFieldToUpdate,
         enterNewUpdateVal,
         userAccountTableName,
-        senderDocID
+        userDocID
     ) => {
 
         try {
             //Update Current User Amount
-            const updateDocInput = doc(db, userAccountTableName, senderDocID)
+            const updateDocInput = doc(db, userAccountTableName, userDocID)
             await updateDoc(updateDocInput,
 
-                (whatFieldToUpdate == "Checking") ?
+                (whatFieldToUpdate === "Checking") ?
                     { amountChecking: enterNewUpdateVal }
                     :
-                    (whatFieldToUpdate == "Savings") ?
+                    (whatFieldToUpdate === "Savings") ?
                         { amountSavings: enterNewUpdateVal }
                         :
                         { amountTFS: enterNewUpdateVal }
@@ -115,7 +115,75 @@ export const updateTransactionCurrentUser =
         };
     };
 
-//Adding Transaction Details for Current User To DB
+//Adding Transaction Details for Current User To Self Transfer
+export const updateTransactionCurrentUserToSelf =
+    async (
+        fromAccount,
+        toAccount,
+        newFromAccountBalance,
+        newToAccountBalance,
+        userAccountTableName,
+        userDocID
+    ) => {
+
+        try {
+            //Update Current User Amount
+            const updateDocInput = doc(db, userAccountTableName, userDocID)
+            await updateDoc(updateDocInput,
+
+                (fromAccount == "Checking" && toAccount == "Savings") ?
+                    {
+                        amountChecking: newFromAccountBalance,
+                        amountSavings: newToAccountBalance
+                    }
+                    :
+                    (fromAccount == "Checking" && toAccount == "TFS") ?
+                        {
+                            amountChecking: newFromAccountBalance,
+                            amountTFS: newToAccountBalance
+                        }
+                        :
+                        (fromAccount == "Savings") ?
+                            {
+                                amountSavings: newFromAccountBalance,
+                                amountChecking: newToAccountBalance
+                            }
+                            :
+                            {
+                                amountTFS: newFromAccountBalance,
+                                amountChecking: newToAccountBalance
+                            }
+
+            );
+        }
+
+        catch (error) {
+            console.error(error);
+        };
+    };
+
+//Adding Transaction Details for Current User - Add Cash Deposit
+export const updateTransactionAddCashDeposit =
+    async (
+        newUpdateAccountBalance,
+        userAccountTableName,
+        userDocID
+    ) => {
+
+        try {
+            //Update Beneficiary User Account Table
+            const updateBeneficiaryDocInput = doc(db, userAccountTableName, userDocID)
+            await updateDoc(updateBeneficiaryDocInput,
+                { amountChecking: newUpdateAccountBalance }
+            );
+        }
+
+        catch (error) {
+            console.error(error);
+        };
+    };
+
+//Adding Transaction Details from Current User To Beneficiary
 export const updateTransactionBeneficiary =
     async (
         newUpdateAccountBalance,

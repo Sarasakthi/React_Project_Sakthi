@@ -25,9 +25,8 @@ export default function Signup() {
     const [amountChecking, setAmountChecking] = useState(0);
     const [amountSavings, setAmountSavings] = useState(0);
     const [amountTFS, setAmountTFS] = useState(0);
-    const statusSavings = false;
-    const statusTFS = false;
-
+    const [statusSavings, setStatusSavings] = useState(false);
+    const [statusTFS, setStatusTFS] = useState(false);
 
     const userAccountRef = collection(db, "userAccount");
 
@@ -35,22 +34,11 @@ export default function Signup() {
         e.preventDefault();
 
         if (amountChecking > 0) {
-            const form = e.target;
+            /*const form = e.target;
             const formData = new FormData(form);
 
             const formJson = Object.fromEntries(formData.entries());
-            console.log(formJson);
-
-            console.log("Auth:", auth);
-            console.log("Firstname:", firstname);
-            console.log("Lastname:", lastname);
-            console.log("Username:", username);
-            console.log("Password:", password);
-            console.log("Account Checking:", amountChecking);
-            console.log("Account Savings:", amountSavings);
-            console.log("Account TFSA:", amountTFS);
-
-
+            console.log(formJson);*/
 
             // Signing up
             let loginMsg;
@@ -81,30 +69,24 @@ export default function Signup() {
         }
     }
 
-
     //Adding signin values to database
     const addSignupToDB = async () => {
-        console.log("I am entered addSignupToDB")
         try {
             await addDoc(userAccountRef,
                 {
                     username: username,
                     firstname: firstname,
                     lastname: lastname,
-                    amountChecking: amountChecking === "0" ? 500 : amountChecking,
-                    amountSavings: amountSavings,
-                    amountTFS: amountTFS,
-                    statusSavings: amountSavings === "0" ? true : false,
-                    statusTFS: amountTFS === "0" ? true : false //amountTFS === "0" ? false : true
+                    amountChecking: parseInt(amountChecking),
+                    amountSavings: parseInt(amountSavings),
+                    amountTFS: parseInt(amountTFS),
+                    statusSavings: (parseInt(amountSavings) === 0 ? false : true),
+                    statusTFS: (parseInt(amountTFS) === 0 ? false : true) //amountTFS === "0" ? false : true
                 });
-            console.log("I am exited Try addSignupToDB");
-            console.log(userAccountRef);
         }
         catch (error) {
             console.error(error);
-            console.log("I am inside Catch addSignupToDB");
         };
-        console.log("I am exited Try and Catch addSignupToDB")
     }
 
     return (

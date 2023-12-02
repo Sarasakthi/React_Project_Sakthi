@@ -40,7 +40,8 @@ div {
 }
 
 .helloUser {
-    position: fixed;
+    display: flex;
+    position: absolute;
     padding: 10px 0 10px 25px;
     text-align: left;
     margin-top: -60px;

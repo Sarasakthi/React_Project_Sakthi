@@ -47,7 +47,8 @@ const router = createBrowserRouter([
 //Creating a roor for rendering - Default
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
+  //<React.StrictMode> 
+  //enabling React Strict mode renders useEffect twice
     <RouterProvider router={router} />
-  </React.StrictMode>
+  //</React.StrictMode>
 );

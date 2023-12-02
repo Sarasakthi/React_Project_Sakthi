@@ -145,9 +145,11 @@ export default function Login() {
                     </div>
                 </div>
 
+                {/*
                 <div>
                     <a id="goHome" href="/home">Go Home.</a>
                 </div>
+                */}
 
                 <div className="footer">
                     <footer className="footerText">

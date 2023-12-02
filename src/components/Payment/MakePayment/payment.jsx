@@ -8,7 +8,6 @@ import 'react-datepicker/dist/react-datepicker.css'
 import NavBar from "../../Common/Navbar/navbar"
 import Footer from "../../Common/Footer/footer"
 import LogoutApplication from "../../Logout/autoLogout";
-//import { FetchAccountBalanceFromDB } from "../../Firebase/dbQuery"
 import * as CommonFunction from "../../Common/General/commonFunctions"
 import Popup from "../../Common/Popup/popupFunction"
 import * as databaseQuery from "../../Firebase/dbQuery"
@@ -30,8 +29,6 @@ export default function Payment() {
 
     const navigate = useNavigate();
 
-    const [buttonPopup, setButtonPopup] = useState(true);
-
     //Const for DB
     const dbRefAccount = collection(db, "userAccount");
     const dbRefAddBeneficiary = collection(db, "userBeneficiary");
@@ -43,6 +40,7 @@ export default function Payment() {
     //Input from the Payment page
     const [valuePaymentTransferFrom, setValuePaymentTransferFrom] = useState("Checking")
     const [valuePaymentTransferTo, setValuePaymentTransferTo] = useState("")
+    const [valueBeneficiaryCount, setValueBeneficiaryCount] = useState(0)
     const [valuePaymentTransferAmount, setValuePaymentTransferAmount] = useState(0)
     const [valuePaymentTransferRemarks, setValuePaymentTransferRemarks] = useState("")
     const [valuePaymentTransferFreqRec, setValuePaymentTransferFreqRec] = useState(false)
@@ -64,17 +62,21 @@ export default function Payment() {
             if (user) {
                 // User is verified
                 ////console.log("UID", user.uid + " - " + user.email);
-                setCurrentUserID(user.uid)
-                setCurrentUsername(user.email)
+                const userUID = user.uid;
+                const userEmail = user.email;
 
-                ////console.log(CommonFunction.randomNumberInRange(5, 15))
+                setCurrentUserID(userUID)
+                setCurrentUsername(userEmail)
 
-                getAccountDetails(user.email)
-                getBeneficiaryDetails(user.email)
+                console.log("My Randon Number => " +
+                    CommonFunction.randomNumberInRange(5, 15))
+
+                getAccountDetails(userEmail)
+                getBeneficiaryDetails(userEmail)
 
             } else {
                 // User is signed out
-                alert("User is logged out. Please login!");
+                console.log("User is logged out. Please login!");
                 navigate("/");
             }
         });
@@ -118,39 +120,48 @@ export default function Payment() {
                 ////console.log(beneficiaryDoc.id, " ==> ", beneficiaryDoc.data());
             });
 
-            setBeneficiaryList(letMyBeneficiaryList);
-            setValuePaymentTransferTo(letMyBeneficiaryList[0].beneficiaryName)
             setValuePaymentTransferAmount("")
-            ////console.log("Printing beneficiaryList => " + beneficiaryList)
+            setBeneficiaryList(letMyBeneficiaryList);
+
+            if (letMyBeneficiaryList.length >= 1) {
+                setValuePaymentTransferTo(letMyBeneficiaryList[0].beneficiaryName)
+            }
+            else {
+                setValuePaymentTransferTo("")
+            }
+            setValueBeneficiaryCount(letMyBeneficiaryList.length)
+
         });
 
         return () => returnBeneficiaryData();
     }
 
     //Fetching Beneficiary Account Details from Database
-    async function getBeneficiaryAccountDetails(myCurrentBeneficiaryList) {
+    async function updateBeneficiaryAccountDetails(myCurrentBeneficiaryList) {
 
-        let myCurrentBeneficiaryname = ""
         for (let i = 0; i < myCurrentBeneficiaryList.length; i++) {
+
             if (valuePaymentTransferTo == myCurrentBeneficiaryList[i].beneficiaryName) {
-                myCurrentBeneficiaryname = myCurrentBeneficiaryList[i].beneficiaryEmail
+                let myCurrentBeneficiaryname = myCurrentBeneficiaryList[i].beneficiaryEmail
+
+                const queryBeneficiaryAccountData = query(dbRefAccount,
+                    where("username", "==", myCurrentBeneficiaryname));
+
+                const querySnapshot = await getDocs(queryBeneficiaryAccountData);
+                querySnapshot.forEach((doc) => {
+
+                    let newUpdateAccountBalanceBeneficiary = parseInt(doc.data().amountChecking) + parseInt(valuePaymentTransferAmount)
+
+                    databaseQuery.updateTransactionBeneficiary(
+                        newUpdateAccountBalanceBeneficiary,
+                        "userAccount",
+                        doc.id
+                    )
+                });
+
             }
         }
 
-        const queryBeneficiaryAccountData = query(dbRefAccount,
-            where("username", "==", myCurrentBeneficiaryname));
-
-        const querySnapshot = await getDocs(queryBeneficiaryAccountData);
-        querySnapshot.forEach((doc) => {
-
-            let newUpdateAccountBalanceBeneficiary = parseInt(doc.data().amountChecking) + parseInt(valuePaymentTransferAmount)
-
-            databaseQuery.updateTransactionBeneficiary(
-                newUpdateAccountBalanceBeneficiary,
-                "userAccount",
-                doc.id
-            )
-        });
     }
 
     function findBeneficiaryEmail(inputBeneficiaryList, beneficiaryName) {
@@ -162,17 +173,7 @@ export default function Payment() {
         }
     }
 
-    function submitAddCashBalance_old(e) {
-        e.preventDefault();
-        alert("adding cash to Checking")
-        setButtonPopup(false)
-        return (
-            <Popup trigger={true} setTrigger={setButtonPopup}>
-                <h3>My Popup</h3>
-            </Popup>
-        )
-    }
-
+    //Functions for popup - Add cash balance
     function submitAddCashBalancePopupVisible(e) {
         setIsOpen(!isOpen);
         setValuePaymentCashDepositAmount("")
@@ -190,25 +191,32 @@ export default function Payment() {
         else {
             setIsOpen(!isOpen);
             setValuePaymentCashDepositAmount("")
-            alert("Add cash clicked")
+
+            //Complete Transaction for Current User
+            let newUpdateAccountBalance =
+                parseInt(balanceChecking) + parseInt(valuePaymentCashDepositAmount);
+            databaseQuery.updateTransactionAddCashDeposit(
+                parseInt(newUpdateAccountBalance),
+                "userAccount",
+                currentUserDocID)
+
+            alert("$" + valuePaymentCashDepositAmount + " added to your Checking Account!")
         }
     }
 
-    function getBeneficiaryAccountDetailsUpdate() {
-        //let transBeneficiaryEmail = findBeneficiaryEmail(beneficiaryList, valuePaymentTransferTo);
-        //getBeneficiaryAccountDetails();
-    }
-
+    /**********************/
     /*Make Payment Handler*/
+    /**********************/
     function submitMakePayment(e) {
         e.preventDefault();
 
         ////console.log(formJson);
 
         //Check the Payment from amount with the balance
-        let fromAccountAmount = (valuePaymentTransferFrom == "Checking") ? balanceChecking :
-            (valuePaymentTransferFrom == "Savings") ? balanceSavings :
-                balanceTFS
+        let fromAccountAmount =
+            (valuePaymentTransferFrom == "Checking") ? balanceChecking :
+                (valuePaymentTransferFrom == "Savings") ? balanceSavings :
+                    balanceTFS
 
         //Alert message for balance checking
         if (parseInt(valuePaymentTransferAmount) > parseInt(fromAccountAmount)) {
@@ -218,13 +226,8 @@ export default function Payment() {
                 (fromAccountAmount == 0 ? "" : "Please enter amount less than $"
                     + fromAccountAmount + "."))
         }
-        else {
 
-            //Get Current Beneficiary User
-            /*{
-                let transBeneficiaryEmail = findBeneficiaryEmail(beneficiaryList, valuePaymentTransferTo);
-                getBeneficiaryAccountDetails(transBeneficiaryEmail);
-            }*/
+        else {
 
             //Complete Transaction
             databaseQuery.addTransactionToDB(
@@ -239,35 +242,61 @@ export default function Payment() {
                 valuePaymentTransferTo,
                 currentUsername)
 
-            //Complete Transaction for Current User
-            let newUpdateAccountBalance = fromAccountAmount - valuePaymentTransferAmount;
-            databaseQuery.updateTransactionCurrentUser(
-                valuePaymentTransferFrom,
-                newUpdateAccountBalance,
-                "userAccount",
-                currentUserDocID
-            )
+            //Condition for Checking to Beneficiary
+            if ((valuePaymentTransferFrom == "Checking") &&
+                !((valuePaymentTransferTo == "Savings") ||
+                    (valuePaymentTransferTo == "TFS"))) {
 
-            /*//Update Transaction for Beneficiary User
-            let newUpdateAccountBalanceBeneficiary = parseInt(beneficiaryCheckingAmount) + parseInt(valuePaymentTransferAmount)
-            console.log("newUpdateAccountBalanceBeneficiary = " + newUpdateAccountBalanceBeneficiary)
+                //Complete Transaction for Current User
+                let newUpdateAccountBalance = fromAccountAmount - valuePaymentTransferAmount;
+                databaseQuery.updateTransactionCurrentUserAccount(
+                    valuePaymentTransferFrom,
+                    newUpdateAccountBalance,
+                    "userAccount",
+                    currentUserDocID
+                )
 
-            databaseQuery.updateTransactionBeneficiary(
-                newUpdateAccountBalanceBeneficiary,
-                "userAccount",
-                beneficiaryUserDocID
-            )*/
+                //Update Beneficiary Account Details
+                updateBeneficiaryAccountDetails(beneficiaryList);
+            }
 
-            let myBeneficiaryList = beneficiaryList;
-            console.log(myBeneficiaryList)
-            getBeneficiaryAccountDetails(myBeneficiaryList);
+            //Condition for Self Account Transfer - Checking to Savings/TFS
+            else {
 
-            alert("Transaction Completed Finally!")
+                //Complete Transaction for Current User
+                let newUpdateFromAccountBalance = fromAccountAmount - valuePaymentTransferAmount;
+
+                let newUpdateToAccountBalance =
+                    parseInt(((valuePaymentTransferTo == "Checking") ? balanceChecking :
+                        (valuePaymentTransferTo == "Savings") ? balanceSavings :
+                            balanceTFS)) + parseInt(valuePaymentTransferAmount);
+
+                console.log("balanceChecking = " + balanceChecking)
+                console.log("balanceSavings = " + balanceSavings)
+                console.log("balanceTFS = " + balanceTFS)
+
+                console.log("valuePaymentTransferTo = " + valuePaymentTransferTo)
+                console.log("valuePaymentTransferAmount = " + valuePaymentTransferAmount)
+
+                console.log("newUpdateToAccountBalance = " + newUpdateToAccountBalance)
+
+                databaseQuery.updateTransactionCurrentUserToSelf(
+                    valuePaymentTransferFrom,
+                    valuePaymentTransferTo,
+                    newUpdateFromAccountBalance,
+                    newUpdateToAccountBalance,
+                    "userAccount",
+                    currentUserDocID
+                )
+            }
+
+            //Transaction Completed
+            alert("Transaction Completed Successfully!")
 
             //Navigate to Home
             navigate("/home")
-        }
 
+        }
     }
 
     return (
@@ -275,7 +304,6 @@ export default function Payment() {
         // <LogoutApplication>
         <form method="post" onSubmit={submitMakePayment}>
             <div>
-
 
                 {/*Insert NavBar*/}
                 <NavBar />
@@ -403,8 +431,15 @@ export default function Payment() {
                                                         required
                                                         onChange={
                                                             (e) => {
-                                                                { setValuePaymentTransferFrom(e.target.value) }
-                                                                ////console.log(e.target.value)
+                                                                {
+                                                                    setValuePaymentTransferFrom(e.target.value)
+                                                                    {
+                                                                        (e.target.value != "Checking") ?
+                                                                            setValuePaymentTransferTo("Checking") :
+                                                                            setValuePaymentTransferTo(valuePaymentTransferTo)
+                                                                    }
+
+                                                                }
                                                             }}
                                                     >
                                                         {accountList.map((myAccountDetails) => (
@@ -421,7 +456,6 @@ export default function Payment() {
                                                 </span>
                                             </td>
                                         </label>
-
 
                                         {
                                             (valuePaymentTransferFrom === 'Checking')
@@ -500,22 +534,40 @@ export default function Payment() {
                                                         title="Select Beneficiary"
                                                         required
                                                         value={valuePaymentTransferTo}
-                                                        defaultValue={'Select'}
-
                                                         onChange={
                                                             (e) => {
-                                                                { setValuePaymentTransferTo(e.target.value) }
-                                                                ////console.log(e.target.value)
+                                                                {
+                                                                    setValuePaymentTransferTo(e.target.value)
+                                                                    console.log("adding")
+                                                                }
                                                             }}
                                                     >
                                                         {
-                                                            (valuePaymentTransferFrom === 'Checking')
+                                                            (valuePaymentTransferFrom != 'Checking')
                                                                 ?
-                                                                beneficiaryList.map((myBeneficiaryDetails) => (
-                                                                    <option>{myBeneficiaryDetails.beneficiaryName}</option>))
-                                                                :
                                                                 <option value="beneficiary1"
                                                                     id="beneficiary1">Checking Account</option>
+                                                                :
+                                                                (parseInt(valueBeneficiaryCount) == 0)
+                                                                    ?
+                                                                    <>
+                                                                        <option value="Savings" id="Savings">
+                                                                            Savings Account (Self)</option>
+                                                                        <option value="TFS" id="TFS">
+                                                                            TFS Account (Self)</option>
+                                                                    </>
+                                                                    :
+                                                                    <>
+                                                                        {
+                                                                            beneficiaryList.map((myBeneficiaryDetails) => (
+                                                                                <option>{(myBeneficiaryDetails.beneficiaryName)}</option>
+
+                                                                            ))
+                                                                        }
+                                                                        <option value="TFS" id="TFS">TFS Account - Self</option>
+                                                                        <option value="Savings" id="Savings">Savings Account - Self</option>
+
+                                                                    </>
                                                         }
                                                     </select>
                                                 </span>
@@ -536,6 +588,7 @@ export default function Payment() {
                                                     id="paymentIDAmount"
                                                     title="Enter amount"
                                                     value={valuePaymentTransferAmount}
+                                                    autoFocus
                                                     type="text"
                                                     pattern="[0-9]+"
                                                     placeholder='Enter Amount'
@@ -667,7 +720,7 @@ export default function Payment() {
                     <Footer />
                 </footer>
             </div>
-        </form>
+        </form >
         // </LogoutApplication>
     )
 }
