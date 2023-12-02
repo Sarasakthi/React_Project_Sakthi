@@ -126,6 +126,7 @@ export default function AddBeneficiary() {
                                                     <td className="column1">Beneficiary Name</td>
                                                     <td className="column2">
                                                         <input type="text" name="beneficiaryNameAmount"
+                                                            title="Enter beneficiary name"
                                                             id="beneficiaryIDAmount"
                                                             value={beneficiaryName}
                                                             onChange={(e) => setBeneficiaryName(e.target.value)}
@@ -148,6 +149,7 @@ export default function AddBeneficiary() {
                                                     <td className="column1">Beneficiary Email</td>
                                                     <td className="column2">
                                                         <input type="email" name="beneficiaryNameAccountNo"
+                                                            title="Enter beneficiary email"
                                                             id="beneficiaryIDAccountNo"
                                                             value={beneficiaryEmail}
                                                             onChange={(e) => setBeneficiaryEmail(e.target.value)}

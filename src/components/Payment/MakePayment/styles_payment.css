@@ -68,6 +68,7 @@ div {
 #paymentIDRemarks {
     min-width: 300px;
     min-height: 30px;
+    padding-left: 30px;
 }
 
 .paymentLabel,
@@ -103,8 +104,33 @@ div {
 }
 
 .paymentTransferFrom .addCashDepositPopup {
-    border: 2px solid red;
-    background-color: antiquewhite;
+    display: inline;
+    text-align: center;
+    width: fit-content;
+    vertical-align: middle;
+}
+
+.paymentTransferFrom .addCashDepositPopup input {
+    margin-left: 15px;
+    padding-left: 10px;
+    width: 175px;
+}
+
+.paymentTransferFrom .addCashDepositPopup-button {
+    margin-top: 25px;
+}
+
+.paymentTransferFrom .addCashDepositPopup-button button {
+    margin: 0 25px;
+    width: 200px;
+    height: 35px;
+    font-size: 16px;
+    font-family: 'Ubuntu';
+    font-weight: bold;
+    background-color: #d61212;
+    color: white;
+    border-radius: 25px;
+    cursor: pointer;
 }
 
 input[type="radio"] {
@@ -119,7 +145,6 @@ input[type="radio"] {
 .paymentFreq {
     margin-left: 15px;
 }
-
 
 /*Make Payment*/
 .paymentMakePayment {

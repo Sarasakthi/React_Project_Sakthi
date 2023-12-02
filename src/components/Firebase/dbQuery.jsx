@@ -1,5 +1,5 @@
 import { getAuth } from "firebase/auth";
-import { collection, addDoc, query, where, getDocs, onSnapshot } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, onSnapshot, updateDoc, doc } from 'firebase/firestore';
 import { db } from "./firebase";
 import { useState } from "react";
 
@@ -39,7 +39,7 @@ export const addBeneficiaryToDB =
                     beneficiaryEmail: beneficiaryEmail,
                     beneficiaryRemarks: beneficiaryRemarks
                 });
-            console.log(dbRefAddBeneficiary);
+            //console.log(dbRefAddBeneficiary);
             alert(beneficiaryName + " added to your database.")
         }
 
@@ -48,31 +48,90 @@ export const addBeneficiaryToDB =
         };
     };
 
-//Fetching Account Balances from Database
-/*export function FetchAccountBalanceFromDB() {
-    const [accountList, setAccountList] = useState("");
-    async () => {
+//Adding Transaction Details To DB
+export const addTransactionToDB =
+    async (
+        transAmount,
+        transDate,
+        transFreq,
+        transFrom,
+        transRecEndDate,
+        transRecInterval,
+        transRecStartDate,
+        transRemarks,
+        transTo,
+        transUsername
+    ) => {
+
         try {
-            console.log("Reached FunctionDBQueryList")
-
-            let username = currentUID().email
-
-            //Fetching Account Balances from Database
-            const queryData = query(dbRefAccount,
-                where("username", "==", (username)));
-            const returnData = onSnapshot(queryData, (querySnapshot) => {
-                let letMyAccountList = []
-                querySnapshot.forEach((doc) => {
-                    letMyAccountList.push({ ...doc.data(), id: doc.id });
-                    console.log(doc.id, " ==> ", doc.data());
+            await addDoc(dbRefTransaction,
+                {
+                    transAmount: transAmount,
+                    transDate: transDate,
+                    transFreq: transFreq,
+                    transFrom: transFrom,
+                    transRecEndDate: transRecEndDate,
+                    transRecInterval: transRecInterval,
+                    transRecStartDate: transRecStartDate,
+                    transRemarks: transRemarks,
+                    transTo: transTo,
+                    transUsername: transUsername
                 });
-                setAccountList(letMyAccountList);
-                console.log(accountList)
-            });
-            return () => returnData();
+            //console.log(dbRefTransaction);
         }
-        catch (err) {
-            console.error(err);
+
+        catch (error) {
+            console.error(error);
+        };
+    };
+
+//Adding Transaction Details for Current User To DB
+export const updateTransactionCurrentUser =
+    async (
+        whatFieldToUpdate,
+        enterNewUpdateVal,
+        userAccountTableName,
+        senderDocID
+    ) => {
+
+        try {
+            //Update Current User Amount
+            const updateDocInput = doc(db, userAccountTableName, senderDocID)
+            await updateDoc(updateDocInput,
+
+                (whatFieldToUpdate == "Checking") ?
+                    { amountChecking: enterNewUpdateVal }
+                    :
+                    (whatFieldToUpdate == "Savings") ?
+                        { amountSavings: enterNewUpdateVal }
+                        :
+                        { amountTFS: enterNewUpdateVal }
+
+            );
         }
-    }
-};*/
+
+        catch (error) {
+            console.error(error);
+        };
+    };
+
+//Adding Transaction Details for Current User To DB
+export const updateTransactionBeneficiary =
+    async (
+        newUpdateAccountBalance,
+        userAccountTableName,
+        beneficiaryDocID
+    ) => {
+
+        try {
+            //Update Beneficiary User Account Table
+            const updateBeneficiaryDocInput = doc(db, userAccountTableName, beneficiaryDocID)
+            await updateDoc(updateBeneficiaryDocInput,
+                { amountChecking: newUpdateAccountBalance }
+            );
+        }
+
+        catch (error) {
+            console.error(error);
+        };
+    };

@@ -11,6 +11,7 @@ import LogoutApplication from "../../Logout/autoLogout";
 //import { FetchAccountBalanceFromDB } from "../../Firebase/dbQuery"
 import * as CommonFunction from "../../Common/General/commonFunctions"
 import Popup from "../../Common/Popup/popupFunction"
+import * as databaseQuery from "../../Firebase/dbQuery"
 
 import "../../Home/styles_home.css"
 import "./styles_payment.css"
@@ -42,7 +43,7 @@ export default function Payment() {
     //Input from the Payment page
     const [valuePaymentTransferFrom, setValuePaymentTransferFrom] = useState("Checking")
     const [valuePaymentTransferTo, setValuePaymentTransferTo] = useState("")
-    const [valuePaymentTransferAmount, setValuePaymentTransferAmount] = useState("")
+    const [valuePaymentTransferAmount, setValuePaymentTransferAmount] = useState(0)
     const [valuePaymentTransferRemarks, setValuePaymentTransferRemarks] = useState("")
     const [valuePaymentTransferFreqRec, setValuePaymentTransferFreqRec] = useState(false)
     const [valuePaymentTransferDate, setValuePaymentTransferDate] = useState(new Date())
@@ -52,65 +53,113 @@ export default function Payment() {
     const [balanceChecking, setBalanceChecking] = useState(0)
     const [balanceSavings, setBalanceSavings] = useState(0)
     const [balanceTFS, setBalanceTFS] = useState(0)
-
-    let currentUserID = null
-    let currentUseremail = null
+    const [valuePaymentCashDepositAmount, setValuePaymentCashDepositAmount] = useState(0)
+    const [isOpen, setIsOpen] = useState(false);
+    const [currentUsername, setCurrentUsername] = useState("");
+    const [currentUserID, setCurrentUserID] = useState("");
+    const [currentUserDocID, setCurrentUserDocID] = useState("");
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 // User is verified
-                console.log("UID", user.uid + " - " + user.email);
-                currentUserID = user.uid
-                currentUseremail = user.email
+                ////console.log("UID", user.uid + " - " + user.email);
+                setCurrentUserID(user.uid)
+                setCurrentUsername(user.email)
 
-                console.log(CommonFunction.randomNumberInRange(5, 15))
+                ////console.log(CommonFunction.randomNumberInRange(5, 15))
 
-                getAccountDetails(currentUseremail)
-                getBeneficiaryDetails(currentUseremail)
+                getAccountDetails(user.email)
+                getBeneficiaryDetails(user.email)
 
             } else {
                 // User is signed out
-                console.log("User is logged out. Please login!");
+                alert("User is logged out. Please login!");
                 navigate("/");
             }
         });
     }, []);
 
     //Fetching Account Details from Database
-    function getAccountDetails(currentUseremail) {
-        const queryData = query(dbRefAccount,
-            where("username", "==", (currentUseremail)));
-        const returnData = onSnapshot(queryData, (querySnapshot) => {
-            let letMyAccountList = []
-            querySnapshot.forEach((doc) => {
-                letMyAccountList.push({ ...doc.data(), id: doc.id });
+    function getAccountDetails(currentUsername) {
+
+        const queryUserData = query(dbRefAccount,
+            where("username", "==", (currentUsername)));
+
+        const returnUserData = onSnapshot(queryUserData, (querySnapshot) => {
+
+            let letUserMyAccountList = []
+            querySnapshot.forEach((userDoc) => {
+                letUserMyAccountList.push({ ...userDoc.data(), id: userDoc.id });
 
                 //Initiate Account Balance
-                setBalanceChecking(doc.data().amountChecking)
-                setBalanceSavings(doc.data().amountSavings)
-                setBalanceTFS(doc.data().amountTFS)
-                console.log(doc.id, " => ", doc.data());
+                setBalanceChecking(userDoc.data().amountChecking)
+                setBalanceSavings(userDoc.data().amountSavings)
+                setBalanceTFS(userDoc.data().amountTFS)
+                setCurrentUserDocID(userDoc.id)
+                //////console.log(userDoc.id, " => ", userDoc.data());
             });
-            setAccountList(letMyAccountList);
+            setAccountList(letUserMyAccountList);
         });
-        return () => returnData();
+        return () => returnUserData();
     }
 
     //Fetching Beneficiary Details from Database
-    function getBeneficiaryDetails(currentUseremail) {
-        const queryData = query(dbRefAddBeneficiary,
-            where("username", "==", (currentUseremail)));
-        const returnData = onSnapshot(queryData, (querySnapshot) => {
+    function getBeneficiaryDetails(currentUsername) {
+
+        const queryBeneficiaryData = query(dbRefAddBeneficiary,
+            where("username", "==", (currentUsername)));
+
+        const returnBeneficiaryData = onSnapshot(queryBeneficiaryData, (querySnapshot) => {
+
             let letMyBeneficiaryList = []
-            querySnapshot.forEach((doc) => {
-                letMyBeneficiaryList.push({ ...doc.data(), id: doc.id });
-                console.log(doc.id, " ==> ", doc.data());
+            querySnapshot.forEach((beneficiaryDoc) => {
+                letMyBeneficiaryList.push({ ...beneficiaryDoc.data(), id: beneficiaryDoc.id });
+                ////console.log(beneficiaryDoc.id, " ==> ", beneficiaryDoc.data());
             });
+
             setBeneficiaryList(letMyBeneficiaryList);
-            console.log("Printing beneficiaryList => " + beneficiaryList)
+            setValuePaymentTransferTo(letMyBeneficiaryList[0].beneficiaryName)
+            setValuePaymentTransferAmount("")
+            ////console.log("Printing beneficiaryList => " + beneficiaryList)
         });
-        return () => returnData();
+
+        return () => returnBeneficiaryData();
+    }
+
+    //Fetching Beneficiary Account Details from Database
+    async function getBeneficiaryAccountDetails(myCurrentBeneficiaryList) {
+
+        let myCurrentBeneficiaryname = ""
+        for (let i = 0; i < myCurrentBeneficiaryList.length; i++) {
+            if (valuePaymentTransferTo == myCurrentBeneficiaryList[i].beneficiaryName) {
+                myCurrentBeneficiaryname = myCurrentBeneficiaryList[i].beneficiaryEmail
+            }
+        }
+
+        const queryBeneficiaryAccountData = query(dbRefAccount,
+            where("username", "==", myCurrentBeneficiaryname));
+
+        const querySnapshot = await getDocs(queryBeneficiaryAccountData);
+        querySnapshot.forEach((doc) => {
+
+            let newUpdateAccountBalanceBeneficiary = parseInt(doc.data().amountChecking) + parseInt(valuePaymentTransferAmount)
+
+            databaseQuery.updateTransactionBeneficiary(
+                newUpdateAccountBalanceBeneficiary,
+                "userAccount",
+                doc.id
+            )
+        });
+    }
+
+    function findBeneficiaryEmail(inputBeneficiaryList, beneficiaryName) {
+        ////console.log("beneficiaryName =" + beneficiaryName)
+        for (let i = 0; i < inputBeneficiaryList.length; i++) {
+            if (beneficiaryName == inputBeneficiaryList[i].beneficiaryName) {
+                return inputBeneficiaryList[i].beneficiaryEmail
+            }
+        }
     }
 
     function submitAddCashBalance_old(e) {
@@ -124,22 +173,37 @@ export default function Payment() {
         )
     }
 
-    const [isOpen, setIsOpen] = useState(false);
-
-    function submitAddCashBalance(e) {
+    function submitAddCashBalancePopupVisible(e) {
         setIsOpen(!isOpen);
+        setValuePaymentCashDepositAmount("")
     }
 
+    function submitAddCashBalanceCancel(e) {
+        setIsOpen(!isOpen);
+        setValuePaymentCashDepositAmount("")
+    }
+
+    function submitAddCashBalanceAdd(e) {
+        if (valuePaymentCashDepositAmount.valueOf() == 0) {
+            alert("Enter cash deposit amount to continue")
+        }
+        else {
+            setIsOpen(!isOpen);
+            setValuePaymentCashDepositAmount("")
+            alert("Add cash clicked")
+        }
+    }
+
+    function getBeneficiaryAccountDetailsUpdate() {
+        //let transBeneficiaryEmail = findBeneficiaryEmail(beneficiaryList, valuePaymentTransferTo);
+        //getBeneficiaryAccountDetails();
+    }
 
     /*Make Payment Handler*/
     function submitMakePayment(e) {
         e.preventDefault();
 
-        const form = e.target;
-        const formData = new FormData(form);
-
-        const formJson = Object.fromEntries(formData.entries());
-        console.log(formJson);
+        ////console.log(formJson);
 
         //Check the Payment from amount with the balance
         let fromAccountAmount = (valuePaymentTransferFrom == "Checking") ? balanceChecking :
@@ -147,7 +211,7 @@ export default function Payment() {
                 balanceTFS
 
         //Alert message for balance checking
-        if (valuePaymentTransferAmount > fromAccountAmount) {
+        if (parseInt(valuePaymentTransferAmount) > parseInt(fromAccountAmount)) {
 
             alert("You dont have sufficient balance in your " + valuePaymentTransferFrom
                 + " account to make this payment. \n\n" +
@@ -155,7 +219,53 @@ export default function Payment() {
                     + fromAccountAmount + "."))
         }
         else {
-            alert("Good to go")
+
+            //Get Current Beneficiary User
+            /*{
+                let transBeneficiaryEmail = findBeneficiaryEmail(beneficiaryList, valuePaymentTransferTo);
+                getBeneficiaryAccountDetails(transBeneficiaryEmail);
+            }*/
+
+            //Complete Transaction
+            databaseQuery.addTransactionToDB(
+                valuePaymentTransferAmount,
+                valuePaymentTransferDate,
+                (valuePaymentTransferFreqRec == false ? "Onetime" : "Recurring"),
+                valuePaymentTransferFrom,
+                valuePaymentRecEndDate,
+                valuePaymentRecInterval,
+                valuePaymentRecStartDate,
+                valuePaymentTransferRemarks,
+                valuePaymentTransferTo,
+                currentUsername)
+
+            //Complete Transaction for Current User
+            let newUpdateAccountBalance = fromAccountAmount - valuePaymentTransferAmount;
+            databaseQuery.updateTransactionCurrentUser(
+                valuePaymentTransferFrom,
+                newUpdateAccountBalance,
+                "userAccount",
+                currentUserDocID
+            )
+
+            /*//Update Transaction for Beneficiary User
+            let newUpdateAccountBalanceBeneficiary = parseInt(beneficiaryCheckingAmount) + parseInt(valuePaymentTransferAmount)
+            console.log("newUpdateAccountBalanceBeneficiary = " + newUpdateAccountBalanceBeneficiary)
+
+            databaseQuery.updateTransactionBeneficiary(
+                newUpdateAccountBalanceBeneficiary,
+                "userAccount",
+                beneficiaryUserDocID
+            )*/
+
+            let myBeneficiaryList = beneficiaryList;
+            console.log(myBeneficiaryList)
+            getBeneficiaryAccountDetails(myBeneficiaryList);
+
+            alert("Transaction Completed Finally!")
+
+            //Navigate to Home
+            navigate("/home")
         }
 
     }
@@ -165,6 +275,8 @@ export default function Payment() {
         // <LogoutApplication>
         <form method="post" onSubmit={submitMakePayment}>
             <div>
+
+
                 {/*Insert NavBar*/}
                 <NavBar />
 
@@ -276,7 +388,9 @@ export default function Payment() {
                             <table className="paymentTableLeft">
                                 <tr>
                                     <div className="paymentTransferFrom" id="paymentTransferFrom">
-                                        <label className="paymentLabel">
+                                        <label className="paymentLabel"
+                                            title="Select Transfer From"
+                                        >
                                             <td className="column1">Transfer From
                                             </td>
                                             <td className="column2">
@@ -284,14 +398,14 @@ export default function Payment() {
                                                     <select
                                                         name="paymentTransferFrom"
                                                         autoFocus
+                                                        title="Select Transfer From"
                                                         value={valuePaymentTransferFrom}
                                                         required
                                                         onChange={
                                                             (e) => {
                                                                 { setValuePaymentTransferFrom(e.target.value) }
-                                                                console.log(e.target.value)
-                                                            }
-                                                        }
+                                                                ////console.log(e.target.value)
+                                                            }}
                                                     >
                                                         {accountList.map((myAccountDetails) => (
                                                             <>
@@ -307,58 +421,98 @@ export default function Payment() {
                                                 </span>
                                             </td>
                                         </label>
-                                        {/*
+
+
+                                        {
                                             (valuePaymentTransferFrom === 'Checking')
                                                 ?
-                                                
                                                 <button
                                                     className="paymentAddBalance"
                                                     type="button"
-                                                    onClick={submitAddCashBalance}
-                                                    name="paymentAddBalance">
-                                                    <span>+</span> Add Cash Deposit
+                                                    title="Click to Add Cash to Checking"
+                                                    onClick={submitAddCashBalancePopupVisible}
+                                                    name="paymentAddBalance"
+                                                ><span>+</span> Add Cash Deposit
                                                 </button>
-                                                : null*/
+                                                : null
                                         }
-                                        <button
-                                            className="paymentAddBalance"
-                                            type="button"
-                                            onClick={submitAddCashBalance}
-                                            name="paymentAddBalance"
-                                        ><span>+</span> Add Cash Deposit
-                                        </button>
-                                        {isOpen && <Popup
-                                            content={<>
-                                                <b>Design your Popup</b>
-                                                <button
-                                                onClick={submitAddCashBalance}
-                                                >Test button</button>
-                                            </>}
-                                        />}
 
+                                        {isOpen && <Popup
+                                            content={
+                                                <div className='addCashDepositPopup'>
+                                                    <div className='addCashDepositPopup-input'>
+                                                        <label
+                                                            title="Enter cash deposit amount"
+                                                        ><b>Enter cash deposit Amount</b>
+                                                            <input
+                                                                name="paymentCashDepositAmount"
+                                                                id="paymentCashDepositAmount"
+                                                                title="Enter cash deposit amount"
+                                                                value={valuePaymentCashDepositAmount}
+                                                                autoFocus
+                                                                type="text"
+                                                                pattern="[0-9]+"
+                                                                placeholder='Enter Amount'
+                                                                required
+                                                                onInput={F => F.target.setCustomValidity('')}
+                                                                onInvalid={F => F.target.setCustomValidity('Please enter amount here')}
+                                                                onChange={
+                                                                    (e) =>
+                                                                        setValuePaymentCashDepositAmount((v) =>
+                                                                        (e.target.value == "" ? "" :
+                                                                            (e.target.validity.valid ? e.target.value : v)))
+                                                                }
+                                                            />
+                                                        </label>
+                                                    </div>
+                                                    <div className='addCashDepositPopup-button'>
+                                                        <button
+                                                            name='addCashDepositPopupCancel'
+                                                            onClick={submitAddCashBalanceCancel}
+                                                            title="Click to cancel transaction"
+                                                        >Cancel</button>
+                                                        <button
+                                                            type='button'
+                                                            name='addCashDepositPopupAddAmount'
+                                                            onClick={submitAddCashBalanceAdd}
+                                                            title="Click to add amount"
+                                                        >Add Amount</button>
+
+                                                    </div>
+                                                </div>
+                                            }
+                                        />}
 
                                     </div>
                                 </tr>
 
                                 <tr>
                                     <div className="paymentTransferTo" id="paymentDiv">
-                                        <label className="paymentLabel">
+                                        <label className="paymentLabel"
+                                            title="Select Beneficiary"
+                                        >
                                             <td className="column1">Transfer To
                                             </td>
                                             <td className="column2">
                                                 <span id="paymentInput">
                                                     <select id="paymentInputList"
                                                         name="paymentTransferTo"
+                                                        title="Select Beneficiary"
                                                         required
                                                         value={valuePaymentTransferTo}
-                                                        onChange={(e) => setValuePaymentTransferTo(e.target.value)}
+                                                        defaultValue={'Select'}
+
+                                                        onChange={
+                                                            (e) => {
+                                                                { setValuePaymentTransferTo(e.target.value) }
+                                                                ////console.log(e.target.value)
+                                                            }}
                                                     >
                                                         {
                                                             (valuePaymentTransferFrom === 'Checking')
                                                                 ?
                                                                 beneficiaryList.map((myBeneficiaryDetails) => (
                                                                     <option>{myBeneficiaryDetails.beneficiaryName}</option>))
-
                                                                 :
                                                                 <option value="beneficiary1"
                                                                     id="beneficiary1">Checking Account</option>
@@ -372,22 +526,27 @@ export default function Payment() {
 
                                 <tr>
                                     <div className="paymentAmount" id="paymentDiv">
-                                        <label className="paymentLabel">
+                                        <label className="paymentLabel"
+                                            title="Enter amount"
+                                        >
                                             <td className="column1">Amount $</td>
                                             <td className="column2">
                                                 <input
-                                                    type="text"
-                                                    pattern="[0-9]*"
                                                     name="paymentTransferAmount"
                                                     id="paymentIDAmount"
+                                                    title="Enter amount"
+                                                    value={valuePaymentTransferAmount}
+                                                    type="text"
+                                                    pattern="[0-9]+"
+                                                    placeholder='Enter Amount'
                                                     required
                                                     onInput={F => F.target.setCustomValidity('')}
                                                     onInvalid={F => F.target.setCustomValidity('Please enter amount here')}
-                                                    value={valuePaymentTransferAmount}
                                                     onChange={
                                                         (e) =>
                                                             setValuePaymentTransferAmount((v) =>
-                                                                (e.target.validity.valid ? e.target.value : v))
+                                                            (e.target.value == "" ? "" :
+                                                                (e.target.validity.valid ? e.target.value.valueOf() : v)))
                                                     }
                                                 />
                                             </td>
@@ -397,7 +556,9 @@ export default function Payment() {
 
                                 <tr>
                                     <div className="paymentRemarks" id="paymentDiv">
-                                        <label className="paymentLabel">
+                                        <label className="paymentLabel"
+                                            title="Enter transaction remark"
+                                        >
                                             <td className="column1">
                                                 Remarks
                                             </td>
@@ -405,6 +566,7 @@ export default function Payment() {
                                                 <input type="text"
                                                     name="paymentTransferRemarks"
                                                     id="paymentIDRemarks"
+                                                    title="Enter transaction remark"
                                                     required
                                                     onInput={F => F.target.setCustomValidity('')}
                                                     onInvalid={F => F.target.setCustomValidity('Please enter remarks here')}
@@ -426,9 +588,11 @@ export default function Payment() {
                                             </td>
                                             <td className="column2">
                                                 <label className="paymentFrequencyLabel"
-                                                    id="paymentIDFreqOneTime">
+                                                    id="paymentIDFreqOneTime"
+                                                    title="Select payment frequency">
                                                     <input type="radio"
                                                         name="PaymentTransferFreqRec"
+                                                        title="Select payment frequency"
                                                         required
                                                         onInput={F => F.target.setCustomValidity('')}
                                                         onInvalid={F => F.target.setCustomValidity('Please select one of the Frequency')}
@@ -438,9 +602,11 @@ export default function Payment() {
                                                     <span className="paymentFreq">One Time</span>
                                                 </label>
                                                 <label className="paymentFrequencyLabel"
-                                                    id="paymentIDFreqRecurring">
+                                                    id="paymentIDFreqRecurring"
+                                                    title="Select payment frequency">
                                                     <input type="radio"
                                                         name="PaymentTransferFreqRec"
+                                                        title="Select payment frequency"
                                                         value={valuePaymentTransferFreqRec}
                                                         onClick={(e) => setValuePaymentTransferFreqRec(true)} />
                                                     <span className="paymentFreq">Recurring</span>
@@ -453,23 +619,26 @@ export default function Payment() {
                                 <tr>
                                     {valuePaymentTransferFreqRec ? null :
                                         <div className="paymentDate">
-                                            <label className="paymentLabel">
+                                            <label className="paymentLabel"
+                                                title="Select payment date">
                                                 <td className="column1" id="paymentDatePick1">Payment Date</td>
+
+                                                <td className="column2" id="datePickInline">
+                                                    <DatePicker
+                                                        name="paymentOnetimeDatePicked"
+                                                        showIcon
+                                                        title="Select payment date"
+                                                        selected={valuePaymentTransferDate}
+                                                        closeOnScroll={true}
+                                                        value={valuePaymentTransferDate}
+                                                        onChange={(valuePaymentTransferDate) => setValuePaymentTransferDate(valuePaymentTransferDate)}
+                                                        dateFormat={"dd/MMM/yyyy"}
+                                                        minDate={new Date()}
+                                                        filterDate={
+                                                            valuePaymentTransferDate => (valuePaymentTransferDate.getDay() !== 0 &&
+                                                                valuePaymentTransferDate.getDay() !== 6)} />
+                                                </td>
                                             </label>
-                                            <td className="column2" id="datePickInline">
-                                                <DatePicker
-                                                    name="paymentOnetimeDatePicked"
-                                                    showIcon
-                                                    selected={valuePaymentTransferDate}
-                                                    closeOnScroll={true}
-                                                    value={valuePaymentTransferDate}
-                                                    onChange={(valuePaymentTransferDate) => setValuePaymentTransferDate(valuePaymentTransferDate)}
-                                                    dateFormat={"dd/MMM/yyyy"}
-                                                    minDate={new Date()}
-                                                    filterDate={
-                                                        valuePaymentTransferDate => (valuePaymentTransferDate.getDay() !== 0 &&
-                                                            valuePaymentTransferDate.getDay() !== 6)} />
-                                            </td>
                                         </div>}
                                 </tr>
 
@@ -483,6 +652,7 @@ export default function Payment() {
                             type="submit"
                             name="paymentNameMakePayment"
                             id="paymentIDMakePayment"
+                            title="Click to make payment"
                         >
                             Make Payment
                         </button>
