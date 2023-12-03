@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../Firebase/firebase";
+import { db, auth } from "../Firebase/firebase";
 import { NavLink, useNavigate } from "react-router-dom";
 
 import Footer from "../Common/Footer/footer";
@@ -9,6 +9,8 @@ import ImageLogo from "../../img/logo.svg"
 import "../Common/General/styles_common.css"
 import * as FunctionCommon from "../Common/General/commonFunctions"
 //import * as commonFunctionJS from "../Common/General/commonFun_JS"
+import * as databaseQuery from "../Firebase/dbQuery"
+import { collection, addDoc, query, where, getDocs, DocumentSnapshot, onSnapshot, QuerySnapshot } from 'firebase/firestore';
 
 export default function Login() {
     function oncanplay(event) {
@@ -34,6 +36,8 @@ export default function Login() {
     const navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [currentUserRole, setCurrentUserRole] = useState("");
+    const dbRefRole = collection(db, "userRole");
 
     const submitLogin = (e) => {
         e.preventDefault();
@@ -49,8 +53,13 @@ export default function Login() {
             .then((userCredential) => {
                 // Signed in
                 const user = userCredential.user;
-                navigate("/home");
-                console.log(user.id);
+
+                /*getUserRole(username)
+                console.log("currentUserRole = " + currentUserRole)
+                navigate((currentUserRole == "user") ? "/home" : "/homeadmin")*/
+                navigateUserHome(username)
+
+                //navigateUser(username)
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -64,6 +73,43 @@ export default function Login() {
         //Clear email and password
         form.reset();
     };
+
+    //Get userRole from userRole
+    function getUserRole(currentUsername) {
+
+        const queryUserData = query(dbRefRole,
+            where("userName", "==", currentUsername));
+
+        const returnData = onSnapshot(queryUserData, (querySnapshot) => {
+
+            let letMyUserRole = []
+            querySnapshot.forEach((doc) => {
+
+                letMyUserRole.push({ ...doc.data(), id: doc.id });
+                console.log(doc.id, " => ", doc.data());
+
+                let myUserRoleReturn = doc.data().userRole
+                console.log("myUserRoleReturn = " + myUserRoleReturn)
+                setCurrentUserRole(myUserRoleReturn)
+            });
+        });
+    }
+
+    //Get navigateUserHome from userRole
+    async function navigateUserHome(currentUsername) {
+
+        const queryUserData = query(dbRefRole,
+            where("userName", "==", currentUsername));
+
+        const querySnapshot = await getDocs(queryUserData);
+
+        querySnapshot.forEach((myUserRole) => {
+
+            let myUserRoleReturn = myUserRole.data().userRole
+
+            navigate((myUserRoleReturn == "user") ? "/home" : "/homeadmin")
+        });
+    }
 
     return (
         <div id="pagewrap">

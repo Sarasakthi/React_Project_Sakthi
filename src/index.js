@@ -7,6 +7,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 //Import Webpages
 import Home from "./components/Home/home"
+import HomeAdmin from "./components/Home/homeadmin"
 import Payment from "./components/Payment/MakePayment/payment";
 import ErrorPage from "./components/Error/errorPage"
 import AddBeneficiary from "./components/Payment/AddBeneficiary/addBeneficiary";
@@ -25,22 +26,32 @@ const router = createBrowserRouter([
   {
     path: "/payment",
     element: <Payment />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: "/homeadmin",
+    element: <HomeAdmin />,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/",
     element: <Login />,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/signup",
     element: <Signup />,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/addbeneficiary",
     element: <AddBeneficiary />,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/signout",
     element: <Signout />,
+    errorElement: <ErrorPage />,
   }
 ])
 
@@ -49,6 +60,6 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   //<React.StrictMode> 
   //enabling React Strict mode renders useEffect twice
-    <RouterProvider router={router} />
+  <RouterProvider router={router} />
   //</React.StrictMode>
 );

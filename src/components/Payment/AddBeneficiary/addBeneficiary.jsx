@@ -59,7 +59,7 @@ export default function AddBeneficiary() {
 
             } else {
                 // User is signed out
-                console.log("User is logged out. Please login!");
+                console.log("User is logged out. Please login! - addBen");
                 navigate("/");
             }
         });

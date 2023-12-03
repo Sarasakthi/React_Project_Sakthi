@@ -29,6 +29,7 @@ export default function Signup() {
     const [statusTFS, setStatusTFS] = useState(false);
 
     const userAccountRef = collection(db, "userAccount");
+    const userRoleRef = collection(db, "userRole");
 
     const submitSignup = async (e) => {
         e.preventDefault();
@@ -59,8 +60,17 @@ export default function Signup() {
                 .catch((error) => {
                     const errorCode = error.code;
                     const errorMessage = error.message;
-                    console.log(errorCode, errorMessage);
-                    loginMsg = "Signup unsuccessful! \nPlease try again later."
+                    console.log("error code " + errorCode + " error message " + errorMessage);
+
+                    if (errorCode == "auth/email-already-in-use") {
+                        loginMsg = "Signup unsuccessful! \n\n" +
+                            "Useremail is already in use. Please try with a new email or login to proceed."
+                    }
+
+                    else {
+                        loginMsg = "Signup unsuccessful! \nPlease try again later."
+                    }
+
                 });
             alert(loginMsg)
         }
@@ -72,6 +82,7 @@ export default function Signup() {
     //Adding signin values to database
     const addSignupToDB = async () => {
         try {
+            //Add user details to userAccount
             await addDoc(userAccountRef,
                 {
                     username: username,
@@ -82,6 +93,13 @@ export default function Signup() {
                     amountTFS: parseInt(amountTFS),
                     statusSavings: (parseInt(amountSavings) === 0 ? false : true),
                     statusTFS: (parseInt(amountTFS) === 0 ? false : true) //amountTFS === "0" ? false : true
+                });
+
+            //Add user role to userRole
+            await addDoc(userRoleRef,
+                {
+                    userName: username,
+                    userRole: "user"
                 });
         }
         catch (error) {

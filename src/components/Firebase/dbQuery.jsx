@@ -23,6 +23,25 @@ export const currentUID = () => {
 const dbRefAddBeneficiary = collection(db, "userBeneficiary");
 const dbRefAccount = collection(db, "userAccount");
 const dbRefTransaction = collection(db, "userTransaction");
+const dbRefRole = collection(db, "userRole");
+
+//Get userRole from userRole
+export function getUserRole(currentUsername) {
+    
+    const queryUserData = query(dbRefRole,
+        where("userName", "==", (currentUsername)));
+
+    const returnUserRole = onSnapshot(queryUserData, (querySnapshot) => {
+
+        let myUserRole = []
+        querySnapshot.forEach((userDoc) => {
+            myUserRole.push({ ...userDoc.data(), id: userDoc.id });
+            
+            return (myUserRole[0].userRole)
+        });
+    });    
+
+}
 
 //Adding addBeneficiary To DB
 export const addBeneficiaryToDB =
@@ -48,158 +67,3 @@ export const addBeneficiaryToDB =
         };
     };
 
-//Adding Transaction Details To DB
-export const addTransactionToDB =
-    async (
-        transAmount,
-        transDate,
-        transFreq,
-        transFrom,
-        transRecEndDate,
-        transRecInterval,
-        transRecStartDate,
-        transRemarks,
-        transTo,
-        transUsername
-    ) => {
-
-        try {
-            await addDoc(dbRefTransaction,
-                {
-                    transAmount: transAmount,
-                    transDate: transDate,
-                    transFreq: transFreq,
-                    transFrom: transFrom,
-                    transRecEndDate: transRecEndDate,
-                    transRecInterval: transRecInterval,
-                    transRecStartDate: transRecStartDate,
-                    transRemarks: transRemarks,
-                    transTo: transTo,
-                    transUsername: transUsername
-                });
-            //console.log(dbRefTransaction);
-        }
-
-        catch (error) {
-            console.error(error);
-        };
-    };
-
-//Adding Transaction Details for Current User To DB
-export const updateTransactionCurrentUserAccount =
-    async (
-        whatFieldToUpdate,
-        enterNewUpdateVal,
-        userAccountTableName,
-        userDocID
-    ) => {
-
-        try {
-            //Update Current User Amount
-            const updateDocInput = doc(db, userAccountTableName, userDocID)
-            await updateDoc(updateDocInput,
-
-                (whatFieldToUpdate === "Checking") ?
-                    { amountChecking: enterNewUpdateVal }
-                    :
-                    (whatFieldToUpdate === "Savings") ?
-                        { amountSavings: enterNewUpdateVal }
-                        :
-                        { amountTFS: enterNewUpdateVal }
-
-            );
-        }
-
-        catch (error) {
-            console.error(error);
-        };
-    };
-
-//Adding Transaction Details for Current User To Self Transfer
-export const updateTransactionCurrentUserToSelf =
-    async (
-        fromAccount,
-        toAccount,
-        newFromAccountBalance,
-        newToAccountBalance,
-        userAccountTableName,
-        userDocID
-    ) => {
-
-        try {
-            //Update Current User Amount
-            const updateDocInput = doc(db, userAccountTableName, userDocID)
-            await updateDoc(updateDocInput,
-
-                (fromAccount == "Checking" && toAccount == "Savings") ?
-                    {
-                        amountChecking: newFromAccountBalance,
-                        amountSavings: newToAccountBalance
-                    }
-                    :
-                    (fromAccount == "Checking" && toAccount == "TFS") ?
-                        {
-                            amountChecking: newFromAccountBalance,
-                            amountTFS: newToAccountBalance
-                        }
-                        :
-                        (fromAccount == "Savings") ?
-                            {
-                                amountSavings: newFromAccountBalance,
-                                amountChecking: newToAccountBalance
-                            }
-                            :
-                            {
-                                amountTFS: newFromAccountBalance,
-                                amountChecking: newToAccountBalance
-                            }
-
-            );
-        }
-
-        catch (error) {
-            console.error(error);
-        };
-    };
-
-//Adding Transaction Details for Current User - Add Cash Deposit
-export const updateTransactionAddCashDeposit =
-    async (
-        newUpdateAccountBalance,
-        userAccountTableName,
-        userDocID
-    ) => {
-
-        try {
-            //Update Beneficiary User Account Table
-            const updateBeneficiaryDocInput = doc(db, userAccountTableName, userDocID)
-            await updateDoc(updateBeneficiaryDocInput,
-                { amountChecking: newUpdateAccountBalance }
-            );
-        }
-
-        catch (error) {
-            console.error(error);
-        };
-    };
-
-//Adding Transaction Details from Current User To Beneficiary
-export const updateTransactionBeneficiary =
-    async (
-        newUpdateAccountBalance,
-        userAccountTableName,
-        beneficiaryDocID
-    ) => {
-
-        try {
-            //Update Beneficiary User Account Table
-            const updateBeneficiaryDocInput = doc(db, userAccountTableName, beneficiaryDocID)
-            await updateDoc(updateBeneficiaryDocInput,
-                { amountChecking: newUpdateAccountBalance }
-            );
-        }
-
-        catch (error) {
-            console.error(error);
-        };
-    };

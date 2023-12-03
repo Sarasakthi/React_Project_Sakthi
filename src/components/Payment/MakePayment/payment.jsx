@@ -23,7 +23,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import { db, auth } from "../../Firebase/firebase";
-import { collection, addDoc, query, where, getDocs, DocumentSnapshot, onSnapshot, QuerySnapshot } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, onSnapshot, updateDoc, doc } from 'firebase/firestore';
 
 export default function Payment() {
 
@@ -56,6 +56,7 @@ export default function Payment() {
     const [currentUsername, setCurrentUsername] = useState("");
     const [currentUserID, setCurrentUserID] = useState("");
     const [currentUserDocID, setCurrentUserDocID] = useState("");
+    const [currentUserRole, setCurrentUserRole] = useState("user");
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
@@ -76,7 +77,7 @@ export default function Payment() {
 
             } else {
                 // User is signed out
-                console.log("User is logged out. Please login!");
+                console.log("User is logged out. Please login! - Payment");
                 navigate("/");
             }
         });
@@ -102,6 +103,7 @@ export default function Payment() {
                 //////console.log(userDoc.id, " => ", userDoc.data());
             });
             setAccountList(letUserMyAccountList);
+
         });
         return () => returnUserData();
     }
@@ -152,17 +154,172 @@ export default function Payment() {
 
                     let newUpdateAccountBalanceBeneficiary = parseInt(doc.data().amountChecking) + parseInt(valuePaymentTransferAmount)
 
-                    databaseQuery.updateTransactionBeneficiary(
+                    updateTransactionBeneficiary(
                         newUpdateAccountBalanceBeneficiary,
                         "userAccount",
                         doc.id
                     )
                 });
-
             }
         }
 
     }
+
+    //Adding Transaction Details To DB
+    const addTransactionToDB =
+        async (
+            transAmount,
+            transDate,
+            transFreq,
+            transFrom,
+            transRecEndDate,
+            transRecInterval,
+            transRecStartDate,
+            transRemarks,
+            transTo,
+            transUsername
+        ) => {
+
+            try {
+                await addDoc(dbRefTransaction,
+                    {
+                        transAmount: transAmount,
+                        transDate: transDate,
+                        transFreq: transFreq,
+                        transFrom: transFrom,
+                        transRecEndDate: transRecEndDate,
+                        transRecInterval: transRecInterval,
+                        transRecStartDate: transRecStartDate,
+                        transRemarks: transRemarks,
+                        transTo: transTo,
+                        transUsername: transUsername
+                    });
+                //console.log(dbRefTransaction);
+            }
+
+            catch (error) {
+                console.error(error);
+            };
+        };
+
+    //Adding Transaction Details for Current User To DB
+    const updateTransactionCurrentUserAccount =
+        async (
+            whatFieldToUpdate,
+            enterNewUpdateVal,
+            userAccountTableName,
+            userDocID
+        ) => {
+
+            try {
+                //Update Current User Amount
+                const updateDocInput = doc(db, userAccountTableName, userDocID)
+                await updateDoc(updateDocInput,
+
+                    (whatFieldToUpdate === "Checking") ?
+                        { amountChecking: enterNewUpdateVal }
+                        :
+                        (whatFieldToUpdate === "Savings") ?
+                            { amountSavings: enterNewUpdateVal }
+                            :
+                            { amountTFS: enterNewUpdateVal }
+
+                );
+            }
+
+            catch (error) {
+                console.error(error);
+            };
+        };
+
+    //Adding Transaction Details for Current User To Self Transfer
+    const updateTransactionCurrentUserToSelf =
+        async (
+            fromAccount,
+            toAccount,
+            newFromAccountBalance,
+            newToAccountBalance,
+            userAccountTableName,
+            userDocID
+        ) => {
+
+            try {
+                //Update Current User Amount
+                const updateDocInput = doc(db, userAccountTableName, userDocID)
+                await updateDoc(updateDocInput,
+
+                    (fromAccount == "Checking" && toAccount == "Savings") ?
+                        {
+                            amountChecking: newFromAccountBalance,
+                            amountSavings: newToAccountBalance
+                        }
+                        :
+                        (fromAccount == "Checking" && toAccount == "TFS") ?
+                            {
+                                amountChecking: newFromAccountBalance,
+                                amountTFS: newToAccountBalance
+                            }
+                            :
+                            (fromAccount == "Savings") ?
+                                {
+                                    amountSavings: newFromAccountBalance,
+                                    amountChecking: newToAccountBalance
+                                }
+                                :
+                                {
+                                    amountTFS: newFromAccountBalance,
+                                    amountChecking: newToAccountBalance
+                                }
+
+                );
+            }
+
+            catch (error) {
+                console.error(error);
+            };
+        };
+
+    //Adding Transaction Details for Current User - Add Cash Deposit
+    const updateTransactionAddCashDeposit =
+        async (
+            newUpdateAccountBalance,
+            userAccountTableName,
+            userDocID
+        ) => {
+
+            try {
+                //Update Beneficiary User Account Table
+                const updateBeneficiaryDocInput = doc(db, userAccountTableName, userDocID)
+                await updateDoc(updateBeneficiaryDocInput,
+                    { amountChecking: newUpdateAccountBalance }
+                );
+            }
+
+            catch (error) {
+                console.error(error);
+            };
+        };
+
+    //Adding Transaction Details from Current User To Beneficiary
+    const updateTransactionBeneficiary =
+        async (
+            newUpdateAccountBalance,
+            userAccountTableName,
+            beneficiaryDocID
+        ) => {
+
+            try {
+                //Update Beneficiary User Account Table
+                const updateBeneficiaryDocInput = doc(db, userAccountTableName, beneficiaryDocID)
+                await updateDoc(updateBeneficiaryDocInput,
+                    { amountChecking: newUpdateAccountBalance }
+                );
+            }
+
+            catch (error) {
+                console.error(error);
+            };
+        };
 
     function findBeneficiaryEmail(inputBeneficiaryList, beneficiaryName) {
         ////console.log("beneficiaryName =" + beneficiaryName)
@@ -195,7 +352,7 @@ export default function Payment() {
             //Complete Transaction for Current User
             let newUpdateAccountBalance =
                 parseInt(balanceChecking) + parseInt(valuePaymentCashDepositAmount);
-            databaseQuery.updateTransactionAddCashDeposit(
+            updateTransactionAddCashDeposit(
                 parseInt(newUpdateAccountBalance),
                 "userAccount",
                 currentUserDocID)
@@ -230,7 +387,7 @@ export default function Payment() {
         else {
 
             //Complete Transaction
-            databaseQuery.addTransactionToDB(
+            addTransactionToDB(
                 valuePaymentTransferAmount,
                 valuePaymentTransferDate,
                 (valuePaymentTransferFreqRec == false ? "Onetime" : "Recurring"),
@@ -249,7 +406,7 @@ export default function Payment() {
 
                 //Complete Transaction for Current User
                 let newUpdateAccountBalance = fromAccountAmount - valuePaymentTransferAmount;
-                databaseQuery.updateTransactionCurrentUserAccount(
+                updateTransactionCurrentUserAccount(
                     valuePaymentTransferFrom,
                     newUpdateAccountBalance,
                     "userAccount",
@@ -280,7 +437,7 @@ export default function Payment() {
 
                 console.log("newUpdateToAccountBalance = " + newUpdateToAccountBalance)
 
-                databaseQuery.updateTransactionCurrentUserToSelf(
+                updateTransactionCurrentUserToSelf(
                     valuePaymentTransferFrom,
                     valuePaymentTransferTo,
                     newUpdateFromAccountBalance,

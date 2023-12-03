@@ -21,9 +21,10 @@ div {
 
 .paymentHeader {
     padding: 18px;
-    font-size: 18px;
+    font-size: 20px;
     font-family: 'Ubuntu';
     font-weight: bold;
+    text-align: center;
 }
 
 .paymentDetails {
