@@ -119,7 +119,7 @@ export default function Home() {
 
                                     {accountList.map((myAccountDetails) => (
                                         <>
-                                            <p>Checking <span id="tab2">{(myAccountDetails.amountChecking)}</span></p>
+                                            <p>Chequing <span id="tab2">{(myAccountDetails.amountChequing)}</span></p>
                                             <p>Savings <span id="tab2">{myAccountDetails.amountSavings}</span></p>
                                             <p>Tax-Free Savings <span id="tab2">{myAccountDetails.amountTFS}</span></p>
                                         </>

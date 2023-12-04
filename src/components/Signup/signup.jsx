@@ -22,7 +22,7 @@ export default function Signup() {
     const [lastname, setLastname] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [amountChecking, setAmountChecking] = useState(0);
+    const [amountChequing, setAmountChequing] = useState(0);
     const [amountSavings, setAmountSavings] = useState(0);
     const [amountTFS, setAmountTFS] = useState(0);
     const [statusSavings, setStatusSavings] = useState(false);
@@ -34,7 +34,7 @@ export default function Signup() {
     const submitSignup = async (e) => {
         e.preventDefault();
 
-        if (amountChecking > 0) {
+        if (amountChequing > 0) {
             /*const form = e.target;
             const formData = new FormData(form);
 
@@ -75,7 +75,7 @@ export default function Signup() {
             alert(loginMsg)
         }
         else {
-            alert("Please select Checking amount")
+            alert("Please select Chequing amount")
         }
     }
 
@@ -88,7 +88,7 @@ export default function Signup() {
                     username: username,
                     firstname: firstname,
                     lastname: lastname,
-                    amountChecking: parseInt(amountChecking),
+                    amountChequing: parseInt(amountChequing),
                     amountSavings: parseInt(amountSavings),
                     amountTFS: parseInt(amountTFS),
                     statusSavings: (parseInt(amountSavings) === 0 ? false : true),
@@ -229,17 +229,17 @@ export default function Signup() {
                                     <div className="signupAccountSelection">
                                         <div className="signupAccountSelectionTitle">Select account options</div>
                                         <tr>
-                                            <div className="signupClassChecking" id="signupClassCheckingID">
-                                                <label className="signupClassCheckingLabel"
-                                                    title="Select cash deposit amount for your Checking Account"
+                                            <div className="signupClassChequing" id="signupClassChequingID">
+                                                <label className="signupClassChequingLabel"
+                                                    title="Select cash deposit amount for your Chequing Account"
                                                 >
-                                                    <td className="column1">Checking A/C
+                                                    <td className="column1">Chequing A/C
                                                     </td>
                                                     <td className="column2">
-                                                        <span id="signupInputChecking">
-                                                            <select name="signupInputCheckingList"
-                                                                onChange={(e) => setAmountChecking(e.target.value)}>
-                                                                <option value={0} selected>Checking Amount</option>
+                                                        <span id="signupInputChequing">
+                                                            <select name="signupInputChequingList"
+                                                                onChange={(e) => setAmountChequing(e.target.value)}>
+                                                                <option value={0} selected>Chequing Amount</option>
                                                                 <option value={500}>$ 500</option>
                                                                 <option value={1000}>$ 1000</option>
                                                                 <option value={1500}>$ 1500</option>

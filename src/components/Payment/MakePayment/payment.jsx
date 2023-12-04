@@ -38,7 +38,7 @@ export default function Payment() {
     const [loading, setLoading] = useState(true);
 
     //Input from the Payment page
-    const [valuePaymentTransferFrom, setValuePaymentTransferFrom] = useState("Checking")
+    const [valuePaymentTransferFrom, setValuePaymentTransferFrom] = useState("Chequing")
     const [valuePaymentTransferTo, setValuePaymentTransferTo] = useState("")
     const [valueBeneficiaryCount, setValueBeneficiaryCount] = useState(0)
     const [valuePaymentTransferAmount, setValuePaymentTransferAmount] = useState(0)
@@ -48,7 +48,7 @@ export default function Payment() {
     const [valuePaymentRecStartDate, setValuePaymentRecStartDate] = useState(new Date())
     const [valuePaymentRecEndDate, setValuePaymentRecEndDate] = useState(new Date())
     const [valuePaymentRecInterval, setValuePaymentRecInterval] = useState("")
-    const [balanceChecking, setBalanceChecking] = useState(0)
+    const [balanceChequing, setBalanceChequing] = useState(0)
     const [balanceSavings, setBalanceSavings] = useState(0)
     const [balanceTFS, setBalanceTFS] = useState(0)
     const [valuePaymentCashDepositAmount, setValuePaymentCashDepositAmount] = useState(0)
@@ -96,7 +96,7 @@ export default function Payment() {
                 letUserMyAccountList.push({ ...userDoc.data(), id: userDoc.id });
 
                 //Initiate Account Balance
-                setBalanceChecking(userDoc.data().amountChecking)
+                setBalanceChequing(userDoc.data().amountChequing)
                 setBalanceSavings(userDoc.data().amountSavings)
                 setBalanceTFS(userDoc.data().amountTFS)
                 setCurrentUserDocID(userDoc.id)
@@ -152,7 +152,7 @@ export default function Payment() {
                 const querySnapshot = await getDocs(queryBeneficiaryAccountData);
                 querySnapshot.forEach((doc) => {
 
-                    let newUpdateAccountBalanceBeneficiary = parseInt(doc.data().amountChecking) + parseInt(valuePaymentTransferAmount)
+                    let newUpdateAccountBalanceBeneficiary = parseInt(doc.data().amountChequing) + parseInt(valuePaymentTransferAmount)
 
                     updateTransactionBeneficiary(
                         newUpdateAccountBalanceBeneficiary,
@@ -216,8 +216,8 @@ export default function Payment() {
                 const updateDocInput = doc(db, userAccountTableName, userDocID)
                 await updateDoc(updateDocInput,
 
-                    (whatFieldToUpdate === "Checking") ?
-                        { amountChecking: enterNewUpdateVal }
+                    (whatFieldToUpdate === "Chequing") ?
+                        { amountChequing: enterNewUpdateVal }
                         :
                         (whatFieldToUpdate === "Savings") ?
                             { amountSavings: enterNewUpdateVal }
@@ -248,27 +248,27 @@ export default function Payment() {
                 const updateDocInput = doc(db, userAccountTableName, userDocID)
                 await updateDoc(updateDocInput,
 
-                    (fromAccount == "Checking" && toAccount == "Savings") ?
+                    (fromAccount == "Chequing" && toAccount == "Savings") ?
                         {
-                            amountChecking: newFromAccountBalance,
+                            amountChequing: newFromAccountBalance,
                             amountSavings: newToAccountBalance
                         }
                         :
-                        (fromAccount == "Checking" && toAccount == "TFS") ?
+                        (fromAccount == "Chequing" && toAccount == "TFS") ?
                             {
-                                amountChecking: newFromAccountBalance,
+                                amountChequing: newFromAccountBalance,
                                 amountTFS: newToAccountBalance
                             }
                             :
                             (fromAccount == "Savings") ?
                                 {
                                     amountSavings: newFromAccountBalance,
-                                    amountChecking: newToAccountBalance
+                                    amountChequing: newToAccountBalance
                                 }
                                 :
                                 {
                                     amountTFS: newFromAccountBalance,
-                                    amountChecking: newToAccountBalance
+                                    amountChequing: newToAccountBalance
                                 }
 
                 );
@@ -291,7 +291,7 @@ export default function Payment() {
                 //Update Beneficiary User Account Table
                 const updateBeneficiaryDocInput = doc(db, userAccountTableName, userDocID)
                 await updateDoc(updateBeneficiaryDocInput,
-                    { amountChecking: newUpdateAccountBalance }
+                    { amountChequing: newUpdateAccountBalance }
                 );
             }
 
@@ -312,7 +312,7 @@ export default function Payment() {
                 //Update Beneficiary User Account Table
                 const updateBeneficiaryDocInput = doc(db, userAccountTableName, beneficiaryDocID)
                 await updateDoc(updateBeneficiaryDocInput,
-                    { amountChecking: newUpdateAccountBalance }
+                    { amountChequing: newUpdateAccountBalance }
                 );
             }
 
@@ -351,13 +351,13 @@ export default function Payment() {
 
             //Complete Transaction for Current User
             let newUpdateAccountBalance =
-                parseInt(balanceChecking) + parseInt(valuePaymentCashDepositAmount);
+                parseInt(balanceChequing) + parseInt(valuePaymentCashDepositAmount);
             updateTransactionAddCashDeposit(
                 parseInt(newUpdateAccountBalance),
                 "userAccount",
                 currentUserDocID)
 
-            alert("$" + valuePaymentCashDepositAmount + " added to your Checking Account!")
+            alert("$" + valuePaymentCashDepositAmount + " added to your Chequing Account!")
         }
     }
 
@@ -371,11 +371,11 @@ export default function Payment() {
 
         //Check the Payment from amount with the balance
         let fromAccountAmount =
-            (valuePaymentTransferFrom == "Checking") ? balanceChecking :
+            (valuePaymentTransferFrom == "Chequing") ? balanceChequing :
                 (valuePaymentTransferFrom == "Savings") ? balanceSavings :
                     balanceTFS
 
-        //Alert message for balance checking
+        //Alert message for balance Chequing
         if (parseInt(valuePaymentTransferAmount) > parseInt(fromAccountAmount)) {
 
             alert("You dont have sufficient balance in your " + valuePaymentTransferFrom
@@ -399,8 +399,8 @@ export default function Payment() {
                 valuePaymentTransferTo,
                 currentUsername)
 
-            //Condition for Checking to Beneficiary
-            if ((valuePaymentTransferFrom == "Checking") &&
+            //Condition for Chequing to Beneficiary
+            if ((valuePaymentTransferFrom == "Chequing") &&
                 !((valuePaymentTransferTo == "Savings") ||
                     (valuePaymentTransferTo == "TFS"))) {
 
@@ -417,18 +417,18 @@ export default function Payment() {
                 updateBeneficiaryAccountDetails(beneficiaryList);
             }
 
-            //Condition for Self Account Transfer - Checking to Savings/TFS
+            //Condition for Self Account Transfer - Chequing to Savings/TFS
             else {
 
                 //Complete Transaction for Current User
                 let newUpdateFromAccountBalance = fromAccountAmount - valuePaymentTransferAmount;
 
                 let newUpdateToAccountBalance =
-                    parseInt(((valuePaymentTransferTo == "Checking") ? balanceChecking :
+                    parseInt(((valuePaymentTransferTo == "Chequing") ? balanceChequing :
                         (valuePaymentTransferTo == "Savings") ? balanceSavings :
                             balanceTFS)) + parseInt(valuePaymentTransferAmount);
 
-                console.log("balanceChecking = " + balanceChecking)
+                console.log("balanceChequing = " + balanceChequing)
                 console.log("balanceSavings = " + balanceSavings)
                 console.log("balanceTFS = " + balanceTFS)
 
@@ -591,8 +591,8 @@ export default function Payment() {
                                                                 {
                                                                     setValuePaymentTransferFrom(e.target.value)
                                                                     {
-                                                                        (e.target.value != "Checking") ?
-                                                                            setValuePaymentTransferTo("Checking") :
+                                                                        (e.target.value != "Chequing") ?
+                                                                            setValuePaymentTransferTo("Chequing") :
                                                                             setValuePaymentTransferTo(valuePaymentTransferTo)
                                                                     }
 
@@ -601,8 +601,8 @@ export default function Payment() {
                                                     >
                                                         {accountList.map((myAccountDetails) => (
                                                             <>
-                                                                <option value="Checking"
-                                                                    id="Checking">Checking Account - ${(myAccountDetails.amountChecking)}</option>
+                                                                <option value="Chequing"
+                                                                    id="Chequing">Chequing Account - ${(myAccountDetails.amountChequing)}</option>
                                                                 <option value="Savings"
                                                                     id="Savings">Savings Account - ${(myAccountDetails.amountSavings)}</option>
                                                                 <option value="TFS"
@@ -615,12 +615,12 @@ export default function Payment() {
                                         </label>
 
                                         {
-                                            (valuePaymentTransferFrom === 'Checking')
+                                            (valuePaymentTransferFrom === 'Chequing')
                                                 ?
                                                 <button
                                                     className="paymentAddBalance"
                                                     type="button"
-                                                    title="Click to Add Cash to Checking"
+                                                    title="Click to Add Cash to Chequing"
                                                     onClick={submitAddCashBalancePopupVisible}
                                                     name="paymentAddBalance"
                                                 ><span>+</span> Add Cash Deposit
@@ -700,10 +700,10 @@ export default function Payment() {
                                                             }}
                                                     >
                                                         {
-                                                            (valuePaymentTransferFrom != 'Checking')
+                                                            (valuePaymentTransferFrom != 'Chequing')
                                                                 ?
                                                                 <option value="beneficiary1"
-                                                                    id="beneficiary1">Checking Account</option>
+                                                                    id="beneficiary1">Chequing Account</option>
                                                                 :
                                                                 (parseInt(valueBeneficiaryCount) == 0)
                                                                     ?
