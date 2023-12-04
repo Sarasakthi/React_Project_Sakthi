@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../Firebase/firebase";
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, setDoc, doc } from 'firebase/firestore';
 import { db } from "../Firebase/firebase";
 
 
@@ -30,7 +30,7 @@ export default function Signup() {
 
     const userAccountRef = collection(db, "userAccount");
     const userRoleRef = collection(db, "userRole");
-
+    
     const submitSignup = async (e) => {
         e.preventDefault();
 
@@ -96,11 +96,18 @@ export default function Signup() {
                 });
 
             //Add user role to userRole
-            await addDoc(userRoleRef,
+            /*await addDoc(userRoleRef,
                 {
                     userName: username,
                     userRole: "user"
-                });
+                });*/
+
+            //Add user role to userRole
+            await setDoc(doc(db, "userRole", username),{
+                userRole: "user"
+            });
+            console.log("Document written with ID: ", doc.id);
+
         }
         catch (error) {
             console.error(error);

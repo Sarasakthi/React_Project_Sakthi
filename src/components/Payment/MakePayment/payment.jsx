@@ -33,6 +33,7 @@ export default function Payment() {
     const dbRefAccount = collection(db, "userAccount");
     const dbRefAddBeneficiary = collection(db, "userBeneficiary");
     const dbRefTransaction = collection(db, "userTransaction");
+    
     const [accountList, setAccountList] = useState([]);
     const [beneficiaryList, setBeneficiaryList] = useState([]);
     const [loading, setLoading] = useState(true);

@@ -99,6 +99,8 @@ export default function HomeAdmin() {
 
         let returnMsg = ""
 
+        //getUserAuthByEmail(userEmail)
+        
         const returnVal = prompt('Please enter user email to confirm delete')
 
         if (userEmail === returnVal) {
@@ -124,10 +126,35 @@ export default function HomeAdmin() {
             returnMsg = "Oops! The useremail " + returnVal + " does not match the delete user you have chosen.\n\n" +
                 "Please try again!"
         }
-
+        
         alert(returnMsg)
         window.location.reload();
     };
+
+    function getUserAuthByEmail(userEmail) {
+        getAuth()
+            .getUserByEmail(userEmail)
+            .then((userRecord) => {
+                // See the UserRecord reference doc for the contents of userRecord.
+                console.log(`Successfully fetched user data: ${userRecord.toJSON()}`);
+            })
+            .catch((error) => {
+                console.log('Error fetching user data:', error);
+            });
+
+    }
+
+    function deleteUserAuthentication(uid) {
+        getAuth()
+            .deleteUser(uid)
+            .then(() => {
+                console.log('Successfully deleted user');
+            })
+            .catch((error) => {
+                console.log('Error deleting user:', error);
+            });
+
+    }
 
     const updateEmail = async (id) => {
         const userDoc = doc(db, "users", id);

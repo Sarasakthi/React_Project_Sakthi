@@ -10,7 +10,7 @@ import "../Common/General/styles_common.css"
 import * as FunctionCommon from "../Common/General/commonFunctions"
 //import * as commonFunctionJS from "../Common/General/commonFun_JS"
 import * as databaseQuery from "../Firebase/dbQuery"
-import { collection, addDoc, query, where, getDocs, DocumentSnapshot, onSnapshot, QuerySnapshot } from 'firebase/firestore';
+import { doc, collection, addDoc, query, where, getDocs, DocumentSnapshot, onSnapshot, QuerySnapshot, getDoc } from 'firebase/firestore';
 
 export default function Login() {
     function oncanplay(event) {
@@ -57,6 +57,7 @@ export default function Login() {
                 /*getUserRole(username)
                 console.log("currentUserRole = " + currentUserRole)
                 navigate((currentUserRole == "user") ? "/home" : "/homeadmin")*/
+
                 navigateUserHome(username)
 
                 //navigateUser(username)
@@ -98,8 +99,16 @@ export default function Login() {
     //Get navigateUserHome from userRole
     async function navigateUserHome(currentUsername) {
 
-        const queryUserData = query(dbRefRole,
-            where("userName", "==", currentUsername));
+        const docRefUserRole = doc(db, "userRole", currentUsername);
+
+        console.log("Current data: ");
+
+        const myUserRoleReturn = onSnapshot(docRefUserRole, (doc) => {
+            navigate((doc.data().userRole == "user") ? "/home" : "/homeadmin")
+        })
+
+        /*const queryUserData = query(dbRefRole,
+            where("username", "==", currentUsername));
 
         const querySnapshot = await getDocs(queryUserData);
 
@@ -108,7 +117,7 @@ export default function Login() {
             let myUserRoleReturn = myUserRole.data().userRole
 
             navigate((myUserRoleReturn == "user") ? "/home" : "/homeadmin")
-        });
+        });*/
     }
 
     return (
