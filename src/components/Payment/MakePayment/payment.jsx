@@ -1,6 +1,9 @@
 //
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
+import Moment from 'react-moment';
+import 'moment-timezone';
+
 //
 import DatePicker from "react-datepicker";
 import 'react-datepicker/dist/react-datepicker.css'
@@ -24,6 +27,7 @@ import { useNavigate } from "react-router-dom";
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import { db, auth } from "../../Firebase/firebase";
 import { collection, addDoc, query, where, getDocs, onSnapshot, updateDoc, doc } from 'firebase/firestore';
+import moment from 'moment-timezone';
 
 export default function Payment() {
 
@@ -33,7 +37,7 @@ export default function Payment() {
     const dbRefAccount = collection(db, "userAccount");
     const dbRefAddBeneficiary = collection(db, "userBeneficiary");
     const dbRefTransaction = collection(db, "userTransaction");
-    
+
     const [accountList, setAccountList] = useState([]);
     const [beneficiaryList, setBeneficiaryList] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -285,7 +289,8 @@ export default function Payment() {
         async (
             newUpdateAccountBalance,
             userAccountTableName,
-            userDocID
+            userDocID,
+            cashDepositAmount
         ) => {
 
             try {
@@ -294,6 +299,21 @@ export default function Payment() {
                 await updateDoc(updateBeneficiaryDocInput,
                     { amountChequing: newUpdateAccountBalance }
                 );
+
+                //Complete Transaction
+                addTransactionToDB(
+                    cashDepositAmount,
+                    moment().tz("America/Edmonton").format(),
+                    "Onetime",
+                    "Cash Deposit",
+                    moment().tz("America/Edmonton").format(),
+                    "",
+                    moment().tz("America/Edmonton").format(),
+                    "",
+                    "Checking",
+                    currentUsername)
+
+                console.log("Completed add cash")
             }
 
             catch (error) {
@@ -353,10 +373,12 @@ export default function Payment() {
             //Complete Transaction for Current User
             let newUpdateAccountBalance =
                 parseInt(balanceChequing) + parseInt(valuePaymentCashDepositAmount);
+
             updateTransactionAddCashDeposit(
                 parseInt(newUpdateAccountBalance),
                 "userAccount",
-                currentUserDocID)
+                currentUserDocID,
+                valuePaymentCashDepositAmount)
 
             alert("$" + valuePaymentCashDepositAmount + " added to your Chequing Account!")
         }
