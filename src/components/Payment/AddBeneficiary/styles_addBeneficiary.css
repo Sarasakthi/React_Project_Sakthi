@@ -25,12 +25,14 @@ div {
     font-family: 'Ubuntu';
     font-weight: bold;
     text-align: center;
+
 }
 
 .beneficiaryDetails {
     margin: 0 auto;
     width: 600px;
     height: auto;
+
 }
 
 .beneficiaryTableRecurring {
@@ -44,11 +46,13 @@ div {
 
 }
 
-.beneficiaryTableMain {}
+.beneficiaryDetails {
+    /*border: 1px solid rgb(163, 163, 163);
+    border-radius: 15px;*/
 
-.beneficiaryTableLeft {
-    
 }
+
+.beneficiaryTableLeft {}
 
 .beneficiaryDetails tr {
     display: flex;

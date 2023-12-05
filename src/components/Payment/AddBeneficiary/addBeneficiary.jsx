@@ -185,15 +185,13 @@ export default function AddBeneficiary() {
                                 </table>
                             </div>
 
+                            <div className="beneficiaryMakebeneficiary" id="beneficiaryDiv">
+                                <button type="submit" name="beneficiaryNameMakebeneficiary"
+                                    id="beneficiaryIDMakebeneficiary">
+                                    Add beneficiary
+                                </button>
+                            </div>
                         </div>
-
-                        <div className="beneficiaryMakebeneficiary" id="beneficiaryDiv">
-                            <button type="submit" name="beneficiaryNameMakebeneficiary"
-                                id="beneficiaryIDMakebeneficiary">
-                                Add beneficiary
-                            </button>
-                        </div>
-
                     </div >
                 </div >
 

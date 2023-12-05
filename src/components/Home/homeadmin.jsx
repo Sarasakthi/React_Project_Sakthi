@@ -13,6 +13,10 @@ import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import { db, auth } from "../Firebase/firebase";
 import { collection, addDoc, query, where, getDocs, deleteDoc, updateDoc, onSnapshot, QuerySnapshot, doc } from 'firebase/firestore';
 
+const dbRefAccount = collection(db, "userAccount");
+const dbRefAddBeneficiary = collection(db, "userBeneficiary");
+const dbRefTransaction = collection(db, "userTransaction");
+
 export default function HomeAdmin() {
 
     const navigate = useNavigate();
@@ -100,36 +104,76 @@ export default function HomeAdmin() {
         let returnMsg = ""
 
         //getUserAuthByEmail(userEmail)
-        
+
         const returnVal = prompt('Please enter user email to confirm delete')
 
         if (userEmail === returnVal) {
-            //Delete from User Account Table
-            const userDoc = doc(db, "userAccount", id);
-            await deleteDoc(userDoc);
 
-            /*
-            //Delete from User Account Table
-            for (let i = 1; i <= 4; i++) {
-                let userDoc = doc(db,
-                    ((i == 1) ? "userTransaction" :
-                        (i == 2) ? "userBeneficiary" :
-                            (i == 3) ? "userRole" :
-                                "userAccount"), id);
-                await deleteDoc(userDoc);
-            }
-            */
+            //Delete User from userAccount Table
+            const userDocUserAccount = doc(db, "userAccount", id);
+            await deleteDoc(userDocUserAccount);
+            console.log("Check 1: ", id, " is deleted from userBeneficiary")
 
-            returnMsg = "Useremail " + returnVal + " has been deleted from the database!"
+            //Delete User from userBeneficiary Table
+            deleteFromUserBeneficiary(userEmail)
+            console.log("Check 2: ", userEmail, " is deleted from userBeneficiary")
+
+            //Delete User from userRole Table
+            const userDocUserRole = doc(db, "userRole", userEmail);
+            await deleteDoc(userDocUserRole);
+            console.log("Check 3: ", userEmail, " deleted from userRole")
+
+            //Delete User from userTransaction Table
+            deleteFromUserTransaction(userEmail)
+            console.log("Check 4: ", userEmail, " deleted from userTransaction")
+
+            returnMsg = "Useremail '" + returnVal + "' has been deleted from the database!"
         }
         else {
-            returnMsg = "Oops! The useremail " + returnVal + " does not match the delete user you have chosen.\n\n" +
+            returnMsg = "Oops! The useremail '" + returnVal + "' does not match the delete user you have chosen.\n\n" +
                 "Please try again!"
         }
-        
+
         alert(returnMsg)
         window.location.reload();
     };
+
+    function deleteFromUserBeneficiary(username) {
+        const queryBeneficiaryData = query(dbRefAddBeneficiary,
+            where("username", "==", (username)));
+
+        const returnBeneficiaryData = onSnapshot(queryBeneficiaryData, (querySnapshot) => {
+
+            let letMyBeneficiaryList = []
+            querySnapshot.forEach(async (beneficiaryDoc) => {
+                letMyBeneficiaryList.push({ ...beneficiaryDoc.data(), id: beneficiaryDoc.id });
+                console.log(beneficiaryDoc.id, " ==> ", beneficiaryDoc.data());
+
+                const userDocUserBeneficiary = doc(db, "userBeneficiary", beneficiaryDoc.id);
+                await deleteDoc(userDocUserBeneficiary);
+
+                //console.log("User beneficiary " + beneficiaryDoc.id, " is deleted!");
+            });
+        });
+    }
+
+    function deleteFromUserTransaction(username) {
+        const queryTransactionData = query(dbRefTransaction,
+            where("transUsername", "==", (username)));
+
+        const returnTransactionData = onSnapshot(queryTransactionData, (querySnapshot) => {
+
+            let letMyTransactionList = []
+            querySnapshot.forEach(async (transactionDoc) => {
+                letMyTransactionList.push({ ...transactionDoc.data(), id: transactionDoc.id });
+                console.log(transactionDoc.id, " ==> ", transactionDoc.data());
+
+                const userDocUserTransaction = doc(db, "userTransaction", transactionDoc.id);
+                await deleteDoc(userDocUserTransaction);
+
+            });
+        });
+    }
 
     function getUserAuthByEmail(userEmail) {
         getAuth()
@@ -153,13 +197,13 @@ export default function HomeAdmin() {
             .catch((error) => {
                 console.log('Error deleting user:', error);
             });
-
     }
 
     const updateEmail = async (id) => {
         const userDoc = doc(db, "users", id);
         await updateDoc(userDoc, { Email: updatedEmail });
     };
+
 
     return (
         <LogoutApplication>

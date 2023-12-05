@@ -27,10 +27,16 @@ div {
     text-align: center;
 }
 
+.paymentMain{
+    
+}
+
 .paymentDetails {
     margin: 0 auto;
     width: 1100px;
     height: auto;
+    /*border: 1px solid rgb(163, 163, 163);
+    border-radius: 15px;*/
 }
 
 .paymentTableRecurring {
