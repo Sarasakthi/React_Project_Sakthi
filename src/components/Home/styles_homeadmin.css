@@ -44,6 +44,11 @@ div {
     text-align: center;
 }
 
+
+.usersList{
+    overflow-y: auto;
+}
+
 .usersListDisplay {
     border: 1px solid lightgrey;
     border-radius: 15px;
