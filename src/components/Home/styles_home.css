@@ -144,8 +144,11 @@ Asset and Transaction
     padding-right: 50px;
 }
 
-.rowAssetTrans .colAsset p {
+.rowAssetTrans .colAsset p,
+.rowAssetTrans .colTrans p
+ {
     border-bottom: 1px dotted gray;
+    padding-bottom: 5px;
 }
 
 .rowAssetTrans .colEmpty {

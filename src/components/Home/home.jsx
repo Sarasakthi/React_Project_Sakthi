@@ -184,6 +184,7 @@ export default function Home() {
                                             </p>
                                         </>
                                     ))}
+
                                     <a href="#" onClick={() => getTransactionDetails(currentUseremail, "all")}>view all transactions</a>
                                 </div>
                             </div>
