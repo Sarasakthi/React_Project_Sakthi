@@ -264,10 +264,3 @@ export default function HomeAdmin() {
         </LogoutApplication>
     )
 }
-
-
-
-
-
-
-

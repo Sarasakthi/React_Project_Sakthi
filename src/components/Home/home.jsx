@@ -11,19 +11,24 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import { db, auth } from "../Firebase/firebase";
-import { collection, addDoc, query, where, getDocs, DocumentSnapshot, onSnapshot, QuerySnapshot } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, DocumentSnapshot, onSnapshot, QuerySnapshot, orderBy, limit } from 'firebase/firestore';
+import moment from "moment";
 
 export default function Home() {
 
     const navigate = useNavigate();
 
     const dbRefAccount = collection(db, "userAccount");
+    const dbRefTransaction = collection(db, "userTransaction");
     const [accountList, setAccountList] = useState([]);
+    const [transactionList, setTransactionList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [currentUserRole, setCurrentUserRole] = useState("");
+    const [currentUseremail, setCurrentUseremail] = useState("")
+    const [moreTransaction, setMoreTransaction] = useState(false)
 
     let currentUserID = null
-    let currentUseremail = null
+    //let currentUseremail = null
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
@@ -31,9 +36,10 @@ export default function Home() {
                 // User is verified
                 console.log("my user UID", user.uid + " - " + user.email);
                 currentUserID = user.uid
-                currentUseremail = user.email
+                setCurrentUseremail(user.email)
 
-                getAccountDetails(currentUseremail)
+                getAccountDetails(user.email)
+                getTransactionDetails(user.email, 5)
 
             } else {
                 // User is signed out
@@ -57,10 +63,10 @@ export default function Home() {
     };
 
     //Fetching Account Details from Database
-    function getAccountDetails(currentUseremail) {
+    function getAccountDetails(currentUseremailID) {
 
         const queryData = query(dbRefAccount,
-            where("username", "==", (currentUseremail)));
+            where("username", "==", (currentUseremailID)));
 
         const returnData = onSnapshot(queryData, (querySnapshot) => {
 
@@ -71,6 +77,43 @@ export default function Home() {
             });
 
             setAccountList(letMyAccountList);
+        });
+
+        //return () => returnData();
+    }
+
+    //Fetching Account Details from Database
+    function getTransactionDetails(currentUseremailID, transLimit) {
+
+        console.log("Entering getTransactionDetails");
+
+        let queryData = ""
+
+        if (transLimit == "all") {
+            queryData = query(dbRefTransaction,
+                where("transUsername", "==", currentUseremailID),
+                orderBy("transDate", "desc"));
+            console.log("translimit = all")
+            console.log(currentUseremailID)
+        }
+        else {
+            queryData = query(dbRefTransaction,
+                where("transUsername", "==", currentUseremailID),
+                orderBy("transDate", "desc"),
+                limit(transLimit));
+            console.log("translimit = something")
+        }
+
+        const returnData = onSnapshot(queryData, (querySnapshot) => {
+
+            let letMyTransactionList = []
+            querySnapshot.forEach((doc) => {
+                letMyTransactionList.push({ ...doc.data(), id: doc.id });
+                console.log(doc.id, " => ", doc.data());
+            });
+
+            console.log(letMyTransactionList)
+            setTransactionList(letMyTransactionList);
         });
 
         //return () => returnData();
@@ -131,13 +174,17 @@ export default function Home() {
                                 </div>
 
                                 <div className="colTrans">
-                                    <p>October 28, 2023 ABM Withdrawal $100.00 $3,286.63</p>
-                                    <p>October 24, 2023 Funds Transfer $1,353.65 $3,386.63</p>
-                                    <p>October 24, 2023 Transfer Dr. $1,000.00</p>
-                                    <p>October 23, 2023 Bill Payment Telus $107.01 $5,740.28</p>
-                                    <p>October 20, 2023 GST CANADA $827.03 $5,847.29</p>
-                                    <br></br>
-                                    <p><a href="#statement">view more transactions</a></p>
+                                    {transactionList.map((transaction) => (
+                                        <>
+                                            <p>
+                                                <span className="span1">{moment(new Date(transaction.transDate.seconds * 1000).toLocaleDateString("en-US")).format("YYYY-MMM-DD")}</span>
+                                                <span className="span2">- {transaction.transRemarks}</span>
+                                                <span className="span3">- $ {transaction.transAmount}</span>
+                                                <span className="span5">- to {transaction.transTo}</span>
+                                            </p>
+                                        </>
+                                    ))}
+                                    <a href="#" onClick={() => getTransactionDetails(currentUseremail, "all")}>view more transactions</a>
                                 </div>
                             </div>
                         </div>

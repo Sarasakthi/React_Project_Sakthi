@@ -59,6 +59,29 @@ div {
     text-shadow: rgba(0, 255, 21, 0.226)1px 0 10px;
 }
 
+.colTrans p {
+    display: block;
+    text-align: left;
+}
+
+.colTrans p .span1 {
+}
+.colTrans p .span2 {
+    padding-left: 10px;
+}
+
+.colTrans .span3{
+    padding-left: 10px;
+}
+
+.colTrans .span4{
+    padding-left: 10px;
+}
+
+.colTrans .span5{
+    padding-left: 10px;
+}
+
 .assetAndTrans {
     display: grid;
     background: rgb(250, 250, 250);
