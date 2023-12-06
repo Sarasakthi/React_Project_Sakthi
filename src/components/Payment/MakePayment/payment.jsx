@@ -390,6 +390,8 @@ export default function Payment() {
     function submitMakePayment(e) {
         e.preventDefault();
 
+        console.log("Current Date", Date())
+
         ////console.log(formJson);
 
         //Check the Payment from amount with the balance
