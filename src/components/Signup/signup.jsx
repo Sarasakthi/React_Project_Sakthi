@@ -108,11 +108,11 @@ export default function Signup() {
                         accountAmount,
                         dateToday,
                         "Onetime",
-                        "Signup Cash Deposit - " + accountName,
+                        "Signup Cash Deposit",
                         dateToday,
                         "",
                         dateToday,
-                        "Signup Cash Deposit - " + accountName,
+                        "Signup Cash Deposit",
                         accountName,
                         username)
                 }

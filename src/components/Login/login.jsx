@@ -127,6 +127,7 @@ export default function Login() {
 
         querySnapshot.forEach((myUserRole) => {
 
+            
             let myUserRoleReturn = myUserRole.data().userRole
 
             navigate((myUserRoleReturn == "user") ? "/home" : "/homeadmin")
