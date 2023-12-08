@@ -27,10 +27,13 @@ export default function Signup() {
     const [amountTFS, setAmountTFS] = useState(0);
     const [statusSavings, setStatusSavings] = useState(false);
     const [statusTFS, setStatusTFS] = useState(false);
+    const dateToday = new Date()
+
+    const dbRefTransaction = collection(db, "userTransaction");
 
     const userAccountRef = collection(db, "userAccount");
     const userRoleRef = collection(db, "userRole");
-    
+
     const submitSignup = async (e) => {
         e.preventDefault();
 
@@ -95,15 +98,27 @@ export default function Signup() {
                     statusTFS: (parseInt(amountTFS) === 0 ? false : true) //amountTFS === "0" ? false : true
                 });
 
-            //Add user role to userRole
-            /*await addDoc(userRoleRef,
-                {
-                    userName: username,
-                    userRole: "user"
-                });*/
+            //Add Initial Transaction to Transaction Table
+            for (let i = 1; i <= 3; i++) {
+                let accountName = ((i == 1) ? "Checking" : (i == 2) ? "Savings" : "TFS");
+                let accountAmount = parseInt(((i == 1) ? amountChequing : (i == 2) ? amountSavings : amountTFS));
 
+                if (accountAmount != 0) {
+                    addTransactionToDB(
+                        accountAmount,
+                        dateToday,
+                        "Onetime",
+                        "Signup Cash Deposit - " + accountName,
+                        dateToday,
+                        "",
+                        dateToday,
+                        "Signup Cash Deposit - " + accountName,
+                        accountName,
+                        username)
+                }
+            }
             //Add user role to userRole
-            await setDoc(doc(db, "userRole", username),{
+            await setDoc(doc(db, "userRole", username), {
                 userRole: "user"
             });
             console.log("Document written with ID: ", doc.id);
@@ -113,6 +128,44 @@ export default function Signup() {
             console.error(error);
         };
     }
+
+    //Adding Transaction Details To DB
+    const addTransactionToDB =
+        async (
+            transAmount,
+            transDate,
+            transFreq,
+            transFrom,
+            transRecEndDate,
+            transRecInterval,
+            transRecStartDate,
+            transRemarks,
+            transTo,
+            transUsername
+        ) => {
+
+            try {
+                await addDoc(dbRefTransaction,
+                    {
+                        transAmount: transAmount,
+                        transDate: transDate,
+                        transFreq: transFreq,
+                        transFrom: transFrom,
+                        transRecEndDate: transRecEndDate,
+                        transRecInterval: transRecInterval,
+                        transRecStartDate: transRecStartDate,
+                        transRemarks: transRemarks,
+                        transTo: transTo,
+                        transUsername: transUsername
+                    });
+                //console.log(dbRefTransaction);
+            }
+
+            catch (error) {
+                console.error(error);
+            };
+        };
+
 
     return (
         <form method="post" onSubmit={submitSignup}>
@@ -206,7 +259,7 @@ export default function Signup() {
                                                         required
                                                         onInput={F => F.target.setCustomValidity('')}
                                                         onInvalid={F => F.target.setCustomValidity('Mandatory: Please enter your email')}
-                                                        onChange={(e) => setUsername(e.target.value)}
+                                                        onChange={(e) => setUsername(e.target.value.toLowerCase())}
                                                         placeholder="User email" />
                                                 </td>
                                             </label>

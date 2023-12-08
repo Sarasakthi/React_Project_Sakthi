@@ -30,8 +30,7 @@ div {
     background-image: linear-gradient(rgb(247, 247, 247), rgb(211, 211, 211), rgb(179, 178, 178));
     font-size: large;
     margin: 0 auto;
-    min-width: fit-content;
-    max-width: 100%;
+    min-width: 50vw;
     /*60% of viewport's width*/
     height: auto;
 }

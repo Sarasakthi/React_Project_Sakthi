@@ -231,20 +231,22 @@ export default function HomeAdmin() {
                                     <p className="userDetailsHeader">User Details</p>
                                 </div>
 
-                                <div className="usersList">
-                                    {usersList.map((user) => (
-                                        <div className="usersListDisplay">
-                                            <p>Firstname:<span>{user.firstname}</span></p>
-                                            <p>Lastname:<span>{user.lastname}</span></p>
-                                            <p>Username:<span>{user.username}</span></p>
-                                            <p>
-                                                <button
-                                                    onClick={() =>
-                                                        deleteUser(user.id, user.username)}>Delete user
-                                                </button>
-                                            </p>
-                                        </div>
-                                    ))}
+                                <div className="userDetailsDiv">
+                                    <div className="usersList">
+                                        {usersList.map((user) => (
+                                            <div className="usersListDisplay">
+                                                <p>Firstname:<span>{user.firstname}</span></p>
+                                                <p>Lastname:<span>{user.lastname}</span></p>
+                                                <p>Username:<span>{user.username}</span></p>
+                                                <p>
+                                                    <button
+                                                        onClick={() =>
+                                                            deleteUser(user.id, user.username)}>Delete user
+                                                    </button>
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -26,7 +26,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import { db, auth } from "../../Firebase/firebase";
-import { collection, addDoc, query, where, getDocs, onSnapshot, updateDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, onSnapshot, updateDoc, doc, or } from 'firebase/firestore';
 import moment from 'moment-timezone';
 
 export default function Payment() {
@@ -37,6 +37,7 @@ export default function Payment() {
     const dbRefAccount = collection(db, "userAccount");
     const dbRefAddBeneficiary = collection(db, "userBeneficiary");
     const dbRefTransaction = collection(db, "userTransaction");
+    const dbRefTransactionPending = collection(db, "userTransactionPending");
 
     const [accountList, setAccountList] = useState([]);
     const [beneficiaryList, setBeneficiaryList] = useState([]);
@@ -62,6 +63,8 @@ export default function Payment() {
     const [currentUserID, setCurrentUserID] = useState("");
     const [currentUserDocID, setCurrentUserDocID] = useState("");
     const [currentUserRole, setCurrentUserRole] = useState("user");
+    const dateToday = new Date()
+    let transPending = false
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
@@ -79,6 +82,7 @@ export default function Payment() {
 
                 getAccountDetails(userEmail)
                 getBeneficiaryDetails(userEmail)
+                transPending = false
 
             } else {
                 // User is signed out
@@ -207,6 +211,43 @@ export default function Payment() {
             };
         };
 
+    //Adding Transaction Details To DB
+    const addTransactionPendingToDB =
+        async (
+            transAmount,
+            transDate,
+            transFreq,
+            transFrom,
+            transRecEndDate,
+            transRecInterval,
+            transRecStartDate,
+            transRemarks,
+            transTo,
+            transUsername
+        ) => {
+
+            try {
+                await addDoc(dbRefTransactionPending,
+                    {
+                        transAmount: transAmount,
+                        transDate: transDate,
+                        transFreq: transFreq,
+                        transFrom: transFrom,
+                        transRecEndDate: transRecEndDate,
+                        transRecInterval: transRecInterval,
+                        transRecStartDate: transRecStartDate,
+                        transRemarks: transRemarks,
+                        transTo: transTo,
+                        transUsername: transUsername
+                    });
+                //console.log(dbRefTransaction);
+            }
+
+            catch (error) {
+                console.error(error);
+            };
+        };
+
     //Adding Transaction Details for Current User To DB
     const updateTransactionCurrentUserAccount =
         async (
@@ -303,13 +344,13 @@ export default function Payment() {
                 //Complete Transaction
                 addTransactionToDB(
                     cashDepositAmount,
-                    moment().tz("America/Edmonton").format(),
+                    dateToday,
                     "Onetime",
                     "Cash Deposit",
-                    moment().tz("America/Edmonton").format(),
+                    dateToday,
                     "",
-                    moment().tz("America/Edmonton").format(),
-                    "",
+                    dateToday,
+                    "Cash Deposit",
                     "Checking",
                     currentUsername)
 
@@ -400,6 +441,26 @@ export default function Payment() {
                 (valuePaymentTransferFrom == "Savings") ? balanceSavings :
                     balanceTFS
 
+        //Chekcing transaction today vs future date
+        if (valuePaymentTransferFreqRec == false) {
+            if ((moment(valuePaymentTransferDate).format('YYYY-MM-DD')) !=
+                (moment(dateToday).format('YYYY-MM-DD'))) {
+                transPending = true
+            }
+            else {
+                transPending = false
+            }
+        }
+        else {
+            if ((moment(valuePaymentRecStartDate).format('YYYY-MM-DD')) !=
+                (moment(dateToday).format('YYYY-MM-DD'))) {
+                transPending = true
+            }
+            else {
+                transPending = false
+            }
+        }
+
         //Alert message for balance Chequing
         if (parseInt(valuePaymentTransferAmount) > parseInt(fromAccountAmount)) {
 
@@ -411,69 +472,99 @@ export default function Payment() {
 
         else {
 
-            //Complete Transaction
-            addTransactionToDB(
-                valuePaymentTransferAmount,
-                valuePaymentTransferDate,
-                (valuePaymentTransferFreqRec == false ? "Onetime" : "Recurring"),
-                valuePaymentTransferFrom,
-                valuePaymentRecEndDate,
-                valuePaymentRecInterval,
-                valuePaymentRecStartDate,
-                valuePaymentTransferRemarks,
-                valuePaymentTransferTo,
-                currentUsername)
-
-            //Condition for Chequing to Beneficiary
-            if ((valuePaymentTransferFrom == "Chequing") &&
-                !((valuePaymentTransferTo == "Savings") ||
-                    (valuePaymentTransferTo == "TFS"))) {
-
-                //Complete Transaction for Current User
-                let newUpdateAccountBalance = fromAccountAmount - valuePaymentTransferAmount;
-                updateTransactionCurrentUserAccount(
+            if (transPending == true) {
+                //Pending Transaction to DB
+                addTransactionPendingToDB(
+                    valuePaymentTransferAmount,
+                    valuePaymentTransferDate,
+                    (valuePaymentTransferFreqRec == false ? "Onetime" : "Recurring"),
                     valuePaymentTransferFrom,
-                    newUpdateAccountBalance,
-                    "userAccount",
-                    currentUserDocID
-                )
+                    valuePaymentRecEndDate,
+                    valuePaymentRecInterval,
+                    valuePaymentRecStartDate,
+                    valuePaymentTransferRemarks,
+                    valuePaymentTransferTo,
+                    currentUsername)
 
-                //Update Beneficiary Account Details
-                updateBeneficiaryAccountDetails(beneficiaryList);
+                //Setting trans Pending false for next payment    
+                transPending = false
+
+                //Pending Transaction Completed
+                alert("Transaction will be done by " +
+                    moment(
+                        ((valuePaymentTransferFreqRec == false) ?
+                            valuePaymentTransferDate :
+                            valuePaymentRecStartDate)
+                    ).format('ddd, MMMM DD, YYYY') +
+                    " !")
             }
 
-            //Condition for Self Account Transfer - Chequing to Savings/TFS
             else {
 
-                //Complete Transaction for Current User
-                let newUpdateFromAccountBalance = fromAccountAmount - valuePaymentTransferAmount;
-
-                let newUpdateToAccountBalance =
-                    parseInt(((valuePaymentTransferTo == "Chequing") ? balanceChequing :
-                        (valuePaymentTransferTo == "Savings") ? balanceSavings :
-                            balanceTFS)) + parseInt(valuePaymentTransferAmount);
-
-                console.log("balanceChequing = " + balanceChequing)
-                console.log("balanceSavings = " + balanceSavings)
-                console.log("balanceTFS = " + balanceTFS)
-
-                console.log("valuePaymentTransferTo = " + valuePaymentTransferTo)
-                console.log("valuePaymentTransferAmount = " + valuePaymentTransferAmount)
-
-                console.log("newUpdateToAccountBalance = " + newUpdateToAccountBalance)
-
-                updateTransactionCurrentUserToSelf(
+                //Complete Transaction
+                addTransactionToDB(
+                    valuePaymentTransferAmount,
+                    valuePaymentTransferDate,
+                    (valuePaymentTransferFreqRec == false ? "Onetime" : "Recurring"),
                     valuePaymentTransferFrom,
+                    valuePaymentRecEndDate,
+                    valuePaymentRecInterval,
+                    valuePaymentRecStartDate,
+                    valuePaymentTransferRemarks,
                     valuePaymentTransferTo,
-                    newUpdateFromAccountBalance,
-                    newUpdateToAccountBalance,
-                    "userAccount",
-                    currentUserDocID
-                )
-            }
+                    currentUsername)
 
-            //Transaction Completed
-            alert("Transaction Completed Successfully!")
+                //Condition for Chequing to Beneficiary
+                if ((valuePaymentTransferFrom == "Chequing") &&
+                    !((valuePaymentTransferTo == "Savings") ||
+                        (valuePaymentTransferTo == "TFS"))) {
+
+                    //Complete Transaction for Current User
+                    let newUpdateAccountBalance = fromAccountAmount - valuePaymentTransferAmount;
+                    updateTransactionCurrentUserAccount(
+                        valuePaymentTransferFrom,
+                        newUpdateAccountBalance,
+                        "userAccount",
+                        currentUserDocID
+                    )
+
+                    //Update Beneficiary Account Details
+                    updateBeneficiaryAccountDetails(beneficiaryList);
+                }
+
+                //Condition for Self Account Transfer - Chequing to Savings/TFS
+                else {
+
+                    //Complete Transaction for Current User
+                    let newUpdateFromAccountBalance = fromAccountAmount - valuePaymentTransferAmount;
+
+                    let newUpdateToAccountBalance =
+                        parseInt(((valuePaymentTransferTo == "Chequing") ? balanceChequing :
+                            (valuePaymentTransferTo == "Savings") ? balanceSavings :
+                                balanceTFS)) + parseInt(valuePaymentTransferAmount);
+
+                    console.log("balanceChequing = " + balanceChequing)
+                    console.log("balanceSavings = " + balanceSavings)
+                    console.log("balanceTFS = " + balanceTFS)
+
+                    console.log("valuePaymentTransferTo = " + valuePaymentTransferTo)
+                    console.log("valuePaymentTransferAmount = " + valuePaymentTransferAmount)
+
+                    console.log("newUpdateToAccountBalance = " + newUpdateToAccountBalance)
+
+                    updateTransactionCurrentUserToSelf(
+                        valuePaymentTransferFrom,
+                        valuePaymentTransferTo,
+                        newUpdateFromAccountBalance,
+                        newUpdateToAccountBalance,
+                        "userAccount",
+                        currentUserDocID
+                    )
+                }
+
+                //Transaction Completed
+                alert("Transaction Completed Successfully!")
+            }
 
             //Navigate to Home
             navigate("/home")
@@ -530,7 +621,7 @@ export default function Payment() {
                                                     required
                                                     value={valuePaymentRecStartDate}
                                                     onChange={(valuePaymentRecStartDate) => setValuePaymentRecStartDate(valuePaymentRecStartDate)}
-                                                    placeholder="Remarks (optional)"
+                                                    placeholder="Select Payment Start Date"
                                                     dateFormat={"dd/MMM/yyyy"}
                                                     minDate={new Date()}
                                                     filterDate={(valuePaymentRecStartDate => (valuePaymentRecStartDate.getDay() !== 0 &&
@@ -857,23 +948,26 @@ export default function Payment() {
                                             <label className="paymentLabel"
                                                 title="Select payment date">
                                                 <td className="column1" id="paymentDatePick1">Payment Date</td>
-
-                                                <td className="column2" id="datePickInline">
-                                                    <DatePicker
-                                                        name="paymentOnetimeDatePicked"
-                                                        showIcon
-                                                        title="Select payment date"
-                                                        selected={valuePaymentTransferDate}
-                                                        closeOnScroll={true}
-                                                        value={valuePaymentTransferDate}
-                                                        onChange={(valuePaymentTransferDate) => setValuePaymentTransferDate(valuePaymentTransferDate)}
-                                                        dateFormat={"dd/MMM/yyyy"}
-                                                        minDate={new Date()}
-                                                        filterDate={
-                                                            valuePaymentTransferDate => (valuePaymentTransferDate.getDay() !== 0 &&
-                                                                valuePaymentTransferDate.getDay() !== 6)} />
-                                                </td>
                                             </label>
+                                            <td className="column2" id="datePickInline">
+                                                <DatePicker
+                                                    name="paymentOnetimeDatePicked"
+                                                    showIcon
+                                                    title="Select payment date"
+                                                    selected={valuePaymentTransferDate}
+                                                    placeholderText='Select Payment Date'
+                                                    closeOnScroll={true}
+                                                    required
+                                                    value={valuePaymentTransferDate}
+                                                    onChange={(valuePaymentTransferDate) => setValuePaymentTransferDate(valuePaymentTransferDate)}
+                                                    placeholder="Select Payment Date"
+                                                    dateFormat={"dd/MMM/yyyy"}
+                                                    minDate={new Date()}
+                                                    filterDate={
+                                                        valuePaymentTransferDate => (valuePaymentTransferDate.getDay() !== 0 &&
+                                                            valuePaymentTransferDate.getDay() !== 6)} />
+                                            </td>
+
                                         </div>}
                                 </tr>
 

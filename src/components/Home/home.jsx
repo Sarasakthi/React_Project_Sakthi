@@ -20,12 +20,17 @@ export default function Home() {
 
     const dbRefAccount = collection(db, "userAccount");
     const dbRefTransaction = collection(db, "userTransaction");
+    const dbRefTransactionPending = collection(db, "userTransactionPending");
+
     const [accountList, setAccountList] = useState([]);
     const [transactionList, setTransactionList] = useState([]);
+    const [pendingTransactionList, setPendingTransactionList] = useState([]);
+    const [transactionPendingList, setTransactionPendingList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [currentUserRole, setCurrentUserRole] = useState("");
     const [currentUseremail, setCurrentUseremail] = useState("")
-    const [moreTransaction, setMoreTransaction] = useState(false)
+    const [allTransaction, setAllTransaction] = useState(false)
+    const [pendingTransaction, setPendingTransaction] = useState(false)
 
     let currentUserID = null
     //let currentUseremail = null
@@ -39,6 +44,7 @@ export default function Home() {
                 setCurrentUseremail(user.email)
 
                 getAccountDetails(user.email)
+                getTransactionDetailsPending(user.email, true)
                 getTransactionDetails(user.email, 5)
 
             } else {
@@ -95,13 +101,15 @@ export default function Home() {
                 orderBy("transDate", "desc"));
             console.log("translimit = all")
             console.log(currentUseremailID)
+            setAllTransaction(true)
         }
         else {
             queryData = query(dbRefTransaction,
                 where("transUsername", "==", currentUseremailID),
                 orderBy("transDate", "desc"),
-                limit(transLimit));
+                limit(5));
             console.log("translimit = something")
+            setAllTransaction(false)
         }
 
         const returnData = onSnapshot(queryData, (querySnapshot) => {
@@ -115,6 +123,39 @@ export default function Home() {
             console.log(letMyTransactionList)
             setTransactionList(letMyTransactionList);
         });
+
+        setPendingTransaction(false)
+
+        //return () => returnData();
+    }
+
+    function getTransactionDetailsPending(currentUseremailID, pendingTransactionBoolean) {
+
+        if (pendingTransactionBoolean == true) {
+            console.log("Entering getTransactionDetailsPending");
+
+            let queryData = ""
+
+            queryData = query(dbRefTransactionPending,
+                where("transUsername", "==", currentUseremailID),
+                orderBy("transDate"));
+
+            const returnData = onSnapshot(queryData, (querySnapshot) => {
+
+                let letMyTransactionPendingList = []
+                querySnapshot.forEach((doc) => {
+                    letMyTransactionPendingList.push({ ...doc.data(), id: doc.id });
+                    console.log(doc.id, " => ", doc.data());
+                });
+
+                console.log(letMyTransactionPendingList)
+                setTransactionPendingList(letMyTransactionPendingList);
+                setTransactionList(letMyTransactionPendingList)
+            });
+        }
+
+        setAllTransaction(true)
+        setPendingTransaction(true)
 
         //return () => returnData();
     }
@@ -154,19 +195,33 @@ export default function Home() {
                         </div>
 
                         {/*Asset and Transaction*/}
-
                         <div className="rowAssetTrans">
                             <div className="colMain">
                                 {/*Asset*/}
                                 <div className="colAsset">
+                                    <table className="transAsset">
+                                        <tr>
+                                            <th className="colHeadAsset1" id="colHeadAsset1">Account</th>
+                                            <th className="colHeadAsset2" id="colHeadAsset2">Balance</th>
+                                        </tr>
 
-                                    {accountList.map((myAccountDetails) => (
-                                        <>
-                                            <p>Chequing <span id="tab2">{(myAccountDetails.amountChequing)}</span></p>
-                                            <p>Savings <span id="tab2">{myAccountDetails.amountSavings}</span></p>
-                                            <p>Tax-Free Savings <span id="tab2">{myAccountDetails.amountTFS}</span></p>
-                                        </>
-                                    ))}
+                                        {accountList.map((myAccountDetails) => (
+                                            <>
+                                                <tr>
+                                                    <td className="col1">Chequing</td>
+                                                    <td className="col2">{(myAccountDetails.amountChequing)}</td>
+                                                </tr >
+                                                <tr>
+                                                    <td className="col1">Savings</td>
+                                                    <td className="col2">{myAccountDetails.amountSavings}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td className="col1">Tax-Free Savings</td>
+                                                    <td className="col2">{myAccountDetails.amountTFS}</td>
+                                                </tr >
+                                            </>
+                                        ))}
+                                    </table>
                                 </div>
 
                                 <div className="colEmpty">
@@ -174,31 +229,57 @@ export default function Home() {
                                 </div>
 
                                 <div className="colTrans">
-                                    {transactionList.map((transaction) => (
-                                        <>
-                                            <p>
-                                                <span className="span1">{moment(new Date(transaction.transDate.seconds * 1000).toLocaleDateString("en-US")).format("YYYY-MMM-DD")}</span>
-                                                <span className="span2">- {transaction.transRemarks}</span>
-                                                <span className="span3">- $ {transaction.transAmount}</span>
-                                                <span className="span5">- to {transaction.transTo}</span>
-                                            </p>
-                                        </>
-                                    ))}
-
-                                    <a href="#" onClick={() => getTransactionDetails(currentUseremail, "all")}>view all transactions</a>
+                                    <table className="transTable">
+                                        <tr className="rowHeader">
+                                            <th className="colHead1" id="header1">Date</th>
+                                            <th className="colHead2" id="header2">Transaction Details</th>
+                                            <th className="colHead3" id="header3">$ CAD</th>
+                                            <th className="colHead4" id="header4">Remarks</th>
+                                        </tr>
+                                        {transactionList.map((transaction) => (
+                                            <>
+                                                <tr>
+                                                    <td className="col1">
+                                                        {moment(new Date(transaction.transDate.seconds * 1000).toLocaleDateString("en-US")).format("YYYY-MMM-DD")}
+                                                    </td>
+                                                    <td className="col2">
+                                                        {transaction.transFrom} to {transaction.transTo}
+                                                    </td>
+                                                    <td className="col3">
+                                                        {transaction.transAmount}
+                                                    </td>
+                                                    <td className="col4">
+                                                        {transaction.transRemarks}
+                                                    </td>
+                                                </tr>
+                                            </>
+                                        ))}
+                                    </table>
+                                    <br></br>
+                                    <a className="transAll" href="#" onClick={() =>
+                                        getTransactionDetails(currentUseremail, (allTransaction ? 5 : "all")
+                                        )}>
+                                        {allTransaction ?
+                                            "view last 5 transactions" :
+                                            "view all transactions"}
+                                    </a>
+                                    <a className="transPending" href="#" onClick={() =>
+                                        getTransactionDetailsPending(currentUseremail, true)}>
+                                        view pending transactions
+                                    </a>
                                 </div>
                             </div>
                         </div>
 
                     </div>
 
-                </div>
+                </div >
                 <footer className="footerText">
                     {/*Insert Footer*/}
                     <Footer />
                 </footer>
 
-            </div>
-        </LogoutApplication>
+            </div >
+        </LogoutApplication >
     )
 }

@@ -37,6 +37,7 @@ export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [currentUserRole, setCurrentUserRole] = useState("");
+    let userAvailable = false
     const dbRefRole = collection(db, "userRole");
 
     const submitLogin = (e) => {
@@ -54,9 +55,10 @@ export default function Login() {
                 // Signed in
                 const user = userCredential.user;
 
-                /*getUserRole(username)
-                console.log("currentUserRole = " + currentUserRole)
-                navigate((currentUserRole == "user") ? "/home" : "/homeadmin")*/
+                /*console.log("before getUserRole " + userAvailable)
+                getUserRole(username)
+                console.log("after getUserRole => " + userAvailable)*/
+
 
                 navigateUserHome(username)
 
@@ -90,8 +92,12 @@ export default function Login() {
                 console.log(doc.id, " => ", doc.data());
 
                 let myUserRoleReturn = doc.data().userRole
-                console.log("myUserRoleReturn = " + myUserRoleReturn)
+
                 setCurrentUserRole(myUserRoleReturn)
+                console.log("myUserRoleReturn => " + myUserRoleReturn)
+                userAvailable = true
+
+                console.log("userAvailable = true => " + userAvailable)
             });
         });
     }
@@ -101,10 +107,17 @@ export default function Login() {
 
         const docRefUserRole = doc(db, "userRole", currentUsername);
 
-        console.log("Current data: ");
-
         const myUserRoleReturn = onSnapshot(docRefUserRole, (doc) => {
-            navigate((doc.data().userRole == "user") ? "/home" : "/homeadmin")
+
+            console.log("Current userRole: " + doc.data());
+
+            if (doc.data() == undefined) {
+                alert("Username '" + username + "' is deactivated by the administrator. \n\n" +
+                    "Please contact bank to reactivate your account.")
+            }
+            else {
+                navigate((doc.data().userRole == "user") ? "/home" : "/homeadmin")
+            }
         })
 
         /*const queryUserData = query(dbRefRole,
@@ -162,7 +175,7 @@ export default function Login() {
                                             autoComplete={"off"}
                                             placeholder="Username or email"
                                             value={username}
-                                            onChange={(e) => setUsername(e.target.value)}
+                                            onChange={(e) => setUsername(e.target.value.toLowerCase())}
                                             autoFocus
                                         />
                                     </label>
