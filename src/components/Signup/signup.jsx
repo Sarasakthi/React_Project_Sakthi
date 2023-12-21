@@ -385,11 +385,6 @@ export default function Signup() {
                 </div>
             </div>
 
-
-            <div>
-                <a id="goHome" href="/home">Go Home.</a>
-            </div>
-
             <div className="footer">
                 <footer className="footerText">
                     {/*Insert Footer*/}
